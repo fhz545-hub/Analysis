@@ -1,59 +1,0 @@
-
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>إضافة / استعراض الشواهد</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./assets/style.css">
-</head>
-<body>
-  <header class="banner">
-    <img src="./assets/logo.png" alt="Banner">
-  </header>
-
-  <main class="container">
-    <div class="evbox">
-      <h2>📎 إضافة شاهد</h2>
-      <div class="row" style="margin:8px 0">
-        <input id="text" type="text" placeholder="وصف مختصر للشاهد…" style="flex:1">
-        <select id="domain">
-          <option value="management">الإدارة المدرسية</option>
-          <option value="teaching">التعليم والتعلم</option>
-          <option value="learning">نواتج التعلم</option>
-          <option value="environment">البيئة المدرسية</option>
-        </select>
-        <select id="week">
-          <option>1447/02/18</option>
-          <option>1447/04/01</option>
-          <option>1447/07/20</option>
-          <option>1447/09/05</option>
-        </select>
-      </div>
-      <div class="row">
-        <div class="file">
-          <input id="file" type="file" accept="application/pdf,image/*,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
-          <label for="file">🔍 استيراد مرفق</label>
-          <small id="fileMsg" class="muted">لم يتم اختيار ملف…</small>
-        </div>
-        <button id="btnSave" class="btn warn">حفظ الشاهد</button>
-      </div>
-      <hr style="margin:14px 0"/>
-      <h3>🗂️ آخر الشواهد حسب المجال</h3>
-      <select id="domain" style="margin-bottom:8px">
-        <option value="management">الإدارة المدرسية</option>
-        <option value="teaching">التعليم والتعلم</option>
-        <option value="learning">نواتج التعلم</option>
-        <option value="environment">البيئة المدرسية</option>
-      </select>
-      <ul id="list"></ul>
-      <div class="no-print" style="margin-top:10px;text-align:center">
-        <button class="btn" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
-      </div>
-    </div>
-  </main>
-
-  <script type="module" src="./js/evidence.js"></script>
-</body>
-</html>
