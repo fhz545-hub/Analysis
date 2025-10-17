@@ -1,290 +1,364 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>منصة التحليل والتحسين المدرسي – ثانوية اليعقوبي</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
-
 <style>
 :root{
-  --moe:#0b7e88; --ink:#06353b; --bg:#f5f8f8;
-  --muted:#7a9aa0; --ok:#e8fff5; --okb:#13b38a;
-  --bad:#fff3f3; --badb:#ef4444; --card:#ffffff;
+  --moe:#0b7e88; --ink:#06353b; --bg:#f5f8f8; --card:#ffffff;
+  --shine1:#e8fbfb; --shine2:#d9f2f3; --muted:#6f8e94;
+  --ok:#e9fff4; --ok2:#f2fff9; --vg:#f1fff9; --gd:#fffbe6; --md:#fff0e7;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
-a{color:#145; text-decoration:none}
-a:hover{text-decoration:underline}
-
-/* ====== Responsive single block ====== */
 .page{max-width:1200px;margin:0 auto;padding:10px 14px}
+a{color:#135; text-decoration:none} a:hover{text-decoration:underline}
 
-/* ====== Header (image only) ====== */
+/* HEADER – شعار فقط */
 .header{
-  width:100%; aspect-ratio: 7/1.6; /* يضمن الظهور لكل الشاشات */
-  background:#053840 url('logo.png') center/contain no-repeat;
-  border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.12);
-  margin:10px auto;
+  width:100%; aspect-ratio:7/1.6;
+  background:linear-gradient(135deg,var(--shine1),var(--shine2));
+  border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,.12);
+  position:relative; overflow:hidden; margin:12px auto;
+}
+.header:after{
+  content:""; position:absolute; inset:0;
+  background:url('logo.png') center/contain no-repeat;
+  opacity:1;
 }
 
-/* ====== Top controls ====== */
-.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:10px}
-.btn{background:var(--moe);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(11,126,136,.2)}
-.btn.light{background:#e8f3f4;color:#06353b}
-.btn:hover{filter:brightness(.95)}
+/* Buttons */
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px}
+.btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25)}
+.btn.light{background:#eef6f7;color:#06353b}
+.btn.ghost{background:#fff;color:var(--moe);border:1px solid #d7ecec}
+.btn:hover{filter:brightness(.97)}
 
-/* ====== Grid ====== */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.card{background:var(--card);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.08);padding:16px;position:relative}
-.card h2{margin:0 0 6px;color:var(--moe);font-size:22px}
-.kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px}
+/* Grid cards – one row on desktop */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:16px}
+@media (max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(260px,1fr))}}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(260px,1fr))}}
+@media (max-width:620px){.grid{grid-template-columns:1fr}}
+
+.card{
+  background:linear-gradient(180deg,#ffffff 0%, #f9feff 100%);
+  border-radius:16px; padding:14px; position:relative;
+  box-shadow:0 10px 24px rgba(0,0,0,.08), inset 0 0 0 1px #e6efef;
+}
+.card h2{margin:0 0 6px;color:var(--moe);font-size:20px}
+.kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
 .progress{height:10px;background:#e6efef;border-radius:999px;overflow:hidden;margin:8px 0}
 .bar{height:100%;background:#2aa897}
+.badge{padding:2px 8px;border-radius:999px;background:#eaf6f6;color:#246;font-size:12px}
+
+/* Center buttons under donut */
+.centerBar{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0}
+
+/* Detail section */
+.detail{display:none;margin-top:10px;border-top:1px dashed #e1ecec;padding-top:10px}
+.subgrid{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:8px}
+.subCard{background:#f7fbfb;border:1px solid #e6efef;border-radius:12px;padding:10px}
 .small{font-size:12px;color:#567}
 
-/* ====== Detail area ====== */
-.detail{display:none;margin-top:12px;border-top:1px dashed #e1ecec;padding-top:12px}
-.titleRow{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.titleRow h3{margin:0;color:#06353b}
-.titleRow .donutWrap{width:110px}  /* الدائرة العلوية فقط */
-.subgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px}
-.subCard{background:#f7fbfb;border:1px solid #e6efef;border-radius:12px;padding:10px}
-
-/* ====== Detailed table per field ====== */
-.tableWrap{margin-top:12px}
+/* Tables */
+.tableWrap{margin-top:10px}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
 thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
 tbody td{padding:10px;border-bottom:1px solid #eef3f3;vertical-align:top}
 tbody tr:last-child td{border-bottom:0}
-.badge{padding:2px 8px;border-radius:99px;background:#e6efef;color:#246;font-size:12px}
-.row-ok{background:var(--ok)}
-.row-bad{background:var(--bad)}
-.level{font-weight:700}
-.actionsRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
-/* ====== Evidence modal ====== */
+/* Row coloring by level */
+.row-excellent{background:var(--ok)}
+.row-high{background:var(--ok2)}
+.row-verygood{background:var(--vg)}
+.row-good{background:var(--gd)}
+.row-medium{background:var(--md)}
+.level{font-weight:700}
+
+/* Evidence modal */
 .modal{position:fixed;inset:0;background:rgba(2,52,59,.6);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}
 .sheet{width:min(920px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:16px}
 .sheet h4{margin:0 0 8px}
 .row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .row label{font-size:12px;color:#345}
-input[type=text],input[type=date],select{border:1px solid #d7e7e7;border-radius:8px;padding:8px;width:100%}
+input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:8px;padding:8px;width:100%}
 .sheet .close{position:sticky;top:0;margin-bottom:8px;background:#e8eff0;border:0;color:#034;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700}
 
-/* ====== Print in popup (A4) ====== */
+/* Print A4 window */
 @media print{ .no-print{display:none !important} }
 
-/* Footer */
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 </style>
 </head>
 <body>
-
 <div class="page">
 
-  <!-- Header (image only) -->
-  <div class="header" aria-label="Ministry of Education"></div>
+  <!-- Header -->
+  <div class="header" aria-label="وزارة التعليم – شعار"></div>
 
+  <!-- Top controls -->
   <div class="controls">
     <button class="btn" id="btnAnalyze">تحليل شامل 🔎</button>
-    <button class="btn" id="btnFullReport">تقرير شامل PDF 📘</button>
-    <button class="btn" id="btnFullPlan">خطة تحسين شاملة PDF 🗂️</button>
+    <button class="btn" id="btnFullReport">التقرير الشامل PDF 📘</button>
+    <button class="btn" id="btnFullPlan">الخطة الشاملة PDF 🗂️</button>
   </div>
 
+  <!-- Domains grid -->
   <div id="dashboard" class="grid"></div>
 
   <div class="footer">© 1447 هـ – ثانوية اليعقوبي – منصة التحليل والتحسين المدرسي</div>
 </div>
 
-<!-- ===== Evidence Modal ===== -->
+<!-- Evidence Modal -->
 <div class="modal" id="eviModal" aria-hidden="true">
   <div class="sheet">
     <button class="close" id="eviClose">✕ إغلاق</button>
     <h4>إضافة شاهد</h4>
     <div class="row" style="margin-bottom:8px">
-      <div><label>الوصف</label><input id="eviText" type="text" placeholder="مثال: تقرير زيارة مشرف .."/></div>
+      <div><label>اسم/وصف الشاهد</label><input id="eviText" type="text" placeholder="مثال: تقرير زيارة مشرف .."/></div>
       <div><label>الفصل الدراسي</label>
-        <select id="eviTerm">
-          <option value="الأول">الأول</option><option value="الثاني">الثاني</option><option value="الثالث">الثالث</option>
-        </select>
+        <select id="eviTerm"><option>الأول</option><option>الثاني</option><option>الثالث</option></select>
       </div>
-      <div><label>اليوم</label>
-        <select id="eviDay">
-          <option>الأحد</option><option>الإثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option>
-        </select>
-      </div>
-      <div><label>الأسبوع (هجري)</label>
-        <select id="eviWeek"></select>
-      </div>
+      <div><label>الأسبوع (هجري)</label><select id="eviWeek"></select></div>
+      <div><label>التاريخ (هجري أم القرى)</label><input id="eviHijri" type="text" placeholder="1447/03/01"/></div>
     </div>
     <div class="row">
-      <div><label>التاريخ (هجري أم القرى)</label><input id="eviHijri" type="text" placeholder="1447/03/01"/></div>
-      <div><label>إرفاق رابط (PDF/صورة)</label><input id="eviLink" type="text" placeholder="https://...pdf"/></div>
-      <div style="grid-column: span 2"><label>لمن يخص الشاهد</label>
-        <input id="eviOwner" type="text" placeholder="المجال/المؤشر/الإجراء سيملأ تلقائياً" disabled />
-      </div>
+      <div><label>رفع ملف (PDF/صورة)</label><input id="eviFile" type="file" accept="application/pdf,image/*"/></div>
+      <div style="grid-column:span 3"><label>يتبع</label><input id="eviOwner" type="text" disabled/></div>
     </div>
-    <div class="actionsRow">
+    <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn" id="eviSave">حفظ الشاهد</button>
       <button class="btn light" id="eviCancel">إلغاء</button>
     </div>
-    <div class="small">* تُسحب الشواهد تلقائياً للتقارير وخطط التحسين، ويمكن فتح الرابط في نافذة منبثقة للطباعة.</div>
+    <div class="small" style="margin-top:6px">* الشواهد تُسحب تلقائياً للتقارير وخطط التحسين. يمكن فتح الملف في نافذة منبثقة للطباعة.</div>
   </div>
 </div>
 
 <script>
-/* =========== قاعدة بيانات مختصرة (قابلة للتوسعة) =========== */
-
-/* أسابيع هجري – أمثلة (يمكن استبدالها بقائمة أدق لاحقاً) */
-const WEEKS = [
-  {id:'1447/02/18', name:'عودة الهيئة الإدارية — 1447/02/18'},
-  {id:'1447/02/23', name:'عودة المعلمين — 1447/02/23'},
-  {id:'1447/03/01', name:'بداية العام الدراسي — 1447/03/01'},
-  {id:'1447/04/01', name:'إجازة اليوم الوطني — 1447/04/01'},
-  {id:'1447/05/30', name:'إجازة الخريف (بداية) — 1447/05/30'},
-  {id:'1447/06/08', name:'إجازة الخريف (نهاية) — 1447/06/08'}
+/* ====== أسابيع هجري (أمثلة) ====== */
+const WEEKS=[
+  {id:'1447/02/18',name:'عودة الهيئة الإدارية — 1447/02/18'},
+  {id:'1447/02/23',name:'عودة المعلمين — 1447/02/23'},
+  {id:'1447/03/01',name:'بداية العام الدراسي — 1447/03/01'},
+  {id:'1447/04/01',name:'إجازة اليوم الوطني — 1447/04/01'},
+  {id:'1447/05/30',name:'إجازة الخريف (بداية) — 1447/05/30'},
+  {id:'1447/06/08',name:'إجازة الخريف (نهاية) — 1447/06/08'}
 ];
+const eviWeekSel=document.getElementById('eviWeek');
+WEEKS.forEach(w=>{const o=document.createElement('option');o.value=w.id;o.textContent=w.name;eviWeekSel.appendChild(o);});
 
-/* مؤشر المستوى */
-function levelOf(v){
-  if(v>=90) return {txt:'ممتاز', cls:'badge', color:'#10b981'};
-  if(v>=75) return {txt:'متقدم', cls:'badge', color:'#2aa897'};
-  if(v>=60) return {txt:'متوسط', cls:'badge', color:'#f59e0b'};
-  return {txt:'منخفض', cls:'badge', color:'#ef4444'};
+const fmt=v=>Number(v).toFixed(2);
+function levelBadge(v){ if(v>=90)return {txt:'ممتاز',color:'#10b981'}; if(v>=85)return {txt:'مرتفع',color:'#22b8a0'}; if(v>=80)return {txt:'جيد جدًا',color:'#33c2a9'}; if(v>=75)return {txt:'جيد',color:'#f59e0b'}; return {txt:'متوسط',color:'#f97316'}; }
+function mapLevelClass(arLevel){
+  if(arLevel==='متميز'||arLevel==='مرتفع') return 'row-excellent';
+  if(arLevel==='جيد جدًا') return 'row-verygood';
+  if(arLevel==='جيد') return 'row-good';
+  return 'row-medium';
 }
-const fmt = v => Number(v).toFixed(2);
 
-/* بيانات المجالات (قيم 2024/2025) + مؤشرات فرعية لدائرة العلوية */
-const fields = {
-  management:   { name:'الإدارة المدرسية',   v2024:75.50, v2025:75.50, subs:[
-    { id:'plans', name:'التخطيط', v:54.00 },
-    { id:'lead',  name:'قيادة العملية التعليمية', v:72.75 },
-    { id:'soc',   name:'المجتمع المدرسي', v:57.25 },
-    { id:'dev',   name:'التطوير المؤسسي', v:60.25 }
+/* ====== بيانات عليا للمجالات ====== */
+const fields={
+  management:{ name:'الإدارة المدرسية', v2024:75.50, v2025:75.50, subs:[
+    {id:'plans', name:'التخطيط', v:54.00},
+    {id:'lead', name:'قيادة العملية التعليمية', v:72.75},
+    {id:'soc', name:'المجتمع المدرسي', v:57.25},
+    {id:'dev', name:'التطوير المؤسسي', v:60.25}
   ]},
-  teaching:     { name:'التعليم والتعلم',     v2024:80.75, v2025:81.50, subs:[
-    { id:'learnassess', name:'تقويم التعلم', v:82.75 },
-    { id:'learnexp',    name:'بناء خبرات التعلم', v:76.75 }
+  teaching:{ name:'التعليم والتعلّم', v2024:80.75, v2025:81.50, subs:[
+    {id:'assess', name:'تقويم التعلّم', v:82.75},
+    {id:'exp', name:'بناء خبرات التعلّم', v:76.75}
   ]},
-  learning:     { name:'نواتج التعلم',        v2024:78.50, v2025:78.50, subs:[
-    { id:'achievement', name:'التحصيل التعليمي', v:80.25 },
-    { id:'devsoc',      name:'التطور الشخصي والصحي والاجتماعي', v:86.25 }
+  learning:{ name:'نواتج التعلّم', v2024:78.50, v2025:78.50, subs:[
+    {id:'ach', name:'التحصيل التعليمي', v:80.25},
+    {id:'socdev', name:'التطور الشخصي والصحي والاجتماعي', v:86.25}
   ]},
-  environment:  { name:'البيئة المدرسية',     v2024:64.00, v2025:62.25, subs:[
-    { id:'safety',      name:'الأمن والسلامة', v:79.25 },
-    { id:'building',    name:'المبنى المدرسي', v:71.50 }
+  environment:{ name:'البيئة المدرسية', v2024:64.00, v2025:62.25, subs:[
+    {id:'safety', name:'الأمن والسلامة', v:79.00},
+    {id:'building', name:'المبنى المدرسي', v:71.50}
   ]}
 };
 
-/* الجداول التفصيلية (نماذج مقتضبة – ضع كل جدولك هنا) */
-const detailed = {
-  management: [
-    {level:'ممتاز', perf:94.50, indicator:'تلتزم المدرسة بقواعد السلامة والانضباط وتتابع تطبيقها باستمرار.', improve:'تعزيز نشر القيم والقدوة وربطها بالشراكة المجتمعية.', evidence:'لوحات السلوك – تقارير الانضباط – منصة الانضباط', tag:'ok'},
-    {level:'مرتفع', perf:90.25, indicator:'تعمل المدرسة على تهيئة بيئة مدرسية آمنة وتجهيزها.', improve:'تفعيل نظام تتبع صيانة مرافق المدرسة وتوثيق الأعمال.', evidence:'تقارير الصيانة – صور الأعمال – محاضر الإنجاز', tag:'ok'},
-    {level:'جيد جدًا', perf:85.25, indicator:'تتابع المدرسة تنفيذ خطتها التشغيلية وتطورها.', improve:'تطوير لوحة متابعة إلكترونية أسبوعية لمؤشرات الإنجاز.', evidence:'سجلات تنفيذية – نماذج متابعة – تقارير أداء', tag:'ok'},
-    {level:'جيد', perf:70.25, indicator:'تقل فاعلية تفعيل الأنظمة الداعمة للتحسين.', improve:'تصميم روزنامة رقمية ذكية وجدولة مهام الفرق.', evidence:'سجلات رقمية – تقارير تشغيلية – سجلات فريق', tag:'bad'}
+/* ====== الجداول التفصيلية الجديدة (من طلبك) ====== */
+const detailed={
+  management:[
+    {level:'متميز', perf:94.50, indicator:'تنشر المدرسة قواعد السلوك والمواظبة وتتابع تطبيقها بانتظام.', improve:'نشر القواعد رقميًا وربطها بمتابعة أسبوعية للانضباط.', evidence:'لوحات السلوك، تقارير الانضباط، سجلات إشعارات.'},
+    {level:'مرتفع', perf:90.25, indicator:'تهيئة وصيانة مرافق المبنى وتجهيزاته.', improve:'نظام صيانة رقمي وتوثيق بالصور والتقارير.', evidence:'أوامر عمل، صور قبل/بعد، محاضر إنجاز.'},
+    {level:'مرتفع', perf:89.25, indicator:'مناخ آمن ومحفّز للتعلّم والنمو.', improve:'برامج دعم نفسي وقياس رضا المستفيدين دوريًا.', evidence:'استبانات رضا، سجلات إرشاد، خطط وقائية.'},
+    {level:'جيد جدًا', perf:87.00, indicator:'متابعة أداء العاملين ودعم التطوير المهني.', improve:'خطط تطوير فردية مبنية على تقويم سنوي.', evidence:'نماذج تقويم، خطط تحسين، محاضر تغذية راجعة.'},
+    {level:'جيد جدًا', perf:85.25, indicator:'متابعة تنفيذ الخطة التشغيلية وتطويرها.', improve:'لوحة مؤشرات أسبوعية وربط المهام بالمخرجات.', evidence:'لوحة أداء، تقارير تقدم، محاضر فرق العمل.'},
+    {level:'جيد جدًا', perf:83.75, indicator:'تواصل فعّال مع أولياء الأمور والمجتمع.', improve:'قنوات تواصل موحّدة وجدولة لقاءات دورية.', evidence:'منصة تواصل، محاضر لقاءات، تقارير تفاعل.'},
+    {level:'جيد جدًا', perf:82.00, indicator:'تشجيع الحصول على الرخصة المهنية.', improve:'برنامج تحفيزي وجدولة دخول الاختبارات.', evidence:'قوائم تسجيل، شهادات حضور، نتائج الرخصة.'},
+    {level:'جيد', perf:80.00, indicator:'تعزيز ثقافة العمل الجماعي.', improve:'فرق تميّز بمهمات واضحة ومتابعة إنجاز.', evidence:'تشكيل الفرق، خطط فرق، تقارير مختصرة.'},
+    {level:'جيد', perf:78.00, indicator:'توثيق القيم والهوية الوطنية.', improve:'ملف رقمي للهوية مرتبط بالأنشطة.', evidence:'صور فعاليات، ملفات إنجاز، نماذج توثيق.'},
+    {level:'جيد', perf:76.50, indicator:'تفعيل قنوات التواصل الداخلي.', improve:'تنظيم المراسلات والاجتماعات إلكترونيًا.', evidence:'سجلات تعميمات، محاضر، لوائح إجراءات.'},
+    {level:'متوسط', perf:75.50, indicator:'تفعيل الشراكات المجتمعية.', improve:'ثلاث شراكات نوعية مرتبطة بالتعلّم.', evidence:'مذكرات تفاهم، تقارير فعاليات، شهادات شراكة.'},
+    {level:'متوسط', perf:72.00, indicator:'تطوير أنظمة المتابعة الإلكترونية.', improve:'لوحة مؤشرات ذكية وتحليلات شهرية.', evidence:'تقارير تحليلية، لوحات قياس، أرشيف رقمي.'},
+    {level:'متوسط', perf:70.25, indicator:'توظيف التقنية في الإدارة اليومية.', improve:'رفع استخدام (نور/فارس/مدرستي) وتتبع التقارير.', evidence:'سجلات دخول، تقارير استخدام، مصفوفة التزام.'}
   ],
-  teaching: [
-    {level:'ممتاز', perf:99.25, indicator:'تقدم المدرسة برامج إثرائية نوعية للمعلمين', improve:'استمرار التدريب وفق الاحتياجات المهنية وتوثيق أثره.', evidence:'خطط تدريب – نماذج تقييم الأثر – تقارير زيارات صفية', tag:'ok'},
-    {level:'مرتفع', perf:93.25, indicator:'ينتقي المعلمون أدوات تقويم تحقق نواتج التعلم.', improve:'تحليل نتائج التقويم بشكل دوري ووضع خطط علاجية.', evidence:'سجلات تحليل نتائج – خطط علاج – أدوات تقويم', tag:'ok'},
-    {level:'جيد', perf:76.75, indicator:'تحتاج المدرسة إلى تطوير التنوع في أساليب التعلم.', improve:'تصميم أنشطة تعلم نشطة ومهام أصيلة مرتبطة بالحياة.', evidence:'ملفات مشاريع – منتج تعلم – محاضر تقييم', tag:'bad'}
+  teaching:[
+    {level:'متميز', perf:99.25, indicator:'تنفّذ المدرسة برامج تدريبية نوعية للمعلمين تُطوّر المهارات الصفّية.', improve:'مواءمة التدريب مع الاحتياجات الفعلية وتتبع أثره داخل الحصص.', evidence:'خطط تدريب، تقارير أثر، استمارات متابعة.'},
+    {level:'متميز', perf:97.75, indicator:'تهيئة بيئة تعليمية محفّزة لتنمية التفكير الإبداعي/الناقد.', improve:'تضمين مهارات التفكير العليا في الخطط اليومية والتعلم النشط.', evidence:'خطط دروس، ملاحظات صفية، منتجات طلابية.'},
+    {level:'متميز', perf:97.50, indicator:'تنمية مهارات التعلّم الذاتي والبحث لدى المتعلمين.', improve:'مشاريع بحث رقمية وتدريب على مصادر المعلومات والتحليل.', evidence:'بحوث طلابية، توثيق إشرافي، منصات مشاركة.'},
+    {level:'مرتفع', perf:96.75, indicator:'تطبيق استراتيجيات تدريس حديثة داعمة لمهارات القرن 21.', improve:'توثيق التطبيق عبر زيارات صفية وتعلّم نظير لنظير.', evidence:'تقارير زيارات، تسجيلات قصيرة، استمارات أداء.'},
+    {level:'مرتفع', perf:94.75, indicator:'توفير وسائل تعليمية رقمية متنوعة تدعم التعلّم الفعّال.', improve:'إنتاج محتوى رقمي تفاعلي وتدريب على توظيفه.', evidence:'ملفات دروس رقمية، نماذج توظيف تقنية.'},
+    {level:'مرتفع', perf:93.25, indicator:'تنوّع أدوات التقويم لقياس نواتج التعلّم.', improve:'تحليل أسبوعي للنتائج وربطها بخطط علاج/إثراء صفّية.', evidence:'سجلات تحليل، خطط علاجية، أدوات تقويم.'},
+    {level:'جيد جدًا', perf:91.75, indicator:'تقديم تغذية راجعة بنّاءة لتحسين أداء الطلاب.', improve:'نموذج موحّد للتغذية الراجعة وأنشطة تصحيحية لاحقة.', evidence:'نماذج تغذية راجعة، سجلات متابعة.'},
+    {level:'جيد جدًا', perf:89.50, indicator:'توظيف التقنية بفاعلية في التعليم والتعلّم.', improve:'تفعيل أدوات التفاعل (اختبارات قصيرة/نماذج/منصات) بالحصة.', evidence:'تقارير «مدرستي»، أدلة أنشطة رقمية.'},
+    {level:'جيد', perf:88.00, indicator:'إتاحة تعلّم تعاوني ومشاريع جماعية.', improve:'تصميم rubrics للمشاريع وتقويم الأدوار والمخرجات.', evidence:'ملفات مشاريع، محاضر تقويم، صور عروض.'},
+    {level:'جيد', perf:86.75, indicator:'تنمية مهارات التفكير الناقد لدى المتعلمين.', improve:'أنشطة تحليل ونقاش منظّم في العلوم واللغة.', evidence:'خطط أنشطة، تقارير أداء، عينات أعمال.'},
+    {level:'جيد', perf:84.50, indicator:'برامج إثرائية للمتميزين والموهوبين.', improve:'ورش أسبوعية إثرائية ومتابعة مخرجاتهم النوعية.', evidence:'قوائم مشاركين، منتجات، تقارير موهبة.'},
+    {level:'متوسط', perf:82.75, indicator:'بناء الدروس وفق نواتج تعلم واضحة ومعلَنة.', improve:'مراجعة الخطط اليومية وضبط مؤشرات الإتقان.', evidence:'خطط محدثة، ملاحظات إشرافية.'},
+    {level:'متوسط', perf:76.75, indicator:'تنويع أساليب التعليم بما يلائم الفروق الفردية.', improve:'أنشطة متعددة الأنماط (بصري/سمعي/حسي) داخل الحصة.', evidence:'خطط معدّلة، تقارير صفية، تحليل نتائج.'}
   ],
-  learning: [
-    {level:'ممتاز', perf:96.75, indicator:'يظهر المتعلمون اعتزازاً بقيمهم وهويتهم الوطنية.', improve:'تعزيز ربط الأنشطة بالقيم الوطنية عبر المنصات.', evidence:'منتجات طلابية – صور فعاليات – تقارير الهوية', tag:'ok'},
-    {level:'جيد جدًا', perf:91.75, indicator:'يظهر المتعلمون اتجاهات إيجابية نحو ذواتهم.', improve:'تنفيذ برنامج «أنا أصلح» لتنمية الثقة بالنفس.', evidence:'صور برامج – تقارير تقييم – نتائج استبيانات', tag:'ok'},
-    {level:'جيد', perf:82.94, indicator:'يحقق المتعلمون نتائج متفاوتة في الاختبارات.', improve:'تحليل النتائج المنخفضة ووضع خطط تحسين فردية.', evidence:'تحليل نتائج – خطط علاج – متابعة فردية', tag:'bad'}
+  learning:[
+    {level:'متميز', perf:96.75, indicator:'يظهر المتعلمون اعتزازًا بالقيم والهوية الوطنية.', improve:'ربط الأنشطة الصفية واللاصفية بالقيم الوطنية عبر منصات المدرسة.', evidence:'منتجات طلابية، صور فعاليات، تقارير الهوية.'},
+    {level:'متميز', perf:96.25, indicator:'لدى المتعلمين اتجاهات إيجابية ودافعية مرتفعة للتعلّم.', improve:'برامج تحفيزية منهجية وتيسير الإرشاد الأكاديمي لتعزيز الاستمرار.', evidence:'استبانات رضا، خطط إرشاد، تقارير متابعة.'},
+    {level:'متميز', perf:95.50, indicator:'نتائج متميزة في الاختبارات الوطنية/الدولية.', improve:'اختبارات معيارية دورية وخطط علاجية للفاقد التعلمي.', evidence:'نتائج اختبارات، تحليلات، خطط علاج.'},
+    {level:'متميز', perf:94.00, indicator:'التزام بقواعد السلوك والانضباط المدرسي.', improve:'متابعة يومية للانضباط وتكريم سلوكي دوري.', evidence:'سجلات الانضباط، محاضر تكريم، تقارير متابعة.'},
+    {level:'جيد جدًا', perf:91.75, indicator:'اتجاهات إيجابية نحو الذات والنمو الشخصي.', improve:'برامج مهارية «أنا أستطيع» ومسارات قيادة طلابية.', evidence:'قوائم مشاركة، تقارير برامج، استبانات أثر.'},
+    {level:'جيد جدًا', perf:89.25, indicator:'مهارات البحث والتعلّم الذاتي.', improve:'مشاريع بحث رقمية وتدريب على التوثيق العلمي.', evidence:'بحوث طلابية، نماذج تقييم، منصة مشاركة.'},
+    {level:'جيد جدًا', perf:86.25, indicator:'مهارات اجتماعية وصحية إيجابية.', improve:'حملات توعوية وممارسات صحية داخل المدرسة.', evidence:'نشرات، صور فعاليات، تقارير نشاط.'},
+    {level:'جيد', perf:84.25, indicator:'مشاركة في مبادرات مجتمعية وخدمة عامة.', improve:'شراكات نوعية ومبادرات طلابية موثّقة.', evidence:'مذكرات تعاون، تقارير مبادرات، صور.'},
+    {level:'جيد', perf:82.94, indicator:'تقدم في نتائج المواد الدراسية.', improve:'تحليل نتائج المواد وبناء خطط دعم للفصول الأقل أداءً.', evidence:'تقارير تحليل، خطط رفع، متابعة إشرافية.'},
+    {level:'جيد', perf:79.04, indicator:'تحقق نواتج تعلم في المواد الأساسية.', improve:'تقويم مستمر وربط نتائجه بخطط تحسين صفية.', evidence:'أدوات تقويم، سجلات تحليل، خطط علاج.'},
+    {level:'متوسط', perf:63.25, indicator:'مشاركة ثقافية/قيمية (مسابقات وبرامج مجتمعية).', improve:'تحفيز المشاركة في المسابقات الثقافية وبرامج القيم.', evidence:'صور فعاليات، تقارير أنشطة، نشرات مدرسية.'}
   ],
-  environment: [
-    {level:'ممتاز', perf:97.50, indicator:'تعمل المدرسة على تهيئة وصيانة جميع مرافق المبنى.', improve:'استحداث سجل رقمي للصيانة الوقائية وتحديد خطة دورية.', evidence:'تقارير الصيانة – صور الأعمال – محاضر الإنجاز', tag:'ok'},
-    {level:'جيد', perf:73.25, indicator:'تتلمَّس المدرسة ملاءمة بيئة التعلم للمتعلمين بشكل متوسط.', improve:'تطوير البيئة الصفية بالألوان التعليمية والجلـسات التفاعلية.', evidence:'صور الفصول – استبيانات رضا – تقارير إشرافية', tag:'bad'},
-    {level:'متوسط', perf:62.50, indicator:'توفر المدرسة وسائل الإضاءة والتهوية بما يحقق بيئة صحية.', improve:'تحسين الإضاءة في الفصول القديمة وصيانة أجهزة التهوية.', evidence:'تقارير فنية – صور الصيانة – متابعة المرافق', tag:'bad'}
+  environment:[
+    {level:'متميز', perf:97.50, indicator:'تعمل المدرسة على تهيئة وصيانة مرافق المبنى وتجهيزاته بانتظام.', improve:'سجل رقمي للصيانة الوقائية وتحديث خطة الصيانة الدورية.', evidence:'تقارير صيانة، صور أعمال، محاضر إنجاز.'},
+    {level:'متميز', perf:97.00, indicator:'المحافظة على نظافة المبنى والمرافق بصورة مستمرة.', improve:'تعزيز الإشراف اليومي وتحديد مسؤول متابعة للنظافة.', evidence:'تقارير إشرافية، صور توثيق، عقود متابعة.'},
+    {level:'جيد جدًا', perf:94.00, indicator:'توافر معايير الأمن والسلامة وتطبيقها بانتظام.', improve:'تنفيذ فرضيات دورية وتحديث أدوات السلامة وفق اللوائح.', evidence:'سجلات الأمن والسلامة، صور الفرضيات، تقارير متابعة.'},
+    {level:'جيد جدًا', perf:79.00, indicator:'توافر وصولات آمنة للعملية التعليمية تُمكّن من حركة ميسّرة.', improve:'تهيئة الممرات والمرافق لدعم ذوي الإعاقة.', evidence:'صور تجهيزات، تقارير إشرافية، محاضر متابعة.'},
+    {level:'جيد', perf:73.25, indicator:'البيئة المدرسية متوسطة الجاذبية للمتعلمين.', improve:'تطوير البيئة الصفية بالألوان التعليمية والجلسات التفاعلية.', evidence:'صور الفصول، استبانات رضا، تقارير إشرافية.'},
+    {level:'متوسط', perf:64.00, indicator:'وجود منافذ آمنة للطوارئ واستيفاء متطلبات السلامة.', improve:'مراجعة مواقع المخارج وتفعيل لوحات الإرشاد والإضاءة الطارئة.', evidence:'تقارير الدفاع المدني، صور المخارج، محاضر تحديث.'},
+    {level:'متوسط', perf:62.50, indicator:'كفاية الإضاءة والتهوية بما يحقق بيئة تعليمية صحية.', improve:'تحسين الإضاءة وصيانة أجهزة التهوية شهريًا.', evidence:'تقارير فنية، صور صيانة، تقارير متابعة.'}
   ]
 };
 
-/* ===== التخزين المحلي للشواهد ===== */
+/* ====== تخزين الشواهد ====== */
 const STORE='yaqoubi_evidence_1447';
 const mem=JSON.parse(localStorage.getItem(STORE)||'{}');
 function saveMem(){ localStorage.setItem(STORE, JSON.stringify(mem)); }
 
-/* تجهيز قائمة الأسابيع */
-const eviWeekSel=document.getElementById('eviWeek');
-WEEKS.forEach(w=>{ const o=document.createElement('option'); o.value=w.id;o.textContent=w.name; eviWeekSel.appendChild(o); });
+/* ====== ترويسة تقارير A4 (مركز، التاريخ يمين بدون نص) ====== */
+function todayHijri(){
+  try{
+    const fmt=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'long'});
+    return fmt.format(new Date());
+  }catch(e){ return '.../.. /1447هـ'; }
+}
+function reportHeaderHTML(){
+  return `
+  <div style="display:grid;grid-template-columns:1fr 180px 1fr;align-items:center;gap:14px;margin-bottom:12px">
+    <div style="text-align:left;line-height:1.6;font-weight:700;color:#0b7e88">
+      <div>المملكة العربية السعودية</div>
+      <div>وزارة التعليم</div>
+      <div>الإدارة العامة للتعليم بالمنطقة الشرقية</div>
+      <div>ثانوية اليعقوبي</div>
+    </div>
+    <div style="text-align:center"><img src="وزارة التعليم.png" alt="MoE" style="height:90px"/></div>
+    <div style="text-align:right;font-weight:700">${todayHijri()}</div>
+  </div>`;
+}
 
-/* ========= رسم لوحة المجالات ========= */
+/* ====== نافذة A4 عامة ====== */
+function openDocWindow(title, contentHTML){
+  const w=window.open('', '_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
+  const doc=`
+  <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/>
+  <title>${title}</title>
+  <style>
+    body{font-family:'Tajawal',sans-serif;margin:18px;background:#fff;color:#06353b}
+    h2{margin:8px 0;color:#0b7e88}
+    h3{color:#0b7e88}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    thead th{background:#0f6f79;color:#fff;padding:8px}
+    td,th{padding:8px;border:1px solid #e7eff0;vertical-align:top}
+    .row-excellent{background:#e9fff4}.row-verygood{background:#f1fff9}.row-good{background:#fffbe6}.row-medium{background:#fff0e7}
+    .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec}
+    .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin-left:6px}
+    @media print{.toolbar{display:none}}
+  </style></head><body>
+  ${reportHeaderHTML()}
+  ${contentHTML}
+  <div class="toolbar no-print">
+    <button class="btn" onclick="window.print()">طباعة</button>
+    <button class="btn" onclick="window.close()">إغلاق</button>
+  </div>
+  </body></html>`;
+  w.document.open(); w.document.write(doc); w.document.close();
+}
+
+/* ====== عارض الشاهد ====== */
+function openEvidenceViewer(url,title='شاهد'){
+  const html = `<h2>${title}</h2>` + (url.endsWith('.pdf')?`<embed src="${url}" type="application/pdf" style="width:100%;height:80vh"/>`:`<img src="${url}" style="max-width:100%;height:auto"/>`);
+  openDocWindow('شاهد', html);
+}
+
+/* ====== لوحة المجالات ====== */
 function renderDashboard(){
   const dash=document.getElementById('dashboard'); dash.innerHTML='';
   Object.entries(fields).forEach(([key,f])=>{
-    const lvl=levelOf(f.v2025);
+    const lvl=levelBadge(f.v2025);
     const card=document.createElement('div'); card.className='card'; card.id=`card-${key}`;
     card.innerHTML=`
       <h2>${f.name}</h2>
       <div class="kpi"><span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span>
         <span class="badge" style="background:${lvl.color}22;color:${lvl.color}">${lvl.txt}</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%"></div></div>
-      <div class="titleRow">
-        <h3 class="small">اضغط لعرض التحليل التفصيلي</h3>
-        <div class="donutWrap"><canvas id="donut-${key}" height="120"></canvas></div>
+
+      <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="130"></canvas></div>
+      <div class="centerBar">
+        <button class="btn ghost" onclick="openFieldReport('${key}')">تقرير المجال PDF</button>
+        <button class="btn ghost" onclick="openFieldPlan('${key}')">خطة تحسين المجال PDF</button>
       </div>
+
       <div class="detail" id="detail-${key}"></div>
     `;
+    // فتح التفاصيل بنقرة على أسفل البطاقة فقط (الجدول)
     card.addEventListener('click', (e)=>{
-      // لا نغلق عند ضغط الأزرار داخل التفصيل
-      if(e.target.closest('button') || e.target.closest('a') || e.target.closest('input') || e.target.closest('select')) return;
+      if(e.target.closest('button')||e.target.tagName==='CANVAS') return;
       toggleDetail(key);
     });
     dash.appendChild(card);
 
-    // دائرة علوية فقط
-    const ctx=document.getElementById(`donut-${key}`).getContext('2d');
-    new Chart(ctx,{type:'doughnut',
+    // الدونت
+    new Chart(document.getElementById(`donut-${key}`).getContext('2d'),{
+      type:'doughnut',
       data:{labels:f.subs.map(s=>s.name),datasets:[{data:f.subs.map(s=>s.v),backgroundColor:['#2aa897','#5d9ed6','#f1ad5b','#7ac6b7','#91a7ff','#a5d8a6']}]},
       options:{plugins:{legend:{display:false}},cutout:'70%'}
     });
   });
 }
 
-/* ======= فتح تفاصيل المجال ======= */
 function toggleDetail(key){
   const dash=document.getElementById('dashboard');
   Array.from(dash.children).forEach(c=>{ if(c.id!==`card-${key}`) c.style.display='none'; });
-  const f=fields[key]; const box=document.getElementById(`detail-${key}`);
+  const box=document.getElementById(`detail-${key}`);
   const open=box.style.display==='block';
   if(open){ box.style.display='none'; Array.from(dash.children).forEach(c=>c.style.display=''); return; }
 
-  // عنوان وملخص ودونت علوية (الموجودة بالفعل أعلى البطاقة)
-  // الشبكة الصغيرة للبطاقات الفرعية (صغّرت الدوائر كي تكون منسّقة)
-  const subsHtml = f.subs.map(s=>`
+  const f=fields[key];
+  const subsHtml=f.subs.map(s=>`
     <div class="subCard">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <strong>${s.name}</strong>
-        <span class="badge" style="background:${levelOf(s.v).color}22;color:${levelOf(s.v).color}">${fmt(s.v)}%</span>
+        <span class="badge" style="background:${levelBadge(s.v).color}22;color:${levelBadge(s.v).color}">${fmt(s.v)}%</span>
       </div>
       <div class="small">مستوى المؤشر الفرعي لهذا المجال</div>
     </div>`).join('');
 
-  // جدول المجال التفصيلي
-  const rows = (detailed[key]||[]).map((r,i)=>{
-    const rowCls = r.tag==='bad' ? 'row-bad' : (r.tag==='ok' ? 'row-ok':'');
-    const rowKey = `${key}::${i}`;
-    const evis = (mem[rowKey]||[]).map((e,j)=>(
-      `<div class="small">• ${e.hijri} – ${e.text} — <a href="${e.link}" target="_blank">ملف الشاهد</a></div>`
-    )).join('');
-    return `<tr class="${rowCls}">
-      <td class="level">${r.level}</td>
-      <td>${fmt(r.perf)}%</td>
+  const rows=(detailed[key]||[]).map((r,i)=>{
+    const ekey=`${key}::${i}`;
+    const evis=(mem[ekey]||[]).map((e,j)=>`<div class="small">• ${e.hijri} — <a href="${e.url}" target="_blank" onclick="event.preventDefault();openEvidenceViewer('${e.url}','${e.text||'شاهد'}');">${e.text||('شاهد '+(j+1))}</a></div>`).join('');
+    return `<tr class="${mapLevelClass(r.level)}">
+      <td class="level">${r.level}<div class="small">${fmt(r.perf)}%</div></td>
       <td>${r.indicator}</td>
       <td>${r.improve}</td>
-      <td>
-        <div>${r.evidence}</div>
-        ${evis?`<div style="margin-top:6px">${evis}</div>`:''}
-        <div class="actionsRow">
-          <button class="btn light" onclick="openEvidence('${key}',${i})">إضافة شاهد +</button>
-          <button class="btn" onclick="openFieldReport('${key}')">تقرير المجال PDF</button>
-          <button class="btn" onclick="openFieldPlan('${key}')">خطة تحسين المجال PDF</button>
-        </div>
+      <td>${r.evidence}${evis?`<div style="margin-top:6px">${evis}</div>`:''}
+        <div style="margin-top:8px"><button class="btn light" onclick="openEvidence('${key}',${i})">إضافة شاهد +</button></div>
       </td>
     </tr>`;
   }).join('');
@@ -293,160 +367,172 @@ function toggleDetail(key){
     <div class="subgrid">${subsHtml}</div>
     <div class="tableWrap">
       <table>
-        <thead>
-          <tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr>
-        </thead>
+        <thead><tr><th>المستوى/الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <div class="actionsRow" style="justify-content:flex-end;margin-top:10px">
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
         <button class="btn light" onclick="resetView()">رجوع إلى جميع المجالات ↩︎</button>
       </div>
     </div>`;
   box.style.display='block';
 }
+function resetView(){ const dash=document.getElementById('dashboard'); Array.from(dash.children).forEach(c=>c.style.display=''); document.querySelectorAll('.detail').forEach(d=>d.style.display='none'); }
 
-function resetView(){
-  const dash=document.getElementById('dashboard');
-  Array.from(dash.children).forEach(c=>c.style.display='');
-  document.querySelectorAll('.detail').forEach(d=>d.style.display='none');
-}
-
-/* ===== نافذة الشواهد ===== */
-let currentEvi = { key:'', idx:0 };
-function openEvidence(fieldKey, rowIdx){
-  currentEvi={key:fieldKey, idx:rowIdx};
-  document.getElementById('eviOwner').value = `${fields[fieldKey].name} — بند ${rowIdx+1}`;
+/* ====== شواهد ====== */
+let currentEvi={key:'',idx:0};
+function openEvidence(fieldKey,rowIdx){
+  currentEvi={key:fieldKey,idx:rowIdx};
+  document.getElementById('eviOwner').value=`${fields[fieldKey].name} — بند ${rowIdx+1}`;
   document.getElementById('eviText').value='';
-  document.getElementById('eviHijri').value=todayHijri();
-  document.getElementById('eviLink').value='';
+  document.getElementById('eviHijri').value=todayHijri().replace(/\s/g,'');
+  document.getElementById('eviFile').value='';
   document.getElementById('eviTerm').value='الأول';
-  document.getElementById('eviDay').value='الأحد';
   document.getElementById('eviWeek').value=WEEKS[2].id;
   document.getElementById('eviModal').style.display='flex';
 }
 function closeEvidence(){ document.getElementById('eviModal').style.display='none'; }
-
 document.getElementById('eviClose').onclick=closeEvidence;
 document.getElementById('eviCancel').onclick=closeEvidence;
-document.getElementById('eviSave').onclick=function(){
+document.getElementById('eviSave').onclick=()=>{
   const text=document.getElementById('eviText').value.trim();
   const term=document.getElementById('eviTerm').value;
-  const day=document.getElementById('eviDay').value;
   const week=document.getElementById('eviWeek').value;
-  const hijri=document.getElementById('eviHijri').value.trim() || todayHijri();
-  const link=document.getElementById('eviLink').value.trim();
-  if(!text && !link){ alert('أدخل وصف الشاهد أو رابط الملف'); return; }
-
+  const hijri=document.getElementById('eviHijri').value.trim()||todayHijri();
+  const file=document.getElementById('eviFile');
+  let url=''; if(file.files&&file.files[0]) url=URL.createObjectURL(file.files[0]);
+  if(!text && !url){ alert('أدخل اسم الشاهد وارفع ملفًا (اختياري).'); return; }
   const k=`${currentEvi.key}::${currentEvi.idx}`;
-  mem[k]=mem[k]||[];
-  mem[k].push({text,term,day,week,hijri,link,ts:Date.now()});
-  saveMem();
-  closeEvidence();
-  // إعادة فتح التفصيل لتحديث القائمة
-  toggleDetail(currentEvi.key); toggleDetail(currentEvi.key);
+  mem[k]=mem[k]||[]; mem[k].push({text,term,week,hijri,url,ts:Date.now()}); saveMem();
+  closeEvidence(); toggleDetail(currentEvi.key); toggleDetail(currentEvi.key);
 };
 
-/* ======= تاريخ هجري ======= */
-function todayHijri(){
-  try{
-    // أم القرى/التقويم الإسلامي
-    const fmt=new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {year:'numeric',month:'2-digit',day:'2-digit'});
-    return fmt.format(new Date()).replace(/\s/g,'');
-  }catch(e){ return '1447/--/--'; }
-}
-
-/* ===== توليد رأس التقرير/الخطة ===== */
-function reportHeaderHTML(){
-  return `
-  <div style="display:grid;grid-template-columns:1fr 160px 1fr;align-items:center;gap:14px;margin-bottom:10px">
-    <div style="text-align:left;line-height:1.6;font-weight:700;color:#0b7e88">
-      <div>المملكة العربية السعودية</div>
-      <div>وزارة التعليم</div>
-      <div>الإدارة العامة للتعليم بالمنطقة الشرقية</div>
-      <div>ثانوية اليعقوبي</div>
-    </div>
-    <div style="text-align:center"><img src="وزارة التعليم.png" alt="MoE" style="height:84px"/></div>
-    <div style="text-align:right;font-weight:700">اليوم/التاريخ (هجري): ${todayHijri()}</div>
-  </div>`;
-}
-
-/* ===== فتح نافذة وطباعة ===== */
-function openDocWindow(title, contentHTML, filename){
-  const w=window.open('', '_blank');
-  if(!w){ alert('تعرّض هذه الصفحة: فضلاً اسمح بالنوافذ المنبثقة.'); return; }
-  const docHTML=`
-  <!DOCTYPE html><html lang="ar" dir="rtl">
-  <head><meta charset="utf-8"/><title>${title}</title>
-  <style>
-    body{font-family:'Tajawal',sans-serif;margin:18px;background:#fff;color:#06353b}
-    h2{margin:8px 0;color:#0b7e88}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
-    thead th{background:#0f6f79;color:#fff;padding:8px}
-    td{padding:8px;border:1px solid #e7eff0;vertical-align:top}
-    .row-ok{background:#e8fff5}.row-bad{background:#fff3f3}
-    .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin-left:6px}
-    .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec}
-    @media print{.toolbar{display:none}}
-  </style></head>
-  <body>
-    ${reportHeaderHTML()}
-    ${contentHTML}
-    <div class="toolbar no-print">
-      <button class="btn" onclick="window.print()">طباعة</button>
-      <button class="btn" onclick="window.close()">إغلاق</button>
-    </div>
-  </body></html>`;
-  w.document.open(); w.document.write(docHTML); w.document.close();
-}
-
-/* ===== التقارير ===== */
+/* ====== تقارير/خطط المجال ====== */
 function buildFieldReportHTML(key){
-  const f=fields[key]; const lvl=levelOf(f.v2025);
-  const list = (detailed[key]||[]).map((r,i)=>{
-    const rowKey=`${key}::${i}`;
-    const evis=(mem[rowKey]||[]).map(e=>`<div>• ${e.hijri} — ${e.text}${e.link?` — <a href='${e.link}' target='_blank'>ملف</a>`:''}</div>`).join('');
-    const cls=r.tag==='bad'?'row-bad':(r.tag==='ok'?'row-ok':'');
-    return `<tr class="${cls}"><td>${r.level}</td><td>${fmt(r.perf)}%</td><td>${r.indicator}</td><td>${r.improve}</td><td>${r.evidence}${evis?`<div style="margin-top:6px">${evis}</div>`:''}</td></tr>`;
-  }).join('');
+  const f=fields[key], lvl=levelBadge(f.v2025);
+  const rows=(detailed[key]||[]).map(r=>`<tr class="${mapLevelClass(r.level)}"><td>${r.level}</td><td>${fmt(r.perf)}%</td><td>${r.indicator}</td><td>${r.improve}</td><td>${r.evidence}</td></tr>`).join('');
   return `
   <h2>تقرير المجال: ${f.name}</h2>
   <div>الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}</div>
-  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
-  <tbody>${list}</tbody></table>`;
+  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function buildFieldPlanHTML(key){
-  // استنباط إجراءات مختصرة من الجداول
-  const rows=(detailed[key]||[]).map((r,i)=>({
-    action:r.improve, week:WEEKS[2].id, kpi:r.indicator.slice(0,60)+'…', ev:r.evidence
-  }));
-  const tr=rows.map(r=>`<tr><td>${r.action}</td><td>${r.week}</td><td>${r.kpi}</td><td>${r.ev}</td></tr>`).join('');
-  return `<h2>خطة تحسين المجال: ${fields[key].name}</h2>
-  <table><thead><tr><th>الإجراء</th><th>الأسبوع (هجري)</th><th>المؤشر</th><th>الشواهد</th></tr></thead><tbody>${tr}</tbody></table>`;
+  // توليد مختصر للمجال من جدول البنود (SMART مختصر من المقترحات)
+  const f=fields[key];
+  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${WEEKS[2].id}</td><td>${r.evidence}</td></tr>`).join('');
+  return `<h2>خطة تحسين المجال: ${f.name}</h2>
+  <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة (أسبوع هجري)</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
-async function openFieldReport(key){ openDocWindow('تقرير المجال', buildFieldReportHTML(key), `report_${key}.pdf`); }
-async function openFieldPlan(key){ openDocWindow('خطة تحسين المجال', buildFieldPlanHTML(key), `plan_${key}.pdf`); }
+function openFieldReport(key){ openDocWindow('تقرير المجال', buildFieldReportHTML(key)); }
+function openFieldPlan(key){ openDocWindow('خطة تحسين المجال', buildFieldPlanHTML(key)); }
 
-/* ===== تقارير/خطط شاملة ===== */
-function buildComprehensive(kind){
-  const title=(kind==='plan')?'الخطة التحسينية الشاملة — ثانوية اليعقوبي':'التقرير الشامل — ثانوية اليعقوبي';
-  const list=Object.keys(fields).map(k=>`<li><strong>${fields[k].name}:</strong> 2024 ${fmt(fields[k].v2024)}% → 2025 ${fmt(fields[k].v2025)}%</li>`).join('');
-  const block = (kind==='plan')
-    ? `<table><thead><tr><th>المجال</th><th>أبرز الإجراءات</th></tr></thead><tbody>${
-        Object.keys(fields).map(k=>`<tr><td>${fields[k].name}</td><td>${(detailed[k]||[]).slice(0,3).map(r=>r.improve).join(' — ')}</td></tr>`).join('')
-      }</tbody></table>`
-    : `<ul>${list}</ul>`;
-  return `<h2>${title}</h2>${block}`;
+/* ====== التقرير الشامل (النص الجديد) ====== */
+function buildComprehensiveReport(){
+  return `
+  <h2>🟩 التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
+  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
+  <h3>🟦 أولاً: المقدمة</h3>
+  <p>في ضوء توجهات وزارة التعليم نحو رفع كفاءة الأداء المدرسي وتحقيق مؤشرات التميز المؤسسي،
+  تم تحليل نتائج التقويم المدرسي الخارجي للفصلين الدراسيين الأول والثاني لعام 1447هـ،
+  والتي شملت أربعة مجالات رئيسة هي: القيادة والإدارة المدرسية، التعليم والتعلّم، نواتج التعلّم، البيئة المدرسية.
+  وقد بُنيت هذه الخطة لتكون تحسينية وقابلة للقياس وفق نموذج SMART، بما يسهم في رفع جودة المخرجات التعليمية وتحقيق مستهدفات رؤية المملكة 2030 في التعليم.</p>
+
+  <h3>🟦 ثانيًا: ملخص نتائج التحليل العام</h3>
+  <table>
+    <thead><tr><th>المجال</th><th>متوسط الأداء</th><th>مستوى الأداء</th><th>أبرز نقاط القوة</th><th>أبرز فرص التحسين</th></tr></thead>
+    <tbody>
+      <tr class="row-verygood"><td>القيادة والإدارة المدرسية</td><td>86%</td><td>جيد جدًا</td><td>خطة تشغيلية فعّالة – رخص مهنية – متابعة ميدانية.</td><td>ضعف التوثيق الرقمي – محدودية الشراكات المجتمعية.</td></tr>
+      <tr class="row-verygood"><td>التعليم والتعلّم</td><td>88%</td><td>جيد جدًا</td><td>بيئة تعلم محفزة – استراتيجيات حديثة – تغذية راجعة فعالة.</td><td>ضعف تنويع الأساليب – ضعف توظيف التقنية في بعض المواد.</td></tr>
+      <tr class="row-excellent"><td>نواتج التعلّم</td><td>91%</td><td>متميز</td><td>التزام سلوكي – اعتزاز بالهوية – تحصيل دراسي مرتفع.</td><td>تفاوت بين المواد الدراسية – ضعف المبادرات المجتمعية.</td></tr>
+      <tr class="row-verygood"><td>البيئة المدرسية</td><td>84%</td><td>جيد جدًا</td><td>مرافق مهيأة – تطبيق معايير السلامة – بيئة نظيفة.</td><td>ضعف تجهيز مرافق ذوي الإعاقة وتحسين الإضاءة.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🟦 ثالثًا: خطة التحسين الشاملة (SMART)</h3>
+  <table>
+    <thead><tr><th>المجال</th><th>الهدف العام</th><th>الإجراء التنفيذي</th><th>المدة الزمنية</th><th>مؤشر القياس</th><th>جهة التنفيذ والمتابعة</th></tr></thead>
+    <tbody>
+      <tr class="row-verygood"><td>القيادة والإدارة المدرسية</td><td>رفع كفاءة الإدارة المدرسية في التوثيق الرقمي والشراكات.</td><td>إنشاء نظام إلكتروني لمتابعة الأداء وربط الخطة التشغيلية بالمؤشرات، وتفعيل ثلاث شراكات مجتمعية نوعية.</td><td>6 أسابيع</td><td>ارتفاع عدد الشراكات 50% وتحسن المؤشرات الأسبوعية.</td><td>مدير المدرسة وفريق التميز.</td></tr>
+      <tr class="row-verygood"><td>التعليم والتعلّم</td><td>تحسين جودة الممارسات الصفية وتنويع أساليب التعليم.</td><td>تدريب 80% من المعلمين على أدوات التعليم الإلكتروني وتطبيقها في الدروس.</td><td>8 أسابيع</td><td>زيادة تطبيق الاستراتيجيات التفاعلية إلى 85%.</td><td>وكيل الشؤون التعليمية وفريق التطوير المهني.</td></tr>
+      <tr class="row-excellent"><td>نواتج التعلّم</td><td>رفع التحصيل الدراسي وتعزيز الاتجاهات الإيجابية.</td><td>تنفيذ برامج دعم أكاديمي للمواد الحرجة وإطلاق مبادرة "مدرستي مسؤوليتي".</td><td>10 أسابيع</td><td>تحسن نتائج التحصيل 10%، مشاركة طلابية 30%.</td><td>فريق التحصيل الدراسي والنشاط الطلابي.</td></tr>
+      <tr class="row-verygood"><td>البيئة المدرسية</td><td>تطوير البيئة التعليمية لتكون آمنة وجاذبة ومهيأة للجميع.</td><td>تنفيذ مشروع “بيئة تعليمية مهيأة” لتطوير الفصول وتحسين الإضاءة والتهوية والممرات.</td><td>8 أسابيع</td><td>تحقيق 100% لمعايير السلامة واستيفاء المرافق.</td><td>مدير المدرسة وفريق الصيانة والإشراف.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🟦 رابعًا: آلية المتابعة والتقويم</h3>
+  <ul>
+    <li>اجتماعات أسبوعية لفريق التميز لقياس التقدم حسب الجدول الزمني.</li>
+    <li>تحديث لوحة الأداء المؤسسي إلكترونيًا وتوثيق الإنجاز بالصور والتقارير.</li>
+    <li>تحليل نصف فصلي للأداء باستخدام أدوات القياس المعتمدة.</li>
+    <li>متابعة الأثر التحسيني على التحصيل الدراسي والانضباط السلوكي.</li>
+    <li>إعداد تقرير ختامي موثّق يرفع إلى إدارة التعليم.</li>
+  </ul>
+
+  <h3>🟦 خامسًا: مؤشرات قياس التحسين</h3>
+  <table>
+    <thead><tr><th>المجال</th><th>المؤشر الكمي</th><th>المستهدف</th><th>أداة القياس</th><th>دورة القياس</th></tr></thead>
+    <tbody>
+      <tr><td>القيادة والإدارة</td><td>نسبة تفعيل الشراكات المجتمعية</td><td>50% ↑</td><td>قاعدة بيانات – تقارير</td><td>شهريًا</td></tr>
+      <tr><td>التعليم والتعلّم</td><td>نسبة تطبيق التعليم الإلكتروني في الدروس</td><td>85% ↑</td><td>زيارات صفية – استبانات</td><td>شهريًا</td></tr>
+      <tr><td>نواتج التعلّم</td><td>متوسط التحصيل الدراسي العام</td><td>10% ↑</td><td>تحليل نتائج – اختبارات معيارية</td><td>فصليًا</td></tr>
+      <tr><td>البيئة المدرسية</td><td>نسبة استيفاء معايير السلامة والمرافق</td><td>100% ↑</td><td>استمارات ميدانية – تقارير فنية</td><td>شهريًا</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🟦 سادسًا: التوصيات العامة</h3>
+  <ul>
+    <li>تعزيز ثقافة التحسين المستمر داخل المدرسة.</li>
+    <li>تبني التحول الرقمي في جميع عمليات التوثيق والمتابعة.</li>
+    <li>الاستثمار في التطوير المهني للمعلمين وفق احتياجاتهم الفعلية.</li>
+    <li>دعم مشاركة أولياء الأمور والمجتمع المحلي كشركاء في الجودة.</li>
+    <li>إنشاء قاعدة بيانات ذكية تربط بين التحليل، الأداء، وخطط التحسين.</li>
+  </ul>
+
+  <h3>🟦 سابعًا: التوقيع</h3>
+  <div>مدير المدرسة: فهد حامد علي الزهراني</div>
+  <div>التاريخ: … / … / 1447هـ</div>
+  `;
 }
-function exportComprehensive(kind){
-  openDocWindow(kind==='plan'?'الخطة الشاملة':'التقرير الشامل', buildComprehensive(kind), (kind==='plan'?'plan_all':'report_all')+'.pdf');
+
+/* ====== الخطة الشاملة (النص الجديد) ====== */
+function buildComprehensivePlan(){
+  return `
+  <h2>🟩 خطة التحسين الشاملة – ثانوية اليعقوبي بالخبر (العام الدراسي 1447هـ)</h2>
+  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
+  <table>
+    <thead>
+      <tr><th>المجال</th><th>الهدف العام</th><th>نقاط القوة</th><th>فرص التحسين</th><th>الإجراء التحسيني (SMART)</th><th>المدة الزمنية</th><th>مؤشر القياس</th><th>جهة التنفيذ والمتابعة</th></tr>
+    </thead>
+    <tbody>
+      <tr class="row-verygood"><td>القيادة والإدارة المدرسية</td><td>رفع كفاءة الإدارة المدرسية في التوثيق الرقمي والشراكات.</td><td>وجود خطة تشغيلية فعّالة، تفعيل الرخصة المهنية.</td><td>ضعف التوثيق الرقمي وقلة الشراكات النوعية.</td><td>إنشاء نظام متابعة إلكتروني وربطه بالمؤشرات أسبوعيًا، وتفعيل 3 شراكات مجتمعية نوعية.</td><td>6 أسابيع</td><td>ارتفاع عدد الشراكات الموثقة بنسبة 50% وتحسن مؤشرات الأداء.</td><td>مدير المدرسة وفريق التميز.</td></tr>
+      <tr class="row-verygood"><td>التعليم والتعلّم</td><td>تحسين جودة الممارسات الصفية وتنويع أساليب التعليم.</td><td>تطبيق استراتيجيات حديثة – تغذية راجعة فعالة.</td><td>ضعف توظيف التقنية وقلة التنوع في طرق التعليم.</td><td>تدريب 80% من المعلمين على أدوات التعلم الإلكتروني وتفعيلها في خطط الدروس الأسبوعية.</td><td>8 أسابيع</td><td>ارتفاع نسبة تطبيق التعليم النشط والتقني إلى 85%.</td><td>وكيل الشؤون التعليمية وفريق التطوير المهني.</td></tr>
+      <tr class="row-excellent"><td>نواتج التعلّم</td><td>رفع التحصيل الدراسي وتعزيز الاتجاهات الإيجابية لدى الطلاب.</td><td>التزام سلوكي، اعتزاز بالهوية الوطنية.</td><td>تفاوت النتائج وضعف المشاركة المجتمعية.</td><td>تنفيذ برنامج دعم أكاديمي للمواد منخفضة الأداء، وإطلاق مبادرات مجتمعية “مدرستي مسؤوليتي”.</td><td>10 أسابيع</td><td>تحسن نتائج التحصيل بنسبة 10%، وارتفاع المشاركة الطلابية بنسبة 30%.</td><td>فريق التحصيل الدراسي والنشاط الطلابي.</td></tr>
+      <tr class="row-verygood"><td>البيئة المدرسية</td><td>تطوير البيئة التعليمية لتكون آمنة وجاذبة ومهيأة للجميع.</td><td>بيئة نظيفة وآمنة، تطبيق اشتراطات السلامة.</td><td>ضعف تجهيز مرافق ذوي الإعاقة والتهوية في بعض الفصول.</td><td>تنفيذ مشروع “بيئة تعليمية مهيأة” لصيانة الفصول وتحسين الإضاءة والتهوية والممرات.</td><td>8 أسابيع</td><td>تحقيق استيفاء 100% لمعايير الأمن والسلامة وجودة المرافق.</td><td>مدير المدرسة وفريق الصيانة والإشراف.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🔹 آلية المتابعة والتقويم</h3>
+  <ul>
+    <li>عقد اجتماعات فريق التميز أسبوعيًا لمراجعة التقدم في كل مجال.</li>
+    <li>تحديث لوحة مؤشرات الأداء المؤسسي إلكترونيًا بشكل دوري.</li>
+    <li>رفع تقارير نصفية للإدارة العامة للتعليم.</li>
+    <li>تقييم أثر التحسين بعد كل فترة تنفيذ من خلال أدوات القياس.</li>
+    <li>توثيق النتائج والشواهد إلكترونيًا عبر منصات المدرسة.</li>
+  </ul>
+
+  <h3>🔹 مؤشرات النجاح العامة</h3>
+  <ul>
+    <li>ارتفاع الأداء العام للمجالات الأربعة بنسبة لا تقل عن 10% بنهاية العام.</li>
+    <li>تحقيق رضا المستفيدين (معلمين – طلاب – أولياء أمور) بنسبة 90%.</li>
+    <li>استدامة ممارسات التحسين من خلال فرق العمل المدرسية.</li>
+  </ul>
+  `;
 }
 
-/* روابط الأزرار */
-document.getElementById('btnAnalyze').addEventListener('click', renderDashboard);
-document.getElementById('btnFullReport').addEventListener('click', ()=>exportComprehensive('report'));
-document.getElementById('btnFullPlan').addEventListener('click', ()=>exportComprehensive('plan'));
+document.getElementById('btnFullReport').addEventListener('click',()=>openDocWindow('التقرير الشامل',buildComprehensiveReport()));
+document.getElementById('btnFullPlan').addEventListener('click',()=>openDocWindow('الخطة الشاملة',buildComprehensivePlan()));
+document.getElementById('btnAnalyze').addEventListener('click',renderDashboard);
 
-/* تشغيل أولي */
+/* بدء التشغيل */
 renderDashboard();
 </script>
 </body>
