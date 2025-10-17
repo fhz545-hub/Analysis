@@ -61,6 +61,7 @@ a{color:#135; text-decoration:none} a:hover{text-decoration:underline}
 
 /* Detail section */
 .detail{display:none;margin-top:10px;border-top:1px dashed #e1ecec;padding-top:10px}
+.detail.full{position:relative;display:block}
 .subgrid{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:8px}
 .subCard{background:#f7fbfb;border:1px solid #e6efef;border-radius:12px;padding:10px}
 .small{font-size:12px;color:#567}
@@ -122,8 +123,7 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
     <div class="row" style="margin-bottom:8px">
       <div><label>اسم/وصف الشاهد</label><input id="eviText" type="text" placeholder="مثال: تقرير زيارة مشرف .."/></div>
       <div><label>الفصل الدراسي</label>
-        <!-- فقط الأول والثاني -->
-        <select id="eviTerm"><option>الأول</option><option>الثاني</option></select>
+        <select id="eviTerm"><option value="t1">الأول</option><option value="t2">الثاني</option></select>
       </div>
       <div><label>الأسبوع (هجري)</label><select id="eviWeek"></select></div>
       <div><label>التاريخ (هجري أم القرى)</label><input id="eviHijri" type="text" placeholder="1447/03/01"/></div>
@@ -159,7 +159,9 @@ const Data = (() => {
       const mem = JSON.parse(localStorage.getItem(STORE)||'{}');
       const k=`${field_key}::${row_index}`;
       mem[k]=mem[k]||[];
-      mem[k].push({...payload, ts:Date.now()});
+      // عند المحلي، إن كان ملفًا نعمل URL مؤقت
+      const url = payload.file ? URL.createObjectURL(payload.file) : (payload.url||'');
+      mem[k].push({text:payload.text,term:payload.term,week:payload.week,hijri:payload.hijri,url,ts:Date.now()});
       localStorage.setItem(STORE, JSON.stringify(mem));
       return true;
     }
@@ -201,17 +203,60 @@ const Data = (() => {
   };
 })();
 
-/* ====== أسابيع هجري (عينات — يمكن توسعتها لاحقًا) ====== */
-const WEEKS=[
-  {id:'1447/02/18',name:'عودة الهيئة الإدارية — 1447/02/18'},
-  {id:'1447/02/23',name:'عودة المعلمين — 1447/02/23'},
-  {id:'1447/03/01',name:'بداية العام الدراسي — 1447/03/01'},
-  {id:'1447/04/01',name:'إجازة اليوم الوطني — 1447/04/01'},
-  {id:'1447/05/30',name:'إجازة الخريف (بداية) — 1447/05/30'},
-  {id:'1447/06/08',name:'إجازة الخريف (نهاية) — 1447/06/08'}
+/* ====== أسابيع الفصلين (حسب ما زودتني) ====== */
+const TERM1 = [
+  {id:'1447/03/01', name:'الأسبوع 1 – 01/03/1447 إلى 05/03/1447 – بداية العام الدراسي'},
+  {id:'1447/03/08', name:'الأسبوع 2 – 08/03/1447 إلى 12/03/1447'},
+  {id:'1447/03/15', name:'الأسبوع 3 – 15/03/1447 إلى 19/03/1447'},
+  {id:'1447/03/22', name:'الأسبوع 4 – 22/03/1447 إلى 26/03/1447'},
+  {id:'1447/03/29', name:'الأسبوع 5 – 29/03/1447 إلى 03/04/1447'},
+  {id:'1447/04/06', name:'الأسبوع 6 – 06/04/1447 إلى 10/04/1447'},
+  {id:'1447/04/13', name:'الأسبوع 7 – 13/04/1447 إلى 17/04/1447'},
+  {id:'1447/04/20', name:'الأسبوع 8 – 20/04/1447 إلى 24/04/1447'},
+  {id:'1447/04/27', name:'الأسبوع 9 – 27/04/1447 إلى 01/05/1447'},
+  {id:'1447/05/04', name:'الأسبوع 10 – 04/05/1447 إلى 08/05/1447'},
+  {id:'1447/05/11', name:'الأسبوع 11 – 11/05/1447 إلى 15/05/1447'},
+  {id:'1447/05/18', name:'الأسبوع 12 – 18/05/1447 إلى 22/05/1447'},
+  {id:'1447/05/25', name:'الأسبوع 13 – 25/05/1447 إلى 29/05/1447'},
+  {id:'1447/06/09', name:'بعد إجازة الخريف – 09/06/1447 إلى 13/06/1447'},
+  {id:'1447/06/16', name:'الأسبوع 15 – 16/06/1447 إلى 20/06/1447'},
+  {id:'1447/06/23', name:'الأسبوع 16 – 23/06/1447 إلى 27/06/1447'},
+  {id:'1447/06/30', name:'الأسبوع 17 – 30/06/1447 إلى 04/07/1447'},
+  {id:'1447/07/07', name:'الأسبوع 18 – 07/07/1447 إلى 11/07/1447'},
+  {id:'1447/07/14', name:'الأسبوع 19 – 14/07/1447 إلى 18/07/1447 – ختام الفصل الأول'}
 ];
+const TERM2 = [
+  {id:'1447/07/29', name:'الأسبوع 1 – 29/07/1447 إلى 03/08/1447 – بداية الفصل الثاني'},
+  {id:'1447/08/06', name:'الأسبوع 2 – 06/08/1447 إلى 10/08/1447'},
+  {id:'1447/08/13', name:'الأسبوع 3 – 13/08/1447 إلى 17/08/1447'},
+  {id:'1447/08/20', name:'الأسبوع 4 – 20/08/1447 إلى 24/08/1447'},
+  {id:'1447/08/27', name:'الأسبوع 5 – 27/08/1447 إلى 02/09/1447'},
+  {id:'1447/09/05', name:'الأسبوع 6 – 05/09/1447 إلى 09/09/1447'},
+  {id:'1447/09/12', name:'الأسبوع 7 – 12/09/1447 إلى 15/09/1447 – آخر أسبوع قبل الإجازة'},
+  {id:'1447/10/10', name:'الأسبوع 8 – 10/10/1447 إلى 14/10/1447 – بعد العيد'},
+  {id:'1447/10/17', name:'الأسبوع 9 – 17/10/1447 إلى 21/10/1447'},
+  {id:'1447/10/24', name:'الأسبوع 10 – 24/10/1447 إلى 28/10/1447'},
+  {id:'1447/11/01', name:'الأسبوع 11 – 01/11/1447 إلى 05/11/1447'},
+  {id:'1447/11/08', name:'الأسبوع 12 – 08/11/1447 إلى 12/11/1447'},
+  {id:'1447/11/15', name:'الأسبوع 13 – 15/11/1447 إلى 19/11/1447'},
+  {id:'1447/11/22', name:'الأسبوع 14 – 22/11/1447 إلى 26/11/1447'},
+  {id:'1447/11/29', name:'الأسبوع 15 – 29/11/1447 إلى 03/12/1447'},
+  {id:'1447/12/15', name:'الأسبوع 16 – 15/12/1447 إلى 19/12/1447 – بعد الأضحى'},
+  {id:'1447/12/22', name:'الأسبوع 17 – 22/12/1447 إلى 26/12/1447'},
+  {id:'1447/12/29', name:'الأسبوع 18 – 29/12/1447 إلى 03/01/1448'},
+  {id:'1448/01/06', name:'الأسبوع 19 – 06/01/1448 إلى 10/01/1448 – ختام أسابيع الفصل'}
+];
+
+/* تعبئة قائمة الأسابيع حسب الفصل */
 const eviWeekSel=document.getElementById('eviWeek');
-WEEKS.forEach(w=>{const o=document.createElement('option');o.value=w.id;o.textContent=w.name;eviWeekSel.appendChild(o);});
+const eviTermSel=document.getElementById('eviTerm');
+function fillWeeks(){
+  const list = (eviTermSel.value==='t1')? TERM1 : TERM2;
+  eviWeekSel.innerHTML='';
+  list.forEach(w=>{const o=document.createElement('option');o.value=w.id;o.textContent=w.name;eviWeekSel.appendChild(o);});
+}
+eviTermSel.addEventListener('change', fillWeeks);
+fillWeeks();
 
 /* ====== أدوات مساعدة ====== */
 const fmt=v=>Number(v).toFixed(2);
@@ -251,8 +296,8 @@ const fields={
   ]}
 };
 
-/* ====== الجداول التفصيلية (كما طلبت) ====== */
-const detailed={
+/* ====== الجداول التفصيلية (نفس ما اعتمدناه سابقًا) ====== */
+const detailed={ /* نفس المحتوى الطويل كما في نسختك السابقة */ 
   management:[
     {level:'متميز', perf:94.50, indicator:'تنشر المدرسة قواعد السلوك والمواظبة وتتابع تطبيقها بانتظام.', improve:'نشر القواعد رقميًا وربطها بمتابعة أسبوعية للانضباط.', evidence:'لوحات السلوك، تقارير الانضباط، سجلات إشعارات.'},
     {level:'مرتفع', perf:90.25, indicator:'تهيئة وصيانة مرافق المبنى وتجهيزاته.', improve:'نظام صيانة رقمي وتوثيق بالصور والتقارير.', evidence:'أوامر عمل، صور قبل/بعد، محاضر إنجاز.'},
@@ -307,28 +352,34 @@ const detailed={
   ]
 };
 
-/* ====== فتح تبويب A4 مع رأس صورة logo فقط ====== */
+/* ====== فتح تبويب A4 بهيدر صورة logo ممتدة (عرض أكبر قليلًا) ====== */
 function openDocWindow(title, contentHTML){
   const w=window.open('', '_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`
   <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/>
   <title>${title}</title>
   <style>
+    @page { size: A4; margin: 8mm; }
     body{font-family:'Tajawal',sans-serif;margin:0;background:#fff;color:#06353b}
-    .a4{width:210mm; min-height:297mm; margin:0 auto; background:#fff;}
+    /* جعل العرض أوسع قليلًا مع بقاء الطباعة ضمن A4 */
+    .a4{width: 220mm; max-width: 100vw; margin: 0 auto; background:#fff;}
     .header{width:100%; height:110px; background:#f2fbfb; position:relative; overflow:hidden}
     .header img{width:100%; height:100%; object-fit:cover; display:block}
-    .pad{padding:14px 16px}
-    h2{margin:8px 0;color:#0b7e88}
-    h3{color:#0b7e88}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
+    .pad{padding:12px 14px}
+    h2{margin:6px 0;color:#0b7e88; font-size:18px}
+    h3{color:#0b7e88; font-size:16px}
+    p,li,td,th{font-size:13px; line-height:1.6}
+    table{width:100%;border-collapse:collapse;margin-top:8px; table-layout:fixed; word-wrap:break-word}
     thead th{background:#0f6f79;color:#fff;padding:8px}
     td,th{padding:8px;border:1px solid #e7eff0;vertical-align:top}
     .row-excellent{background:#e9fff4}.row-verygood{background:#f1fff9}.row-good{background:#fffbe6}.row-medium{background:#fff0e7}
     .toolbar{position:sticky;top:0;background:#fff;padding:8px 16px;margin:0;border-bottom:1px dashed #e1ecec;display:flex;gap:8px;justify-content:flex-start}
     .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer}
-    .meta{display:flex;justify-content:space-between;align-items:center;margin:8px 0 0 0;font-weight:700}
-    @media print{.toolbar{display:none}}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin:6px 0 0 0;font-weight:700}
+    @media print{
+      .toolbar{display:none}
+      .a4{width:210mm}
+    }
   </style></head><body>
   <div class="toolbar no-print">
     <button class="btn" onclick="window.print()">طباعة/حفظ PDF</button>
@@ -350,7 +401,7 @@ function openDocWindow(title, contentHTML){
 
 /* ====== عارض الشاهد ====== */
 function openEvidenceViewer(url,title='شاهد'){
-  const html = `<h2>${title}</h2>` + (url?.toLowerCase().endsWith('.pdf')?`<embed src="${url}" type="application/pdf" style="width:100%;height:80vh"/>`:`<img src="${url}" style="max-width:100%;height:auto"/>`);
+  const html = `<h2 style="margin:6px 0;color:#0b7e88;font-size:18px">${title}</h2>` + (url?.toLowerCase().endsWith('.pdf')?`<embed src="${url}" type="application/pdf" style="width:100%;height:80vh"/>`:`<img src="${url}" style="max-width:100%;height:auto"/>`);
   openDocWindow('شاهد', html);
 }
 
@@ -366,7 +417,9 @@ function renderDashboard(){
         <span class="badge" style="background:${lvl.color}22;color:${lvl.color}">${lvl.txt}</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%"></div></div>
 
-      <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="130"></canvas></div>
+      <div style="display:flex;justify-content:center">
+        <canvas id="donut-${key}" height="130" style="cursor:pointer" title="عرض تفاصيل المجال"></canvas>
+      </div>
       <div class="centerBar">
         <button class="btn ghost" onclick="openFieldReport('${key}')">تقرير المجال PDF</button>
         <button class="btn ghost" onclick="openFieldPlan('${key}')">خطة تحسين المجال PDF</button>
@@ -374,30 +427,41 @@ function renderDashboard(){
 
       <div class="detail" id="detail-${key}"></div>
     `;
-    // فتح التفاصيل بنقرة في أي مكان غير الأزرار/الكانفس
-    card.addEventListener('click', (e)=>{
-      if(e.target.closest('button')||e.target.tagName==='CANVAS') return;
-      toggleDetail(key);
-    });
     dash.appendChild(card);
 
-    // الدونت (صغيرة علوية كما هي)
-    new Chart(document.getElementById(`donut-${key}`).getContext('2d'),{
+    // الدونت (اضغط داخل الدائرة لفتح التفاصيل بملء الصفحة)
+    const donut = new Chart(document.getElementById(`donut-${key}`).getContext('2d'),{
       type:'doughnut',
       data:{labels:f.subs.map(s=>s.name),datasets:[{data:f.subs.map(s=>s.v),backgroundColor:['#2aa897','#5d9ed6','#f1ad5b','#7ac6b7','#91a7ff','#a5d8a6']}]},
       options:{plugins:{legend:{display:false}},cutout:'70%'}
     });
+    document.getElementById(`donut-${key}`).addEventListener('click',()=>toggleDetail(key,true));
+
+    // النقر خارج الدائرة (العنوان/المحتوى) يفتح/يغلق أيضًا ولكن بدون ملء
+    card.addEventListener('click', (e)=>{
+      if(e.target.tagName==='CANVAS' || e.target.closest('button')) return;
+      toggleDetail(key,false);
+    });
   });
 }
 
-/* ====== تفاصيل المجال (تجلب الشواهد من Data) ====== */
-async function toggleDetail(key){
+/* ====== تفاصيل المجال (ملء الصفحة عند fromCanvas=true) ====== */
+async function toggleDetail(key, fromCanvas=false){
   const dash=document.getElementById('dashboard');
-  Array.from(dash.children).forEach(c=>{ if(c.id!==`card-${key}`) c.style.display='none'; });
   const box=document.getElementById(`detail-${key}`);
   const isOpen=box.style.display==='block';
-  if(isOpen){ box.style.display='none'; Array.from(dash.children).forEach(c=>c.style.display=''); return; }
 
+  if(isOpen){ // إغلاق
+    box.classList.remove('full');
+    box.style.display='none';
+    Array.from(dash.children).forEach(c=>c.style.display='');
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
+  // إخفاء بقية البطاقات
+  Array.from(dash.children).forEach(c=>{ if(c.id!==`card-${key}`) c.style.display='none'; });
+  // إعداد المحتوى
   const f=fields[key];
   const subsHtml=f.subs.map(s=>`
     <div class="subCard">
@@ -408,7 +472,6 @@ async function toggleDetail(key){
       <div class="small">مستوى المؤشر الفرعي لهذا المجال</div>
     </div>`).join('');
 
-  // صفوف الجدول مع الشواهد (من Data)
   const det = detailed[key]||[];
   let rowsHTML='';
   for(let i=0;i<det.length;i++){
@@ -436,11 +499,28 @@ async function toggleDetail(key){
         <button class="btn light" onclick="resetView()">رجوع إلى جميع المجالات ↩︎</button>
       </div>
     </div>`;
+
   box.style.display='block';
+  if(fromCanvas){
+    // ملء الصفحة (تكبير الحاوية)
+    box.classList.add('full');
+    // اجعل عرض البطاقة نفسها 100%
+    const card = document.getElementById(`card-${key}`);
+    card.style.gridColumn = '1 / -1';
+    window.scrollTo({top:card.offsetTop-8, behavior:'smooth'});
+  }
 }
 
 /* ====== رجوع للشبكة ====== */
-function resetView(){ const dash=document.getElementById('dashboard'); Array.from(dash.children).forEach(c=>c.style.display=''); document.querySelectorAll('.detail').forEach(d=>d.style.display='none'); }
+function resetView(){
+  const dash=document.getElementById('dashboard');
+  Array.from(dash.children).forEach(c=>{
+    c.style.display='';
+    c.style.gridColumn='';
+  });
+  document.querySelectorAll('.detail').forEach(d=>{ d.style.display='none'; d.classList.remove('full'); });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 /* ====== شواهد (نافذة) ====== */
 let currentEvi={key:'',idx:0};
@@ -450,8 +530,8 @@ function openEvidence(fieldKey,rowIdx){
   document.getElementById('eviText').value='';
   document.getElementById('eviHijri').value=todayHijri().replace(/\s/g,'');
   document.getElementById('eviFile').value='';
-  document.getElementById('eviTerm').value='الأول';
-  document.getElementById('eviWeek').value=WEEKS[2].id;
+  document.getElementById('eviTerm').value='t1';
+  fillWeeks();
   document.getElementById('eviModal').style.display='flex';
 }
 function closeEvidence(){ document.getElementById('eviModal').style.display='none'; }
@@ -471,33 +551,35 @@ document.getElementById('eviSave').onclick=async ()=>{
     await Data.addEvidence(currentEvi.key, currentEvi.idx, {text,term,week,hijri,file});
     closeEvidence();
     // أعِد فتح التفاصيل لتنعكس الإضافة فورًا
-    await toggleDetail(currentEvi.key); await toggleDetail(currentEvi.key);
+    await toggleDetail(currentEvi.key,true); await toggleDetail(currentEvi.key,true);
   }catch(e){ alert('تعذر الحفظ: '+(e.message||e)); }
 };
 
-/* ====== تقارير/خطط المجال (محتوى كما هو) ====== */
+/* ====== تقارير/خطط المجال (الهوية كما هي) ====== */
 function buildFieldReportHTML(key){
   const f=fields[key], lvl=levelBadge(f.v2025);
   const rows=(detailed[key]||[]).map(r=>`<tr class="${mapLevelClass(r.level)}"><td>${r.level}</td><td>${fmt(r.perf)}%</td><td>${r.indicator}</td><td>${r.improve}</td><td>${r.evidence}</td></tr>`).join('');
   return `
   <h2>تقرير المجال: ${f.name}</h2>
-  <div>الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}</div>
-  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
+  <div style="margin-bottom:6px">الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}</div>
+  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
+  <div style="margin-top:10px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
 function buildFieldPlanHTML(key){
   const f=fields[key];
-  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${WEEKS[2].id}</td><td>${r.evidence}</td></tr>`).join('');
+  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${(eviTermSel.value==='t2'?TERM2[0].id:TERM1[0].id)}</td><td>${r.evidence}</td></tr>`).join('');
   return `<h2>خطة تحسين المجال: ${f.name}</h2>
-  <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة (أسبوع هجري)</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
+  <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة (أسبوع هجري)</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
+  <div style="margin-top:10px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
 function openFieldReport(key){ openDocWindow('تقرير المجال', buildFieldReportHTML(key)); }
 function openFieldPlan(key){ openDocWindow('خطة تحسين المجال', buildFieldPlanHTML(key)); }
 
-/* ====== التقرير الشامل (كما في نسختك) ====== */
+/* ====== التقرير الشامل (إزالة "إعداد" من الأعلى وإضافتها في الأسفل) ====== */
 function buildComprehensiveReport(){
   return `
   <h2>🟩 التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
-  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
+
   <h3>🟦 أولاً: المقدمة</h3>
   <p>في ضوء توجهات وزارة التعليم نحو رفع كفاءة الأداء المدرسي وتحقيق مؤشرات التميز المؤسسي،
   تم تحليل نتائج التقويم المدرسي الخارجي للفصلين الدراسيين الأول والثاني لعام 1447هـ،
@@ -546,26 +628,14 @@ function buildComprehensiveReport(){
     </tbody>
   </table>
 
-  <h3>🟦 سادسًا: التوصيات العامة</h3>
-  <ul>
-    <li>تعزيز ثقافة التحسين المستمر داخل المدرسة.</li>
-    <li>تبني التحول الرقمي في جميع عمليات التوثيق والمتابعة.</li>
-    <li>الاستثمار في التطوير المهني للمعلمين وفق احتياجاتهم الفعلية.</li>
-    <li>دعم مشاركة أولياء الأمور والمجتمع المحلي كشركاء في الجودة.</li>
-    <li>إنشاء قاعدة بيانات ذكية تربط بين التحليل، الأداء، وخطط التحسين.</li>
-  </ul>
-
-  <h3>🟦 سابعًا: التوقيع</h3>
-  <div>مدير المدرسة: فهد حامد علي الزهراني</div>
-  <div>التاريخ: … / … / 1447هـ</div>
+  <div style="margin-top:10px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>
   `;
 }
 
-/* ====== الخطة الشاملة (كما طلبت) ====== */
+/* ====== الخطة الشاملة (إزالة "إعداد" من الأعلى وإضافتها في الأسفل) ====== */
 function buildComprehensivePlan(){
   return `
   <h2>🟩 خطة التحسين الشاملة – ثانوية اليعقوبي بالخبر (العام الدراسي 1447هـ)</h2>
-  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
   <table>
     <thead>
       <tr><th>المجال</th><th>الهدف العام</th><th>نقاط القوة</th><th>فرص التحسين</th><th>الإجراء التحسيني (SMART)</th><th>المدة الزمنية</th><th>مؤشر القياس</th><th>جهة التنفيذ والمتابعة</th></tr>
@@ -577,22 +647,7 @@ function buildComprehensivePlan(){
       <tr class="row-verygood"><td>البيئة المدرسية</td><td>تطوير البيئة التعليمية لتكون آمنة وجاذبة ومهيأة للجميع.</td><td>بيئة نظيفة وآمنة، تطبيق اشتراطات السلامة.</td><td>ضعف تجهيز مرافق ذوي الإعاقة والتهوية في بعض الفصول.</td><td>تنفيذ مشروع “بيئة تعليمية مهيأة” لصيانة الفصول وتحسين الإضاءة والتهوية والممرات.</td><td>8 أسابيع</td><td>تحقيق استيفاء 100% لمعايير الأمن والسلامة وجودة المرافق.</td><td>مدير المدرسة وفريق الصيانة والإشراف.</td></tr>
     </tbody>
   </table>
-
-  <h3>🔹 آلية المتابعة والتقويم</h3>
-  <ul>
-    <li>عقد اجتماعات فريق التميز أسبوعيًا لمراجعة التقدم في كل مجال.</li>
-    <li>تحديث لوحة مؤشرات الأداء المؤسسي إلكترونيًا بشكل دوري.</li>
-    <li>رفع تقارير نصفية للإدارة العامة للتعليم.</li>
-    <li>تقييم أثر التحسين بعد كل فترة تنفيذ من خلال أدوات القياس.</li>
-    <li>توثيق النتائج والشواهد إلكترونيًا عبر منصات المدرسة.</li>
-  </ul>
-
-  <h3>🔹 مؤشرات النجاح العامة</h3>
-  <ul>
-    <li>ارتفاع الأداء العام للمجالات الأربعة بنسبة لا تقل عن 10% بنهاية العام.</li>
-    <li>تحقيق رضا المستفيدين (معلمين – طلاب – أولياء أمور) بنسبة 90%.</li>
-    <li>استدامة ممارسات التحسين من خلال فرق العمل المدرسية.</li>
-  </ul>
+  <div style="margin-top:10px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>
   `;
 }
 
