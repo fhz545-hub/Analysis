@@ -87,6 +87,10 @@ tbody tr:last-child td{border-bottom:0}
 input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:8px;padding:8px;width:100%}
 .sheet .close{position:sticky;top:0;margin-bottom:8px;background:#e8eff0;border:0;color:#034;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700}
 
+/* Fullscreen for a field */
+.card.fullscreen{position:fixed;inset:10px;z-index:9998;overflow:auto}
+.card.fullscreen .detail{display:block}
+
 /* Print A4 window */
 @media print{ .no-print{display:none !important} }
 
@@ -117,38 +121,71 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
   <div class="sheet">
     <button class="close" id="eviClose">✕ إغلاق</button>
     <h4>إضافة شاهد</h4>
+
     <div class="row" style="margin-bottom:8px">
       <div><label>اسم/وصف الشاهد</label><input id="eviText" type="text" placeholder="مثال: تقرير زيارة مشرف .."/></div>
-      <div><label>الفصل الدراسي</label>
-        <select id="eviTerm"><option>الأول</option><option>الثاني</option><option>الثالث</option></select>
+
+      <!-- فصلان فقط -->
+      <div>
+        <label>الفصل الدراسي</label>
+        <select id="eviTerm">
+          <option value="الأول">الأول</option>
+          <option value="الثاني">الثاني</option>
+        </select>
       </div>
-      <div><label>الأسبوع (هجري)</label><select id="eviWeek"></select></div>
+
+      <div>
+        <label>الأسبوع (هجري)</label>
+        <select id="eviWeek"></select>
+      </div>
+
       <div><label>التاريخ (هجري أم القرى)</label><input id="eviHijri" type="text" placeholder="1447/03/01"/></div>
     </div>
+
     <div class="row">
       <div><label>رفع ملف (PDF/صورة)</label><input id="eviFile" type="file" accept="application/pdf,image/*"/></div>
       <div style="grid-column:span 3"><label>يتبع</label><input id="eviOwner" type="text" disabled/></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
+
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
       <button class="btn" id="eviSave">حفظ الشاهد</button>
       <button class="btn light" id="eviCancel">إلغاء</button>
+      <button class="btn ghost" id="dbExport">تصدير القاعدة</button>
+      <label class="btn ghost" style="cursor:pointer">
+        استيراد القاعدة
+        <input id="dbImport" type="file" accept="application/json" style="display:none"/>
+      </label>
     </div>
+
     <div class="small" style="margin-top:6px">* الشواهد تُسحب تلقائياً للتقارير وخطط التحسين. يمكن فتح الملف في نافذة منبثقة للطباعة.</div>
   </div>
 </div>
 
 <script>
-/* ====== أسابيع هجري (أمثلة) ====== */
-const WEEKS=[
-  {id:'1447/02/18',name:'عودة الهيئة الإدارية — 1447/02/18'},
-  {id:'1447/02/23',name:'عودة المعلمين — 1447/02/23'},
-  {id:'1447/03/01',name:'بداية العام الدراسي — 1447/03/01'},
-  {id:'1447/04/01',name:'إجازة اليوم الوطني — 1447/04/01'},
-  {id:'1447/05/30',name:'إجازة الخريف (بداية) — 1447/05/30'},
-  {id:'1447/06/08',name:'إجازة الخريف (نهاية) — 1447/06/08'}
-];
-const eviWeekSel=document.getElementById('eviWeek');
-WEEKS.forEach(w=>{const o=document.createElement('option');o.value=w.id;o.textContent=w.name;eviWeekSel.appendChild(o);});
+/* ====== أسابيع كل فصل (هجري) ====== */
+/* يمكنك تعديل هذه القوائم بسهولة لاحقًا */
+const TERM_WEEKS = {
+  "الأول": [
+    '1447/02/18','1447/02/23','1447/03/01','1447/03/08','1447/03/15','1447/03/22',
+    '1447/03/29','1447/04/06','1447/04/13','1447/04/20','1447/04/27','1447/05/04'
+  ],
+  "الثاني": [
+    '1447/06/01','1447/06/08','1447/06/15','1447/06/22','1447/06/29','1447/07/06',
+    '1447/07/13','1447/07/20','1447/07/27','1447/08/04','1447/08/11','1447/08/18'
+  ]
+};
+
+const eviWeekSel = document.getElementById('eviWeek');
+const eviTermSel = document.getElementById('eviTerm');
+function fillWeeks(term){
+  eviWeekSel.innerHTML='';
+  (TERM_WEEKS[term]||[]).forEach((d,i)=>{
+    const o=document.createElement('option');
+    o.value=d; o.textContent=`الأسبوع ${i+1} – ${d}`; eviWeekSel.appendChild(o);
+  });
+}
+eviTermSel.addEventListener('change',()=>fillWeeks(eviTermSel.value));
+fillWeeks('الأول');
 
 const fmt=v=>Number(v).toFixed(2);
 function levelBadge(v){ if(v>=90)return {txt:'ممتاز',color:'#10b981'}; if(v>=85)return {txt:'مرتفع',color:'#22b8a0'}; if(v>=80)return {txt:'جيد جدًا',color:'#33c2a9'}; if(v>=75)return {txt:'جيد',color:'#f59e0b'}; return {txt:'متوسط',color:'#f97316'}; }
@@ -181,8 +218,10 @@ const fields={
   ]}
 };
 
-/* ====== الجداول التفصيلية الجديدة (من طلبك) ====== */
-const detailed={
+/* ====== الجداول التفصيلية (كما زودتني) ====== */
+const detailed={/* … نفس القوائم الطويلة تمامًا كما أرسلتها … */};
+/* لإيجاز الرد، أبقيت القوائم كما هي في رسالتك السابقة – لم أغيّر شيئًا فيها */
+Object.assign(detailed,{
   management:[
     {level:'متميز', perf:94.50, indicator:'تنشر المدرسة قواعد السلوك والمواظبة وتتابع تطبيقها بانتظام.', improve:'نشر القواعد رقميًا وربطها بمتابعة أسبوعية للانضباط.', evidence:'لوحات السلوك، تقارير الانضباط، سجلات إشعارات.'},
     {level:'مرتفع', perf:90.25, indicator:'تهيئة وصيانة مرافق المبنى وتجهيزاته.', improve:'نظام صيانة رقمي وتوثيق بالصور والتقارير.', evidence:'أوامر عمل، صور قبل/بعد، محاضر إنجاز.'},
@@ -235,14 +274,14 @@ const detailed={
     {level:'متوسط', perf:64.00, indicator:'وجود منافذ آمنة للطوارئ واستيفاء متطلبات السلامة.', improve:'مراجعة مواقع المخارج وتفعيل لوحات الإرشاد والإضاءة الطارئة.', evidence:'تقارير الدفاع المدني، صور المخارج، محاضر تحديث.'},
     {level:'متوسط', perf:62.50, indicator:'كفاية الإضاءة والتهوية بما يحقق بيئة تعليمية صحية.', improve:'تحسين الإضاءة وصيانة أجهزة التهوية شهريًا.', evidence:'تقارير فنية، صور صيانة، تقارير متابعة.'}
   ]
-};
+});
 
 /* ====== تخزين الشواهد ====== */
 const STORE='yaqoubi_evidence_1447';
 const mem=JSON.parse(localStorage.getItem(STORE)||'{}');
 function saveMem(){ localStorage.setItem(STORE, JSON.stringify(mem)); }
 
-/* ====== ترويسة تقارير A4 (مركز، التاريخ يمين بدون نص) ====== */
+/* ====== ترويسة تقارير A4 (مركز، التاريخ يمين) ====== */
 function todayHijri(){
   try{
     const fmt=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'long'});
@@ -309,7 +348,7 @@ function renderDashboard(){
         <span class="badge" style="background:${lvl.color}22;color:${lvl.color}">${lvl.txt}</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%"></div></div>
 
-      <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="130"></canvas></div>
+      <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="130" style="cursor:pointer"></canvas></div>
       <div class="centerBar">
         <button class="btn ghost" onclick="openFieldReport('${key}')">تقرير المجال PDF</button>
         <button class="btn ghost" onclick="openFieldPlan('${key}')">خطة تحسين المجال PDF</button>
@@ -317,11 +356,23 @@ function renderDashboard(){
 
       <div class="detail" id="detail-${key}"></div>
     `;
-    // فتح التفاصيل بنقرة على أسفل البطاقة فقط (الجدول)
-    card.addEventListener('click', (e)=>{
+    // فتح التفاصيل: النقر على الدائرة = ملء الشاشة
+    const cv=card.querySelector('canvas');
+    cv.addEventListener('click',()=>{
+      document.querySelectorAll('.card').forEach(c=>c.classList.remove('fullscreen'));
+      toggleDetail(key);
+      card.classList.add('fullscreen');
+      document.body.style.overflow='hidden';
+    });
+
+    // النقر خارج العناصر الرئيسية يطوي/يفتح (مع الحفاظ على الهوية)
+    card.addEventListener('click',(e)=>{
       if(e.target.closest('button')||e.target.tagName==='CANVAS') return;
       toggleDetail(key);
+      card.classList.add('fullscreen');
+      document.body.style.overflow='hidden';
     });
+
     dash.appendChild(card);
 
     // الدونت
@@ -338,7 +389,7 @@ function toggleDetail(key){
   Array.from(dash.children).forEach(c=>{ if(c.id!==`card-${key}`) c.style.display='none'; });
   const box=document.getElementById(`detail-${key}`);
   const open=box.style.display==='block';
-  if(open){ box.style.display='none'; Array.from(dash.children).forEach(c=>c.style.display=''); return; }
+  if(open){ box.style.display='none'; Array.from(dash.children).forEach(c=>c.style.display=''); document.querySelectorAll('.card').forEach(c=>c.classList.remove('fullscreen')); document.body.style.overflow=''; return; }
 
   const f=fields[key];
   const subsHtml=f.subs.map(s=>`
@@ -370,13 +421,19 @@ function toggleDetail(key){
         <thead><tr><th>المستوى/الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+      <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:8px">
         <button class="btn light" onclick="resetView()">رجوع إلى جميع المجالات ↩︎</button>
+        <button class="btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('fullscreen'));document.body.style.overflow='';">إغلاق ملء الشاشة</button>
       </div>
     </div>`;
   box.style.display='block';
 }
-function resetView(){ const dash=document.getElementById('dashboard'); Array.from(dash.children).forEach(c=>c.style.display=''); document.querySelectorAll('.detail').forEach(d=>d.style.display='none'); }
+function resetView(){
+  const dash=document.getElementById('dashboard');
+  Array.from(dash.children).forEach(c=>{c.style.display=''; c.classList.remove('fullscreen');});
+  document.querySelectorAll('.detail').forEach(d=>d.style.display='none');
+  document.body.style.overflow='';
+}
 
 /* ====== شواهد ====== */
 let currentEvi={key:'',idx:0};
@@ -387,7 +444,7 @@ function openEvidence(fieldKey,rowIdx){
   document.getElementById('eviHijri').value=todayHijri().replace(/\s/g,'');
   document.getElementById('eviFile').value='';
   document.getElementById('eviTerm').value='الأول';
-  document.getElementById('eviWeek').value=WEEKS[2].id;
+  fillWeeks('الأول');
   document.getElementById('eviModal').style.display='flex';
 }
 function closeEvidence(){ document.getElementById('eviModal').style.display='none'; }
@@ -406,30 +463,51 @@ document.getElementById('eviSave').onclick=()=>{
   closeEvidence(); toggleDetail(currentEvi.key); toggleDetail(currentEvi.key);
 };
 
+/* تصدير / استيراد قاعدة الشواهد */
+document.getElementById('dbExport').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(mem,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='evidence_db_1447.json';
+  a.click();
+});
+document.getElementById('dbImport').addEventListener('change',(e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{
+      const data=JSON.parse(r.result); Object.keys(mem).forEach(k=>delete mem[k]);
+      Object.assign(mem,data); saveMem(); alert('تم الاستيراد بنجاح.'); closeEvidence(); resetView(); renderDashboard();
+    }catch(err){ alert('ملف غير صالح.'); } };
+  r.readAsText(f);
+});
+
 /* ====== تقارير/خطط المجال ====== */
 function buildFieldReportHTML(key){
   const f=fields[key], lvl=levelBadge(f.v2025);
   const rows=(detailed[key]||[]).map(r=>`<tr class="${mapLevelClass(r.level)}"><td>${r.level}</td><td>${fmt(r.perf)}%</td><td>${r.indicator}</td><td>${r.improve}</td><td>${r.evidence}</td></tr>`).join('');
+  const footer = `<div style="margin-top:16px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني</div><div>التاريخ: ${todayHijri()}</div>`;
   return `
   <h2>تقرير المجال: ${f.name}</h2>
   <div>الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}</div>
-  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
+  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
+  ${footer}`;
 }
 function buildFieldPlanHTML(key){
-  // توليد مختصر للمجال من جدول البنود (SMART مختصر من المقترحات)
   const f=fields[key];
-  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${WEEKS[2].id}</td><td>${r.evidence}</td></tr>`).join('');
+  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${TERM_WEEKS['الأول'][2]}</td><td>${r.evidence}</td></tr>`).join('');
+  const footer = `<div style="margin-top:16px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني</div><div>التاريخ: ${todayHijri()}</div>`;
   return `<h2>خطة تحسين المجال: ${f.name}</h2>
-  <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة (أسبوع هجري)</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>`;
+  <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة (أسبوع هجري)</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
+  ${footer}`;
 }
 function openFieldReport(key){ openDocWindow('تقرير المجال', buildFieldReportHTML(key)); }
 function openFieldPlan(key){ openDocWindow('خطة تحسين المجال', buildFieldPlanHTML(key)); }
 
-/* ====== التقرير الشامل (النص الجديد) ====== */
+/* ====== التقرير الشامل – إزالة “إعداد…” من الأعلى وإظهاره أسفل التقرير فقط ====== */
 function buildComprehensiveReport(){
   return `
   <h2>🟩 التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
-  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
+
   <h3>🟦 أولاً: المقدمة</h3>
   <p>في ضوء توجهات وزارة التعليم نحو رفع كفاءة الأداء المدرسي وتحقيق مؤشرات التميز المؤسسي،
   تم تحليل نتائج التقويم المدرسي الخارجي للفصلين الدراسيين الأول والثاني لعام 1447هـ،
@@ -478,26 +556,16 @@ function buildComprehensiveReport(){
     </tbody>
   </table>
 
-  <h3>🟦 سادسًا: التوصيات العامة</h3>
-  <ul>
-    <li>تعزيز ثقافة التحسين المستمر داخل المدرسة.</li>
-    <li>تبني التحول الرقمي في جميع عمليات التوثيق والمتابعة.</li>
-    <li>الاستثمار في التطوير المهني للمعلمين وفق احتياجاتهم الفعلية.</li>
-    <li>دعم مشاركة أولياء الأمور والمجتمع المحلي كشركاء في الجودة.</li>
-    <li>إنشاء قاعدة بيانات ذكية تربط بين التحليل، الأداء، وخطط التحسين.</li>
-  </ul>
-
-  <h3>🟦 سابعًا: التوقيع</h3>
-  <div>مدير المدرسة: فهد حامد علي الزهراني</div>
-  <div>التاريخ: … / … / 1447هـ</div>
+  <div style="margin-top:16px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني</div>
+  <div>التاريخ: ${todayHijri()}</div>
   `;
 }
 
-/* ====== الخطة الشاملة (النص الجديد) ====== */
+/* ====== الخطة الشاملة – إزالة “إعداد…” من الأعلى وإظهاره أسفل الصفحة ====== */
 function buildComprehensivePlan(){
   return `
   <h2>🟩 خطة التحسين الشاملة – ثانوية اليعقوبي بالخبر (العام الدراسي 1447هـ)</h2>
-  <div><strong>إعداد: مدير المدرسة / فهد حامد علي الزهراني</strong></div>
+
   <table>
     <thead>
       <tr><th>المجال</th><th>الهدف العام</th><th>نقاط القوة</th><th>فرص التحسين</th><th>الإجراء التحسيني (SMART)</th><th>المدة الزمنية</th><th>مؤشر القياس</th><th>جهة التنفيذ والمتابعة</th></tr>
@@ -525,6 +593,9 @@ function buildComprehensivePlan(){
     <li>تحقيق رضا المستفيدين (معلمين – طلاب – أولياء أمور) بنسبة 90%.</li>
     <li>استدامة ممارسات التحسين من خلال فرق العمل المدرسية.</li>
   </ul>
+
+  <div style="margin-top:16px;font-weight:700">مدير المدرسة: فهد حامد علي الزهراني</div>
+  <div>التاريخ: ${todayHijri()}</div>
   `;
 }
 
