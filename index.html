@@ -167,6 +167,37 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
     <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُسحب تلقائياً للتقارير وخطط التحسين. فتح الشاهد يكون PDF نظيف للطباعة.</div>
   </div>
 </div>
+<script>
+// تعريف دالة حذف الشاهد
+function deleteEvidence(key, index) {
+  const ekey = `${key}::${index}`; // إنشاء المفتاح الفريد بناءً على `key` و `index`
+  
+  // تحقق مما إذا كانت الشاهد موجودة في الذاكرة المحلية
+  if (mem[ekey]) {
+    // حذف الشاهد من الذاكرة المحلية
+    delete mem[ekey];
+    // حفظ التحديثات في الذاكرة المحلية
+    saveMem();
+    alert("تم حذف الشاهد بنجاح");
+    renderDashboard(); // إعادة رسم الدوائر بعد الحذف
+  } else {
+    alert("الشاهد غير موجود");
+  }
+}
+
+// دالة حفظ البيانات في الذاكرة
+function saveMem() {
+  localStorage.setItem(STORE, JSON.stringify(mem));
+}
+
+// دالة رسم البيانات (الدوائر)
+function renderDashboard() {
+  const dash = document.getElementById('dashboard');
+  dash.innerHTML = '';
+  
+  // إضافة البيانات مثل الدوائر والعناصر التي ستظهر في الصفحة
+}
+</script>
 
 <script>
 /* ====== أسابيع هجري من طلبك ====== */
