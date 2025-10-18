@@ -462,8 +462,17 @@ function openFieldFullScreen(key, colors){
       <td>
         ${r.evidence}
         ${evis?`<div style="margin-top:6px">${evis}</div>`:''}
-        <div style="margin-top:8px;text-align:center"><button class="btn-evi" onclick="openEvidence('${key}',${i})">إضافة شاهد</button></div>
-      </td>
+        <div style="margin-top:8px;text-align:center">
+  <!-- زر إضافة شاهد -->
+  <button class="btn-evi" onclick="openEvidence('${key}',${i})">إضافة شاهد</button>
+  
+  <!-- زر حذف الشاهد مع أيقونة الحذف -->
+  <button class="btn-evi delete" onclick="deleteEvidence('${key}', ${i})">
+    <i class="fa fa-trash"></i> حذف الشاهد
+  </button>
+</div>
+</td>
+
     </tr>`;
   }).join('');
 
