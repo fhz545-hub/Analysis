@@ -366,21 +366,44 @@ function openEvidenceViewerPDF(url){
 }
 
 /* ====== شبكة المجالات + نقر الدائرة لفتح ملء الشاشة ====== */
-function renderDashboard(){
-  const dash=document.getElementById('dashboard'); dash.innerHTML='';
-  const colors=['#2aa897','#5d9ed6','#f1ad5b','#7ac6b7','#91a7ff','#a5d8a6'];
+// دالة لرسم البيانات بعد تحميلها من Supabase
+async function fetchData() {
+  const { data, error } = await supabase.from('evidences').select('*');  // جلب كافة البيانات من الجدول evidences
 
-  Object.entries(fields).forEach(([key,f])=>{
-    const lvl=levelBadge(f.v2025);
-    const card=document.createElement('div'); card.className='card'; card.id=`card-${key}`;
-    card.innerHTML=`
+  if (error) {
+    console.error('حدث خطأ:', error);
+  } else {
+    console.log('تم استرجاع البيانات بنجاح:', data);
+    renderDashboard(data); // تفعيل رسم الدوائر بعد تحميل البيانات
+  }
+}
+
+// استدعاء الدالة لجلب البيانات
+fetchData();
+
+// دالة لعرض البيانات في الدوائر
+function renderDashboard(data) {
+  const dash = document.getElementById('dashboard');
+  dash.innerHTML = '';
+  const colors = ['#2aa897', '#5d9ed6', '#f1ad5b', '#7ac6b7', '#91a7ff', '#a5d8a6'];
+
+  Object.entries(fields).forEach(([key, f]) => {
+    const lvl = levelBadge(f.v2025);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${key}`;
+    card.innerHTML = `
       <h2>${f.name}</h2>
-      <div class="kpi"><span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span>
-        <span class="badge" style="background:${lvl.color}22;color:${lvl.color}">${lvl.txt}</span></div>
-      <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%"></div></div>
-
-      <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="140" style="cursor:pointer"></canvas></div>
-
+      <div class="kpi">
+        <span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span>
+        <span class="badge" style="background:${lvl.color}22;color:${lvl.color}">${lvl.txt}</span>
+      </div>
+      <div class="progress">
+        <div class="bar" style="width:${Math.max(2, f.v2025)}%"></div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <canvas id="donut-${key}" height="140" style="cursor:pointer"></canvas>
+      </div>
       <div class="centerBar">
         <button class="btn ghost" onclick="openFieldReport('${key}')">تقرير المجال PDF</button>
         <button class="btn ghost" onclick="openFieldPlan('${key}')">خطة تحسين المجال PDF</button>
@@ -388,14 +411,24 @@ function renderDashboard(){
     `;
     dash.appendChild(card);
 
-    const ctx=document.getElementById(`donut-${key}`).getContext('2d');
-    const chart = new Chart(ctx,{
-      type:'doughnut',
-      data:{labels:f.subs.map(s=>s.name),datasets:[{data:f.subs.map(s=>s.v),backgroundColor:colors}]},
-      options:{plugins:{legend:{display:false}},cutout:'68%'}
+    const ctx = document.getElementById(`donut-${key}`).getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: f.subs.map(s => s.name),
+        datasets: [{
+          data: f.subs.map(s => s.v),
+          backgroundColor: colors
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        cutout: '68%'
+      }
     });
-    // فتح التفاصيل ملء الشاشة عند الضغط في أي جزء من الدائرة
-    document.getElementById(`donut-${key}`).addEventListener('click',()=>openFieldFullScreen(key,colors));
+
+    // فتح التفاصيل عند الضغط على الدائرة
+    document.getElementById(`donut-${key}`).addEventListener('click', () => openFieldFullScreen(key, colors));
   });
 }
 
