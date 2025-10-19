@@ -620,7 +620,25 @@ function buildFieldReportHTML(key){
 
 function buildFieldPlanHTML(key){
   const f=fields[key];
-  const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>6 أسابيع</td><td>${r.evidence}</td></tr>`).join('');
+const rows = (detailed[key] || []).slice(0,6).map((r,i) => {
+  // مدد مختلفة لكل بند في الخطة
+  const durations = [
+    '4 أسابيع',       // البند 1
+    '6 أسابيع',       // البند 2
+    '8 أسابيع',       // البند 3
+    '10 أسابيع',      // البند 4
+    '12 أسبوعًا',     // البند 5
+    'فصل دراسي كامل' // البند 6
+  ];
+
+  return `<tr>
+    <td>${r.indicator}</td>
+    <td>${r.improve}</td>
+    <td>${durations[i] || '6 أسابيع'}</td>
+    <td>${r.evidence}</td>
+  </tr>`;
+}).join('');
+
   return `<h2>خطة تحسين المجال: ${f.name}</h2>
   <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
