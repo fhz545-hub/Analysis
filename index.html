@@ -572,14 +572,36 @@ document.getElementById('eviSave').onclick=()=>{
 
 /* ====== تقارير/خطط المجال ====== */
 function buildFieldReportHTML(key){
-  const f=fields[key], lvl=levelBadge(f.v2025);
-  const rows=(detailed[key]||[]).map(r=>`<tr class="${mapLevelClass(r.level)}"><td>${r.level}</td><td>${fmt(r.perf)}%</td><td>${r.indicator}</td><td>${r.improve}</td><td>${r.evidence}</td></tr>`).join('');
+  const f = fields[key], lvl = levelBadge(f.v2025);
+  const rows = (detailed[key] || []).map(r => `
+    <tr class="${mapLevelClass(r.level)}">
+      <td>${r.level}</td>
+      <td>${fmt(r.perf)}%</td>
+      <td>${r.indicator}</td>
+      <td>${r.improve}</td>
+      <td>${r.evidence}</td>
+    </tr>`).join('');
+
   return `
   <h2>تقرير المجال: ${f.name}</h2>
-  <div style="text-align:center;margin:4px 0">الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}</div>
-  <table><thead><tr><th>المستوى</th><th>نسبة الأداء</th><th>المؤشر</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
+  <div style="text-align:center;margin:4px 0">
+    الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}% — المستوى: ${lvl.txt}
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">المستوى</th>
+        <th style="width:70px">نسبة الأداء</th>
+        <th style="width:310px">المؤشر</th>
+        <th style="width:270px">مقترحات التحسين</th>
+        <th style="width:250px">الشواهد</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
+
 function buildFieldPlanHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).slice(0,6).map(r=>`<tr><td>${r.indicator}</td><td>${r.improve}</td><td>6 أسابيع</td><td>${r.evidence}</td></tr>`).join('');
