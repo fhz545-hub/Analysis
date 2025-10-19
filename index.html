@@ -373,7 +373,15 @@ function openDocWindow(title, contentHTML){
     h3{color:#0b7e88;margin:8px 0}
     table{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
     thead th{background:#0f6f79;color:#fff;padding:8px;font-weight:700}
-    td,th{padding:8px;border:1px solid #e7eff0;vertical-align:top;font-size:13px;word-break:break-word}
+/* توسيط محتوى خلايا الجداول في نافذة الطباعة */
+td,th{
+  padding:8px;
+  border:1px solid #e7eff0;
+  vertical-align: middle;   /* بدل top */
+  text-align: center;       /* توسيط أفقي */
+  font-size:13px;
+  word-break:break-word;
+}
     .row-excellent{background:#e9fff4}.row-verygood{background:#f1fff9}.row-good{background:#fffbe6}.row-medium{background:#fff0e7}
     .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec;text-align:center}
     .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin:0 4px}
