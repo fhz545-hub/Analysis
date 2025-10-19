@@ -38,6 +38,13 @@ a{color:#135; text-decoration:none} a:hover{text-decoration:underline}
 .btn.ghost{background:#fff;color:var(--moe);border:1px solid #d7ecec}
 .btn:hover{filter:brightness(.97)}
 
+/* زرا التقييم الخارجي بنفس اللون والتمييز */
+.btn.eval{
+  background:linear-gradient(135deg,#0b7e88,#22b8a0);
+  box-shadow:0 10px 24px rgba(11,126,136,.35);
+  border:1px solid #0b7e88;
+}
+
 /* Grid cards */
 .grid{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:16px}
 @media (max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(260px,1fr))}}
@@ -58,7 +65,7 @@ a{color:#135; text-decoration:none} a:hover{text-decoration:underline}
 /* Center buttons under donut */
 .centerBar{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0}
 
-/* FULLSCREEN PANEL (لا نخفي الهيدر/الأزرار/الشبكة دائماً) */
+/* FULLSCREEN PANEL */
 .fullpanel{
   position:fixed; inset:0; z-index:9998;
   background:rgba(6,53,59,.06);
@@ -85,11 +92,11 @@ thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
 tbody td{padding:10px;border-bottom:1px solid #eef3f3;vertical-align:top;word-break:break-word}
 tbody tr:last-child td{border-bottom:0}
 
-/* Row coloring by level */
-.row-excellent{background:var(--ok)}
-.row-verygood{background:var(--vg)}
-.row-good{background:var(--gd)}
-.row-medium{background:var(--md)}
+/* Row coloring by new 4 levels */
+.row-excellent{background:var(--ok)}     /* التميز */
+.row-verygood{background:var(--vg)}      /* التقدم */
+.row-good{background:var(--gd)}          /* الانطلاق */
+.row-medium{background:var(--md)}        /* التهيئة */
 .level{font-weight:700}
 
 /* Evidence modal */
@@ -118,6 +125,9 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
 
   <!-- Top controls -->
   <div class="controls">
+    <button class="btn eval" id="btnExt2025">التقويم الخارجي ٢٠٢٥م 📄</button>
+    <button class="btn eval" id="btnExt2024">التقويم الخارجي ٢٠٢٤م 📄</button>
+
     <button class="btn" id="btnAnalyze">تحليل شامل 🔎</button>
     <button class="btn" id="btnFullReport">التقرير الشامل PDF 📘</button>
     <button class="btn" id="btnFullPlan">الخطة الشاملة PDF 🗂️</button>
@@ -129,7 +139,7 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
   <div class="footer">تنفيذ وتصميم فهد حامد الزهراني</div>
 </div>
 
-<!-- FULLSCREEN DETAILS (لا نخفي الهيدر/الأزرار/الشبكة دائماً) -->
+<!-- FULLSCREEN DETAILS -->
 <div class="fullpanel" id="fullPanel" aria-hidden="true">
   <div class="inner">
     <div class="topbar">
@@ -167,40 +177,9 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
     <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُسحب تلقائياً للتقارير وخطط التحسين. فتح الشاهد يكون PDF نظيف للطباعة.</div>
   </div>
 </div>
-<script>
-// تعريف دالة حذف الشاهد
-function deleteEvidence(key, index) {
-  const ekey = `${key}::${index}`; // إنشاء المفتاح الفريد بناءً على `key` و `index`
-  
-  // تحقق مما إذا كانت الشاهد موجودة في الذاكرة المحلية
-  if (mem[ekey]) {
-    // حذف الشاهد من الذاكرة المحلية
-    delete mem[ekey];
-    // حفظ التحديثات في الذاكرة المحلية
-    saveMem();
-    alert("تم حذف الشاهد بنجاح");
-    renderDashboard(); // إعادة رسم الدوائر بعد الحذف
-  } else {
-    alert("الشاهد غير موجود");
-  }
-}
-
-// دالة حفظ البيانات في الذاكرة
-function saveMem() {
-  localStorage.setItem(STORE, JSON.stringify(mem));
-}
-
-// دالة رسم البيانات (الدوائر)
-function renderDashboard() {
-  const dash = document.getElementById('dashboard');
-  dash.innerHTML = '';
-  
-  // إضافة البيانات مثل الدوائر والعناصر التي ستظهر في الصفحة
-}
-</script>
 
 <script>
-/* ====== أسابيع هجري من طلبك ====== */
+/* ====== أسابيع هجري ====== */
 const TERM1 = [
   {w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},
   {w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},
@@ -249,13 +228,16 @@ const TERM2 = [
 
 /* ====== أدوات مساعدة ====== */
 const fmt=v=>Number(v).toFixed(2);
-function levelBadge(v){ if(v>=90)return {txt:'ممتاز',color:'#10b981'}; if(v>=85)return {txt:'مرتفع',color:'#22b8a0'}; if(v>=80)return {txt:'جيد جدًا',color:'#33c2a9'}; if(v>=75)return {txt:'جيد',color:'#f59e0b'}; return {txt:'متوسط',color:'#f97316'}; }
-function mapLevelClass(arLevel){
-  if(arLevel==='متميز'||arLevel==='مرتفع') return 'row-excellent';
-  if(arLevel==='جيد جدًا') return 'row-verygood';
-  if(arLevel==='جيد') return 'row-good';
-  return 'row-medium';
+
+/* خريطة المستويات الجديدة حسب النسب:
+   التميز ≥90 | التقدم 75–<90 | الانطلاق 50–<75 | التهيئة <50 */
+function getLevelByPercent(p){
+  if(p>=90) return {txt:'التميز',   color:'#10b981', row:'row-excellent'};
+  if(p>=75) return {txt:'التقدم',   color:'#22b8a0', row:'row-verygood'};
+  if(p>=50) return {txt:'الانطلاق', color:'#f59e0b', row:'row-good'};
+  return            {txt:'التهيئة',  color:'#f97316', row:'row-medium'};
 }
+
 function todayHijri(){
   try{
     const f=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'long'});
@@ -285,7 +267,7 @@ const fields={
   ]}
 };
 
-/* ====== الجداول التفصيلية لكل مجال (كما زوّدتني) ====== */
+/* ====== الجداول التفصيلية (تبقى كما هي؛ سنحسب المستوى من perf) ====== */
 const detailed={
   management:[
     {level:'متميز', perf:94.50, indicator:'تنشر المدرسة قواعد السلوك والمواظبة وتتابع تطبيقها بانتظام.', improve:'نشر القواعد رقميًا وربطها بمتابعة أسبوعية للانضباط.', evidence:'لوحات السلوك، تقارير الانضباط، سجلات إشعارات.'},
@@ -346,7 +328,7 @@ const STORE='yaqoubi_evidence_1447';
 const mem=JSON.parse(localStorage.getItem(STORE)||'{}');
 function saveMem(){ localStorage.setItem(STORE, JSON.stringify(mem)); }
 
-/* ====== شعار ممتد لـ A4 ====== */
+/* ====== شعار A4 ====== */
 function bannerHeaderHTML(){
   return `
     <div style="
@@ -359,7 +341,7 @@ function bannerHeaderHTML(){
   `;
 }
 
-/* ====== نافذة A4 عامة موسّعة للطباعة ====== */
+/* ====== نافذة A4 للطباعة ====== */
 function openDocWindow(title, contentHTML){
   const w=window.open('', '_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`
@@ -373,15 +355,7 @@ function openDocWindow(title, contentHTML){
     h3{color:#0b7e88;margin:8px 0}
     table{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
     thead th{background:#0f6f79;color:#fff;padding:8px;font-weight:700}
-/* توسيط محتوى خلايا الجداول في نافذة الطباعة */
-td,th{
-  padding:8px;
-  border:1px solid #e7eff0;
-  vertical-align: middle;   /* بدل top */
-  text-align: center;       /* توسيط أفقي */
-  font-size:13px;
-  word-break:break-word;
-}
+    td,th{padding:8px;border:1px solid #e7eff0;vertical-align:middle;text-align:center;font-size:13px;word-break:break-word}
     .row-excellent{background:#e9fff4}.row-verygood{background:#f1fff9}.row-good{background:#fffbe6}.row-medium{background:#fff0e7}
     .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec;text-align:center}
     .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin:0 4px}
@@ -400,7 +374,7 @@ td,th{
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* ====== عارض الشاهد: PDF فقط نظيف ====== */
+/* ====== عارض PDF للشاهد ====== */
 function openEvidenceViewerPDF(url){
   const w=window.open('', '_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/>
@@ -412,30 +386,14 @@ function openEvidenceViewerPDF(url){
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* ====== شبكة المجالات + نقر الدائرة لفتح ملء الشاشة ====== */
-// دالة لرسم البيانات بعد تحميلها من Supabase
-async function fetchData() {
-  const { data, error } = await supabase.from('evidences').select('*');  // جلب كافة البيانات من الجدول evidences
-
-  if (error) {
-    console.error('حدث خطأ:', error);
-  } else {
-    console.log('تم استرجاع البيانات بنجاح:', data);
-    renderDashboard(data); // تفعيل رسم الدوائر بعد تحميل البيانات
-  }
-}
-
-// استدعاء الدالة لجلب البيانات
-fetchData();
-
-// دالة لعرض البيانات في الدوائر
-function renderDashboard(data) {
+/* ====== لوحة المجالات + الدونت ====== */
+function renderDashboard() {
   const dash = document.getElementById('dashboard');
   dash.innerHTML = '';
   const colors = ['#2aa897', '#5d9ed6', '#f1ad5b', '#7ac6b7', '#91a7ff', '#a5d8a6'];
 
   Object.entries(fields).forEach(([key, f]) => {
-    const lvl = levelBadge(f.v2025);
+    const lvl = getLevelByPercent(f.v2025);
     const card = document.createElement('div');
     card.className = 'card';
     card.id = `card-${key}`;
@@ -459,7 +417,7 @@ function renderDashboard(data) {
     dash.appendChild(card);
 
     const ctx = document.getElementById(`donut-${key}`).getContext('2d');
-    const chart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: f.subs.map(s => s.name),
@@ -474,12 +432,11 @@ function renderDashboard(data) {
       }
     });
 
-    // فتح التفاصيل عند الضغط على الدائرة
     document.getElementById(`donut-${key}`).addEventListener('click', () => openFieldFullScreen(key, colors));
   });
 }
 
-/* ====== بناء تفاصيل المجال لملء الشاشة (مع الجدول الكامل والشواهد) ====== */
+/* ====== تفاصيل المجال (ملء الشاشة) ====== */
 function openFieldFullScreen(key, colors){
   const panel=document.getElementById('fullPanel');
   const title=document.getElementById('fpTitle');
@@ -488,7 +445,7 @@ function openFieldFullScreen(key, colors){
   title.textContent = 'التحليل التفصيلي – ' + f.name;
 
   const subsHtml=f.subs.map((s,i)=>{
-    const col = colors[i%colors.length], lb=levelBadge(s.v);
+    const col = colors[i%colors.length], lb=getLevelByPercent(s.v);
     return `
       <div class="subCard" style="background:${col}14;border-color:${col}45;box-shadow:inset 0 0 0 1px ${col}30;">
         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -501,25 +458,20 @@ function openFieldFullScreen(key, colors){
 
   const rows=(detailed[key]||[]).map((r,i)=>{
     const ekey=`${key}::${i}`;
-    const evis=(mem[ekey]||[]).map((e,j)=>`<div class="small">• ${e.hijri} — <a href="${e.url}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${e.url}');">فتح الشاهد</a></div>`).join('');
-    return `<tr class="${mapLevelClass(r.level)}">
-      <td class="level" style="text-align:center">${r.level}<div class="small">${fmt(r.perf)}%</div></td>
+    const levelNow = getLevelByPercent(r.perf);
+    const evis=(mem[ekey]||[]).map((e)=>`<div class="small">• ${e.hijri} — <a href="${e.url}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${e.url}');">فتح الشاهد</a></div>`).join('');
+    return `<tr class="${levelNow.row}">
+      <td class="level" style="text-align:center">${levelNow.txt}<div class="small">${fmt(r.perf)}%</div></td>
       <td>${r.indicator}</td>
       <td>${r.improve}</td>
       <td>
         ${r.evidence}
         ${evis?`<div style="margin-top:6px">${evis}</div>`:''}
         <div style="margin-top:8px;text-align:center">
-  <!-- زر إضافة شاهد -->
-  <button class="btn-evi" onclick="openEvidence('${key}',${i})">إضافة شاهد</button>
-  
-  <!-- زر حذف الشاهد مع أيقونة الحذف -->
-  <button class="btn-evi delete" onclick="deleteEvidence('${key}', ${i})">
-    <i class="fa fa-trash"></i> حذف الشاهد
-  </button>
-</div>
-</td>
-
+          <button class="btn-evi" onclick="openEvidence('${key}',${i})">إضافة شاهد</button>
+          <button class="btn-evi delete" onclick="deleteEvidence('${key}', ${i})">حذف الشاهد</button>
+        </div>
+      </td>
     </tr>`;
   }).join('');
 
@@ -534,7 +486,6 @@ function openFieldFullScreen(key, colors){
   `;
 
   panel.style.display='flex';
-  // أزرار
   document.getElementById('fpClose').onclick=()=>{panel.style.display='none';};
   document.getElementById('fpHome').onclick=()=>{panel.style.display='none'; window.scrollTo({top:0,behavior:'smooth'});};
 }
@@ -582,21 +533,36 @@ document.getElementById('eviSave').onclick=()=>{
   mem[k]=mem[k]||[]; mem[k].push({text,term,week,hijri,url,ts:Date.now()}); saveMem();
   closeEvidence();
   document.getElementById('fullPanel').style.display='none';
-  // إعادة الفتح مباشرة لعرض الشاهد المضاف
   openFieldFullScreen(currentEvi.key,['#2aa897','#5d9ed6','#f1ad5b','#7ac6b7','#91a7ff','#a5d8a6']);
 };
 
+/* حذف الشاهد */
+function deleteEvidence(key, index) {
+  const ekey = `${key}::${index}`;
+  if (mem[ekey]) {
+    delete mem[ekey];
+    saveMem();
+    alert("تم حذف الشاهد بنجاح");
+    openFieldFullScreen(key, ['#2aa897','#5d9ed6','#f1ad5b','#7ac6b7','#91a7ff','#a5d8a6']);
+  } else {
+    alert("الشاهد غير موجود");
+  }
+}
+
 /* ====== تقارير/خطط المجال ====== */
 function buildFieldReportHTML(key){
-  const f = fields[key], lvl = levelBadge(f.v2025);
-  const rows = (detailed[key] || []).map(r => `
-    <tr class="${mapLevelClass(r.level)}">
-      <td>${r.level}</td>
+  const f = fields[key], lvl = getLevelByPercent(f.v2025);
+  const rows = (detailed[key] || []).map(r => {
+    const lv = getLevelByPercent(r.perf);
+    return `
+    <tr class="${lv.row}">
+      <td>${lv.txt}</td>
       <td>${fmt(r.perf)}%</td>
       <td>${r.indicator}</td>
       <td>${r.improve}</td>
       <td>${r.evidence}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   return `
   <h2>تقرير المجال: ${f.name}</h2>
@@ -606,8 +572,8 @@ function buildFieldReportHTML(key){
   <table>
     <thead>
       <tr>
-        <th style="width:70px">المستوى</th>
-        <th style="width:70px">نسبة الأداء</th>
+        <th style="width:90px">المستوى</th>
+        <th style="width:80px">نسبة الأداء</th>
         <th style="width:310px">المؤشر</th>
         <th style="width:270px">مقترحات التحسين</th>
         <th style="width:250px">الشواهد</th>
@@ -620,24 +586,15 @@ function buildFieldReportHTML(key){
 
 function buildFieldPlanHTML(key){
   const f=fields[key];
-const rows = (detailed[key] || []).slice(0,6).map((r,i) => {
-  // مدد مختلفة لكل بند في الخطة
-  const durations = [
-    '4 أسابيع',       // البند 1
-    '6 أسابيع',       // البند 2
-    '8 أسابيع',       // البند 3
-    '10 أسابيع',      // البند 4
-    '12 أسبوعًا',     // البند 5
-    'فصل دراسي كامل' // البند 6
-  ];
-
-  return `<tr>
-    <td>${r.indicator}</td>
-    <td>${r.improve}</td>
-    <td>${durations[i] || '6 أسابيع'}</td>
-    <td>${r.evidence}</td>
-  </tr>`;
-}).join('');
+  const rows = (detailed[key] || []).slice(0,6).map((r,i) => {
+    const durations = ['4 أسابيع','6 أسابيع','8 أسابيع','10 أسابيع','12 أسبوعًا','فصل دراسي كامل'];
+    return `<tr>
+      <td>${r.indicator}</td>
+      <td>${r.improve}</td>
+      <td>${durations[i] || '6 أسابيع'}</td>
+      <td>${r.evidence}</td>
+    </tr>`;
+  }).join('');
 
   return `<h2>خطة تحسين المجال: ${f.name}</h2>
   <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
@@ -646,7 +603,7 @@ const rows = (detailed[key] || []).slice(0,6).map((r,i) => {
 function openFieldReport(key){ openDocWindow('تقرير المجال', buildFieldReportHTML(key)); }
 function openFieldPlan(key){ openDocWindow('خطة تحسين المجال', buildFieldPlanHTML(key)); }
 
-/* ====== التقرير الشامل + الخطة الشاملة (عريض للطباعة) ====== */
+/* ====== التقرير الشامل + الخطة الشاملة ====== */
 function buildComprehensiveReport(){
   return `
   <h2>🟩 التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
@@ -660,17 +617,16 @@ function buildComprehensiveReport(){
     <tr>
       <th style="width:130px">المجال</th>
       <th style="width:100px;text-align:center">متوسط الأداء</th>
-      <th style="width:100px;text-align:center">مستوى الأداء</th>
+      <th style="width:120px;text-align:center">مستوى الأداء</th>
       <th style="width:330px">أبرز نقاط القوة</th>
       <th style="width:330px">أبرز فرص التحسين</th>
     </tr>
   </thead>
   <tbody>
-
-      <tr class="row-verygood"><td>القيادة والإدارة المدرسية</td><td>86%</td><td>جيد جدًا</td><td>خطة تشغيلية فعّالة – رخص مهنية – متابعة ميدانية.</td><td>ضعف التوثيق الرقمي – محدودية الشراكات المجتمعية.</td></tr>
-      <tr class="row-verygood"><td>التعليم والتعلّم</td><td>88%</td><td>جيد جدًا</td><td>بيئة تعلم محفزة – استراتيجيات حديثة – تغذية راجعة فعالة.</td><td>ضعف تنويع الأساليب – ضعف توظيف التقنية في بعض المواد.</td></tr>
-      <tr class="row-excellent"><td>نواتج التعلّم</td><td>91%</td><td>متميز</td><td>التزام سلوكي – اعتزاز بالهوية – تحصيل دراسي مرتفع.</td><td>تفاوت بين المواد الدراسية – ضعف المبادرات المجتمعية.</td></tr>
-      <tr class="row-verygood"><td>البيئة المدرسية</td><td>84%</td><td>جيد جدًا</td><td>مرافق مهيأة – تطبيق معايير السلامة – بيئة نظيفة.</td><td>ضعف تجهيز مرافق ذوي الإعاقة وتحسين الإضاءة.</td></tr>
+      <tr class="row-verygood"><td>القيادة والإدارة المدرسية</td><td>86%</td><td>التقدم</td><td>خطة تشغيلية فعّالة – رخص مهنية – متابعة ميدانية.</td><td>ضعف التوثيق الرقمي – محدودية الشراكات المجتمعية.</td></tr>
+      <tr class="row-verygood"><td>التعليم والتعلّم</td><td>88%</td><td>التقدم</td><td>بيئة تعلم محفزة – استراتيجيات حديثة – تغذية راجعة فعالة.</td><td>ضعف تنويع الأساليب – ضعف توظيف التقنية في بعض المواد.</td></tr>
+      <tr class="row-excellent"><td>نواتج التعلّم</td><td>91%</td><td>التميز</td><td>التزام سلوكي – اعتزاز بالهوية – تحصيل دراسي مرتفع.</td><td>تفاوت بين المواد الدراسية – ضعف المبادرات المجتمعية.</td></tr>
+      <tr class="row-verygood"><td>البيئة المدرسية</td><td>84%</td><td>التقدم</td><td>مرافق مهيأة – تطبيق معايير السلامة – بيئة نظيفة.</td><td>ضعف تجهيز مرافق ذوي الإعاقة وتحسين الإضاءة.</td></tr>
     </tbody>
   </table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>
@@ -697,16 +653,21 @@ function buildComprehensivePlan(){
   `;
 }
 
-/* أزرار أعلى الصفحة */
+/* ====== أزرار أعلى الصفحة ====== */
 document.getElementById('btnFullReport').addEventListener('click',()=>openDocWindow('التقرير الشامل', buildComprehensiveReport()));
 document.getElementById('btnFullPlan').addEventListener('click',()=>openDocWindow('الخطة الشاملة', buildComprehensivePlan()));
 document.getElementById('btnAnalyze').addEventListener('click',renderDashboard);
 
-/* تشغيل أولي */
-renderDashboard();
-// اختياري: لو فعّلت مشروع Supabase لديك
-  window.SB_URL  = "https://YOUR_PROJECT.supabase.co";
-  window.SB_ANON = "YOUR_PUBLIC_ANON_KEY";
+/* روابط التقييم الخارجي بنفس اللون والتمييز */
+document.getElementById('btnExt2025').addEventListener('click', () => {
+  window.open('https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link', '_blank');
+});
+document.getElementById('btnExt2024').addEventListener('click', () => {
+  window.open('https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link', '_blank');
+});
+
+/* تشغيل بعد تحميل الصفحة */
+document.addEventListener('DOMContentLoaded', renderDashboard);
 </script>
 </body>
 </html>
