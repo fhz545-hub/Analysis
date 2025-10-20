@@ -39,11 +39,20 @@ a:hover{text-decoration:underline}
 
 /* أزرار أعلى الصفحة */
 .controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0 10px}
-.btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25)}
+.btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25);position:relative;overflow:hidden}
 .btn.light{background:#eef6f7;color:#06353b}
 .btn.ghost{background:#fff;color:var(--moe);border:1px solid #d7ecec}
 .btn:hover{filter:brightness(.97)}
 .btn.eval{background:linear-gradient(135deg,#0b7e88,#22b8a0);box-shadow:0 8px 20px rgba(11,126,136,.25)}
+
+/* تأثير Ripple متناسق مع الهوية */
+.btn.ripple::after{
+  content:"";
+  position:absolute; inset:0; border-radius:12px; pointer-events:none;
+  background:radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(34,184,160,.25), transparent 40%);
+  opacity:0; transition:opacity .5s ease;
+}
+.btn.ripple:active::after{opacity:1; transition:opacity .2s ease}
 
 /* الشبكة */
 .grid{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:16px}
@@ -89,6 +98,25 @@ a:hover{text-decoration:underline}
 @media (max-width:680px){.subgrid{grid-template-columns:1fr}}
 .subCard{background:#f7fbfb;border:1px solid #e6efef;border-radius:12px;padding:10px}
 
+/* شريط العناوين الفرعية (بدون مربعات) */
+.subPills{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:999px;background:#ffffff;
+  border:1px dashed #d7ecec; box-shadow:0 3px 10px rgba(11,126,136,.10);
+}
+.pill .pill-name{font-weight:800;color:#06353b}
+.pill .pill-pct{font-size:12px;color:#6f8e94}
+.pill .pill-lvl{font-size:12px;font-weight:800}
+.pill .barMini{
+  width:64px;height:7px;border-radius:999px;background:#e6efef;overflow:hidden; position:relative;
+}
+.pill .barMini > span{
+  position:absolute;inset:0 0 0 0; width:0%; height:100%;
+  background:linear-gradient(90deg,var(--g1),var(--g2));
+  transition:width .7s ease;
+}
+
 /* الجداول */
 .tableWrap{margin-top:10px;overflow:auto}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;table-layout:fixed}
@@ -112,16 +140,16 @@ tbody tr:last-child td{border-bottom:0}
 .evi-chip{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; margin:.2rem .2rem 0 0; background:rgba(6,53,59,.06); color:#06353b}
 .evi-chip:hover{background:rgba(6,53,59,.12)}
 
-/* مكوّن المستوى الصغير */
-.lvlCell{display:flex;align-items:center;gap:10px;min-width:180px}
+/* مكوّن المستوى/الأداء الصغير (دائري بتدرّج) */
+.lvlCell{display:flex;align-items:center;gap:10px;min-width:200px}
 .miniInfo{display:flex;flex-direction:column;line-height:1.1}
 .miniInfo .miniName{font-weight:800}
 .miniInfo .miniPct{font-size:12px;color:#6f8e94}
-.miniGauge{width:38px;height:38px;position:relative;flex:0 0 38px}
-.miniGauge svg{width:38px;height:38px;display:block}
+.miniGauge{width:42px;height:42px;position:relative;flex:0 0 42px}
+.miniGauge svg{width:42px;height:42px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.08))}
 .miniGauge .bg{stroke:#e6efef;stroke-width:6;fill:none}
-.miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease}
-.miniGauge .dot{fill:currentColor;transition:transform .9s ease}
+.miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease, filter .2s ease}
+.miniGauge:hover .fg{filter:brightness(1.05)}
 .miniGauge .txt{font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle}
 
 /* نافذة الشواهد (احترافي) */
@@ -158,11 +186,11 @@ tbody tr:last-child td{border-bottom:0}
 
 <div class="page">
   <div class="controls">
-    <button class="btn eval" id="btnExt2025" type="button">التقييم الخارجي ٢٠٢٥م 📄</button>
-    <button class="btn eval" id="btnExt2024" type="button">التقييم الخارجي ٢٠٢٤م 📄</button>
-    <button class="btn" id="btnAnalyze" type="button">تحليل شامل 🔎</button>
-    <button class="btn" id="btnFullReport" type="button">التقرير الشامل 📘</button>
-    <button class="btn" id="btnFullPlan" type="button">خطة التحسين 🗂️</button>
+    <button class="btn eval ripple" id="btnExt2025" type="button">التقييم الخارجي ٢٠٢٥م 📄</button>
+    <button class="btn eval ripple" id="btnExt2024" type="button">التقييم الخارجي ٢٠٢٤م 📄</button>
+    <button class="btn ripple" id="btnAnalyze" type="button">تحليل شامل 🔎</button>
+    <!-- تم حذف زر التقرير الشامل حسب طلبكم -->
+    <button class="btn ripple" id="btnFullPlan" type="button" title="فتح خطة التحسين">خطة التحسين 🗂️</button>
   </div>
 
   <div id="dashboard" class="grid"></div>
@@ -180,6 +208,8 @@ tbody tr:last-child td{border-bottom:0}
         <button class="close" id="fpClose" type="button">إغلاق ✕</button>
       </div>
     </div>
+    <!-- شريط العناوين الفرعية الإبداعي يوضع هنا قبل الجدول -->
+    <div id="fpSubs" class="subPills"></div>
     <div id="fpBody"></div>
   </div>
 </div>
@@ -227,7 +257,7 @@ tbody tr:last-child td{border-bottom:0}
     </div>
 
     <div style="display:flex;gap:8px;margin-top:8px;justify-content:center">
-      <button class="btn" id="eviSave" type="button">حفظ الشاهد</button>
+      <button class="btn ripple" id="eviSave" type="button">حفظ الشاهد</button>
       <button class="btn light" id="eviCancel" type="button">إلغاء</button>
     </div>
     <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُحفظ في القاعدة السحابية وتُسحب تلقائياً للتقارير وخطط التحسين.</div>
@@ -235,9 +265,10 @@ tbody tr:last-child td{border-bottom:0}
 </div>
 
 <script>
-/* مصادر وإخفاؤها داخل التقارير */
+/* مصادر خارجية */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
 const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link';
+const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
 const LAST_SYNC=new Date().toLocaleString('ar-SA');
 
 /* أسابيع هجري */
@@ -363,7 +394,7 @@ function bannerHeaderHTML(){
     </div>`;
 }
 
-/* نافذة تقارير */
+/* نافذة تقارير (تستخدم لتقرير/خطة المجال فقط) */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
@@ -383,30 +414,17 @@ function openDocWindow(title,contentHTML){
     .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec;text-align:center}
     .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin:0 4px}
     .sig{font-size:12px;text-align:center;margin-top:8px;color:#345}
-    .badge{background:none;border:none;padding:0;font-size:19px;font-weight:700}
-    .badge.excel{color:#16a34a}.badge.progress{color:#2563eb}.badge.launch{color:#f59e0b}.badge.ready{color:#e11d48}
-    .meta{display:none}
-    .small-list{font-size:13px;line-height:1.45}.small-list li{margin:.2rem 0}
-    .evi-chip{display:inline-block;font-size:12px;font-weight:700;padding:4px 8px;border-radius:999px;margin:.2rem .2rem 0 0;background:rgba(6,53,59,.06);color:#06353b}
-    .lvlCell{display:flex;align-items:center;gap:10px;min-width:180px}
-    .miniInfo{display:flex;flex-direction:column;line-height:1.1}.miniInfo .miniName{font-weight:800}.miniInfo .miniPct{font-size:12px;color:#6f8e94}
-    .miniGauge{width:38px;height:38px;position:relative;flex:0 0 38px}
-    .miniGauge svg{width:38px;height:38px;display:block}
-    .miniGauge .bg{stroke:#e6efef;stroke-width:6;fill:none}
-    .miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
-    .miniGauge .txt{font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle}
   </style></head><body>
   ${bannerHeaderHTML()}
   <div class="wrap">
-    <div class="meta">مصدر: <a href="${SRC_2025}" target="_blank" rel="noopener">2025</a> • <a href="${SRC_2024}" target="_blank" rel="noopener">2024</a> • آخر مزامنة: ${LAST_SYNC}</div>
     ${contentHTML}
     <div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button><button class="btn" onclick="window.close()">إغلاق</button></div>
   </div></body></html>`;
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* عارض PDF للشواهد */
-function openEvidenceViewerPDF(url){
+/* عارض PDF/صورة للشواهد */
+function openEvidenceViewer(url){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const ext=(url.split('?')[0].split('.').pop()||'').toLowerCase();
   const isPDF=ext==='pdf' || url.includes('application/pdf');
@@ -429,7 +447,7 @@ function renderDashboard(){
       <div class="kpi"><span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%;background:${lvl.color}"></div></div>
       <div class="donutWrap">
-        <canvas id="donut-${key}" class="donutCanvas"></canvas>
+        <canvas id="donut-${key}" class="donutCanvas" aria-label="مخطط دائري"></canvas>
         <div class="donutCenter">
           <div class="lvl" style="color:${lvl.color}">${lvl.name}</div>
           <div class="pct">${fmt(f.v2025)}%</div>
@@ -449,43 +467,56 @@ function renderDashboard(){
         options:{plugins:{legend:{display:false}},cutout:'72%',responsive:true,maintainAspectRatio:false}
       });
       document.getElementById(`donut-${key}`).addEventListener('click',()=>openFieldFullScreen(key));
-    }catch(e){}
+    }catch(e){ console.warn('Chart error', e); }
   });
 }
 
-/* مكوّن العداد الدائري الصغير */
+/* ===== Gauge صغير بتدرّج ===== */
 function renderMiniGauge(el, pct, color){
   const r=14, c=2*Math.PI*r;
+  const gid='grad_'+Math.random().toString(36).slice(2);
+  const g1=color; // لون المستوى
+  const g2='#0b7e88'; // مزج بسيط للهوية
   const svg=`
     <svg viewBox="0 0 40 40" aria-hidden="true">
+      <defs>
+        <linearGradient id="${gid}" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="${g1}"/>
+          <stop offset="100%" stop-color="${g2}"/>
+        </linearGradient>
+      </defs>
       <circle class="bg" cx="20" cy="20" r="${r}"></circle>
-      <circle class="fg" cx="20" cy="20" r="${r}" stroke="${color}" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
+      <circle class="fg" cx="20" cy="20" r="${r}" stroke="url(#${gid})" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
       <text class="txt" x="20" y="20">${Math.round(pct)}</text>
     </svg>`;
   el.innerHTML=svg;
   requestAnimationFrame(()=>{
     const fg=el.querySelector('.fg');
     const offset=c*(1 - (pct/100));
-    fg.style.transition='stroke-dashoffset .9s ease';
     fg.style.strokeDashoffset=offset;
   });
 }
 
-/* ===== التحليل التفصيلي + تصغير أيقونات الأزرار ===== */
+/* ===== التحليل التفصيلي ===== */
 async function openFieldFullScreen(key){
   const panel=document.getElementById('fullPanel');
   const title=document.getElementById('fpTitle');
+  const subsBar=document.getElementById('fpSubs');
   const body=document.getElementById('fpBody');
   const f=fields[key]; title.textContent='التحليل التفصيلي – '+f.name;
 
-  const subsHtml=f.subs.map(s=>{
+  /* شريط العناوين الفرعية (بدون مربعات) + مستوى الأداء بجوارها */
+  subsBar.innerHTML = f.subs.map(s=>{
     const lb=perfLevel(s.v);
-    return `<div class="subCard" style="background:${lb.color}10;border-color:${lb.color}40;box-shadow:inset 0 0 0 1px ${lb.color}26;">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <strong>${s.name}</strong>
-        <span class="badge ${lb.key}">${fmt(s.v)}% • ${lb.name}</span>
-      </div>
-    </div>`;
+    // تدرج خاص لكل وسم
+    const g1=lb.color, g2='#0b7e88';
+    return `
+      <div class="pill" style="--g1:${g1};--g2:${g2}" title="${s.name}">
+        <span class="pill-name">${s.name}</span>
+        <span class="barMini"><span style="width:${Math.max(4,s.v)}%"></span></span>
+        <span class="pill-pct">${fmt(s.v)}%</span>
+        <span class="pill-lvl" style="color:${lb.color}">• ${lb.name}</span>
+      </div>`;
   }).join('');
 
   const {data:evByRow}=await fetchEvidencesByField(key);
@@ -497,7 +528,7 @@ async function openFieldFullScreen(key){
       const link = e.file_url || '';
       const name = (e.text && e.text.trim()) ? e.text.trim() : ('شاهد '+(j+1));
       return link
-        ? `<a class="evi-chip" href="${link}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${link}')">${name}</a>`
+        ? `<a class="evi-chip" href="${link}" target="_blank" onclick="event.preventDefault();openEvidenceViewer('${link}')">${name}</a>`
         : `<span class="evi-chip">${name}</span>`;
     }).join('');
     return `<tr class="${levelRowClass(r.level)}">
@@ -527,9 +558,8 @@ async function openFieldFullScreen(key){
     </tr>`;
   }).join('');
 
-  body.innerHTML=`<div class="subgrid">${subsHtml}</div>
-  <div class="tableWrap"><table>
-    <thead><tr><th style="width:210px">المستوى/الأداء</th><th>المعيار</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
+  body.innerHTML=`<div class="tableWrap"><table>
+    <thead><tr><th style="width:220px">المستوى/الأداء</th><th>المعيار</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 
   document.querySelectorAll('.miniGauge').forEach(el=>{
@@ -568,9 +598,8 @@ function openEvidence(fieldKey,rowIdx){
   modal.style.display='flex';
   modal.setAttribute('aria-hidden','false');
 
-  // منع أي خروج غير مقصود من الصفحة
+  // منع الإغلاق بالضغط على الخلفية بالخطأ
   modal.addEventListener('click', (ev)=>{
-    // لا نغلق عند الضغط على الخلفية بالخطأ – فقط زر الإغلاق/إلغاء
     const sheet=modal.querySelector('.sheet');
     if(!sheet.contains(ev.target)) ev.preventDefault();
   }, { once:true });
@@ -584,11 +613,7 @@ function closeEvidence(){
 document.getElementById('eviClose').onclick=(e)=>{e.preventDefault(); closeEvidence();};
 document.getElementById('eviCancel').onclick=(e)=>{e.preventDefault(); closeEvidence();};
 
-// تأكيد منع أي "submit" تلقائي
-['eviSave','eviCancel','eviClose','fpHome','fpClose','btnExt2025','btnExt2024','btnAnalyze','btnFullReport','btnFullPlan'].forEach(id=>{
-  const el=document.getElementById(id); if(el) el.setAttribute('type','button');
-});
-
+/* حفظ الشاهد (ملف أو رابط) */
 document.getElementById('eviSave').onclick=async (ev)=>{
   ev.preventDefault(); ev.stopPropagation();
   if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
@@ -608,30 +633,51 @@ document.getElementById('eviSave').onclick=async (ev)=>{
     if(up.error){ alert('فشل رفع الملف.'); return; }
     file_url=up.url||'';
   } else if(link){
-    file_url=link; // اعتماد الرابط كمسار الشاهد
+    file_url=link;
   }
 
   const payload={ field_key:currentEvi.key, row_index:currentEvi.idx, text, term, week, hijri, file_url };
   const {error}=await insertEvidence(payload);
-  if(error){ alert('تعذّر حفظ الشاهد.'); return; }
+  if(error){ alert('تعذّر حفظ الشاهد: '+(error.message||'')); return; }
 
   closeEvidence();
   document.getElementById('fullPanel').style.display='none';
   openFieldFullScreen(currentEvi.key);
 };
 
-async function deleteEvidence(key,index){
-  if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
-  const ok=confirm('تأكيد حذف جميع الشواهد لهذا البند؟');
-  if(!ok) return;
-  const {error}=await supabase.from('evidences').delete().eq('field_key', key).eq('row_index', index);
-  if(error){alert('تعذّر حذف الشواهد.');return;}
-  alert('تم حذف الشواهد لهذا البند');
-  document.getElementById('fullPanel').style.display='none';
-  openFieldFullScreen(key);
+/* حذف الشواهد لهذا البند */
+async function deleteEvidence(key, index){
+  try{
+    if(!supabase){
+      alert('تعذّر الاتصال بقاعدة البيانات (Supabase).'); 
+      return;
+    }
+    const ok = confirm('تأكيد حذف جميع الشواهد لهذا البند؟');
+    if(!ok) return;
+
+    const { error, count } = await supabase
+      .from('evidences')
+      .delete({ count: 'exact' })
+      .eq('field_key', key)
+      .eq('row_index', index);
+
+    if(error){
+      alert('تعذّر حذف الشواهد: ' + (error.message || 'خطأ غير معروف'));
+      return;
+    }
+
+    alert(count && count>0 ? `تم حذف ${count} شاهد/شواهد.` : 'لا توجد شواهد محفوظة لهذا البند.');
+
+    const panel = document.getElementById('fullPanel');
+    panel.style.display = 'none';
+    await openFieldFullScreen(key);
+
+  }catch(err){
+    alert('حدث خطأ أثناء الحذف: ' + err.message);
+  }
 }
 
-/* تقارير وخطط المجالات */
+/* تقارير وخطط المجالات (لكل مجال) */
 function buildFieldReportHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map(r=>`
@@ -667,121 +713,36 @@ function buildFieldPlanHTML(key){
 function openFieldReport(key){openDocWindow('تقرير المجال',buildFieldReportHTML(key))}
 function openFieldPlan(key){openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key))}
 
-/* التقرير الشامل */
-function buildComprehensiveReport(){
-  const yearBlock=(year)=>{
-    const list=Object.entries(fields).map(([k,f])=>{
-      const val=year===2024?f.v2024:f.v2025; const lv=perfLevel(val);
-      return `<tr><td style="text-align:right">${f.name}</td><td>${fmt(val)}%</td><td><span class="badge ${lv.key}">${lv.name}</span></td></tr>`;
-    }).join('');
-    return `<div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
-      <h3 style="text-align:center;margin:4px 0">الأداء العام ${year}م</h3>
-      <div class="tableWrap"><table><thead><tr><th>المجال</th><th>النسبة</th><th>المستوى</th></tr></thead><tbody>${list}</tbody></table></div>
-    </div>`;
-  };
-
-  const diffs=Object.entries(fields).map(([k,f])=>({name:f.name,d:f.v2025-f.v2024}));
-
-  const strengthsFromDetails=[];
-  Object.entries(detailed).forEach(([k,arr])=>{
-    arr.forEach(item=>{ if(item.perf>=90) strengthsFromDetails.push({field:fields[k].name, indicator:item.indicator, v:item.perf}); });
-  });
-
-  const lowSubs=Object.entries(fields).flatMap(([k,f])=>f.subs.map(s=>({field:f.name,sub:s.name,v:s.v})));
-  lowSubs.sort((a,b)=>a.v-b.v);
-
-  const strengthsList=(strengthsFromDetails.length
-    ? strengthsFromDetails.slice(0,8).map(x=>`<li>${x.field} — ${x.indicator} (${fmt(x.v)}%)</li>`).join('')
-    : '<li>—</li>');
-  const improvements=lowSubs.filter(x=>x.v<75).map(x=>`<li>${x.field} — ${x.sub} (${fmt(x.v)}%)</li>`).join('')||'<li>—</li>';
-  const follow=lowSubs.filter(x=>x.v>=75 && x.v<90).map(x=>`<li>${x.field} — ${x.sub} (${fmt(x.v)}%)</li>`).join('')||'<li>—</li>';
-
-  return `<h2 class="nowrap-title">التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${yearBlock(2024)}${yearBlock(2025)}</div>
-  <h3>🟦 لوحة الفروقات 2024 ↔ 2025</h3>
-  <div class="tableWrap"><table><thead><tr><th>المجال</th><th>فرق النسبة</th><th>الاتجاه</th></tr></thead><tbody>
-  ${diffs.map(d=>{const sym=d.d>0?'↑ تحسّن':(d.d<0?'↓ تراجع':'⟲ ثبات'); const col=d.d>0?'#16a34a':(d.d<0?'#e11d48':'#2563eb'); return `<tr><td>${d.name}</td><td>${d.d>0?'+':''}${fmt(d.d)}</td><td style="color:${col};font-weight:700">${sym}</td></tr>`}).join('')}</tbody></table></div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
-      <h3 style="margin:4px 0;color:var(--lv-excel)">جوانب التميّز</h3>
-      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${strengthsList}</ul>
-    </div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
-      <h3 style="margin:4px 0;color:var(--lv-launch)">جوانب تحتاج تحسين</h3>
-      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${improvements}</ul>
-    </div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
-      <h3 style="margin:4px 0;color:var(--lv-progress)">جوانب متابعة وتثبيت</h3>
-      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${follow}</ul>
-    </div>
-  </div>
-  <div class="sig">مدير المدرسة: فهد حامد الزهراني — التاريخ: ${todayHijri()}</div>`;
-}
-
-/* خطة التحسين */
-function buildImprovementPlan(){
-  const rows=Object.entries(fields).map(([k,f])=>{
-    const lv=perfLevel(f.v2025);
-    const goalGeneral = (f.v2025>=90)
-      ? 'استدامة مستوى التميّز ورفع المتوسط إلى ≥ 92%'
-      : (f.v2025>=75 ? 'رفع المتوسط إلى نطاق التميّز (≥ 90%)'
-         : (f.v2025>=50 ? 'الارتقاء إلى ≥ 75% ثم التقدّم نحو 90%' : 'الوصول إلى ≥ 50% ثم مواصلة التحسن إلى 75%'));
-    const subs=f.subs.map(s=>`${s.name} (${fmt(s.v)}%)`).join('، ');
-    const indicatorKPI='نسبة الإنجاز الشهرية؛ عدد الشواهد المعتمدة؛ تحسّن مؤشرات العناصر الفرعية؛ رضا المستفيدين';
-    const tools='لوحة المؤشرات؛ تقارير المتابعة؛ استبانات؛ ملف الشواهد؛ زيارات صفية';
-    const mitigation='جدولة واضحة؛ تحفيز ومساءلة؛ إعادة توزيع موارد؛ دعم فني';
-    const followup='اجتماع فريق الجودة أسبوعي؛ تقرير شهري؛ مراجعة فصلية';
-    const outputs='تحسن نقاط الضعف؛ شواهد موثقة؛ نشر أفضل الممارسات';
-
-    return `<tr class="${levelRowClass(lv.name)}">
-      <td style="width:14%">${fields[k].name}</td>
-      <td style="width:12%"><span class="badge ${lv.key}">${lv.name}</span> — ${fmt(f.v2025)}%</td>
-      <td style="width:18%">${goalGeneral}</td>
-      <td style="width:18%">${subs}</td>
-      <td style="width:14%">${indicatorKPI}</td>
-      <td style="width:14%">${tools}</td>
-      <td style="width:10%">${mitigation}</td>
-      <td style="width:10%">${followup}</td>
-      <td style="width:10%">${outputs}</td>
-    </tr>`;
-  }).join('');
-
-  return `<h2 class="nowrap-title">خطة التحسين – ثانوية اليعقوبي بالخبر</h2>
-  <div class="tableWrap"><table>
-    <thead>
-      <tr>
-        <th>المجال</th>
-        <th>الوضع الراهن</th>
-        <th>الهدف العام</th>
-        <th>الأهداف الخاصة (العناصر)</th>
-        <th>مؤشرات الأداء</th>
-        <th>أدوات التنفيذ والمتابعة</th>
-        <th>المعالجات</th>
-        <th>آلية المتابعة</th>
-        <th>المخرجات المتوقعة</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table></div>
-  <div class="sig">مدير المدرسة: فهد حامد الزهراني — التاريخ: ${todayHijri()}</div>`;
-}
-
 /* تشغيل */
 window.addEventListener('DOMContentLoaded',()=>{
+  // تفعيل Ripple
+  document.querySelectorAll('.btn.ripple').forEach(btn=>{
+    btn.addEventListener('pointerdown',(e)=>{
+      const rect=e.currentTarget.getBoundingClientRect();
+      e.currentTarget.style.setProperty('--x', (e.clientX-rect.left)+'px');
+      e.currentTarget.style.setProperty('--y', (e.clientY-rect.top)+'px');
+    });
+  });
+
   document.getElementById('btnExt2025').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2025,'_blank','noopener');});
   document.getElementById('btnExt2024').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2024,'_blank','noopener');});
   document.getElementById('btnAnalyze').addEventListener('click',(e)=>{e.preventDefault(); renderDashboard();});
-  document.getElementById('btnFullReport').addEventListener('click',(e)=>{e.preventDefault(); openDocWindow('التقرير الشامل',buildComprehensiveReport());});
-  document.getElementById('btnFullPlan').addEventListener('click',(e)=>{e.preventDefault(); openDocWindow('خطة التحسين',buildImprovementPlan());});
+  // إلغاء صفحة التقرير الشامل سابقاً — لا زر ولا دوال
+  // زر خطة التحسين العامة يفتح الرابط الخارجي المطلوب
+  document.getElementById('btnFullPlan').addEventListener('click',(e)=>{
+    e.preventDefault();
+    window.open(PLAN_LINK,'_blank','noopener');
+  });
 
   renderDashboard();
   fillWeeks('T1');
 
-  // منع إغلاق/تغيير الصفحة بالخطأ أثناء تعديل الشواهد
-  window.addEventListener('beforeunload',(ev)=>{
-    const modalOpen = document.getElementById('eviModal').style.display==='flex';
-    if(modalOpen){ ev.preventDefault(); ev.returnValue=''; return ''; }
-  });
+  // فحص اتصال Supabase (تنبيهات مفيدة)
+  if(supabase){
+    supabase.from('evidences').select('id').limit(1).then(({error})=>{
+      if(error){ console.warn('Supabase error:', error); }
+    });
+  }
 });
 </script>
 </body>
