@@ -24,16 +24,21 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',s
 a{color:#135;text-decoration:none}
 a:hover{text-decoration:underline}
 
-/* رأس المنصة */
+/* رأس المنصة (صورة بعرض الصفحة) */
 .header{
-  width:100%; aspect-ratio:7/1.6;
+  width:100%;
+  height:180px;           /* يمكنك تعديل الارتفاع */
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
   background:linear-gradient(135deg,var(--shine1),var(--shine2));
-  border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,.12);
-  position:relative; overflow:hidden; margin:12px auto;
+  margin:12px auto;
 }
-.header:after{
-  content:""; position:absolute; inset:0;
-  background:url('logo.png') center/contain no-repeat;
+.header img{
+  width:100%;
+  height:100%;
+  object-fit:cover;       /* يملأ العرض كاملاً بدون تشويه */
+  display:block;
 }
 
 /* الأزرار */
@@ -107,11 +112,23 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
   .header{box-shadow:none!important;border:0!important}
 }
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
+
+/* صورة الهيدر داخل تقارير/خطط A4 */
+.reportHeader{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:8px;
+  display:block;
+  margin-bottom:15px;
+}
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="header" aria-label="وزارة التعليم – شعار"></div>
+  <div class="header" aria-label="وزارة التعليم – شعار">
+    <img id="siteLogo" src="" alt="شعار وزارة التعليم – ثانوية اليعقوبي">
+  </div>
 
   <div class="controls">
     <button class="btn eval" id="btnExt2025">التقييم الخارجي ٢٠٢٥م 📄</button>
@@ -166,6 +183,22 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
 </div>
 
 <script>
+/* ========== 0) شعار موحّد وتخزينه ========== */
+const LOGO_KEY = 'yaqoubi_logo_src';
+let LOGO_URL   = localStorage.getItem(LOGO_KEY) || 'logo.png';
+
+function applyLogoToHeader(){
+  const img = document.getElementById('siteLogo');
+  if(img){ img.src = LOGO_URL; }
+}
+/* يمكنك من الكونسول تغيير الصورة وسيُحفَظ الرابط */
+function setLogo(url){
+  if(!url) return;
+  LOGO_URL = url.trim();
+  localStorage.setItem(LOGO_KEY, LOGO_URL);
+  applyLogoToHeader();
+}
+
 /* ========== 1) أسابيع هجري ========== */
 const TERM1=[{w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},{w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},{w:3,from:'15 / 03 / 1447',to:'19 / 03 / 1447'},{w:4,from:'22 / 03 / 1447',to:'26 / 03 / 1447'},{w:5,from:'29 / 03 / 1447',to:'03 / 04 / 1447'},{w:6,from:'06 / 04 / 1447',to:'10 / 04 / 1447'},{w:7,from:'13 / 04 / 1447',to:'17 / 04 / 1447'},{w:8,from:'20 / 04 / 1447',to:'24 / 04 / 1447'},{w:9,from:'27 / 04 / 1447',to:'01 / 05 / 1447'},{w:10,from:'04 / 05 / 1447',to:'08 / 05 / 1447'},{w:11,from:'11 / 05 / 1447',to:'15 / 05 / 1447'},{w:12,from:'18 / 05 / 1447',to:'22 / 05 / 1447'},{w:13,from:'25 / 05 / 1447',to:'29 / 05 / 1447'},{w:'—',from:'30 / 05 / 1447',to:'08 / 06 / 1447',note:'🍂 إجازة الخريف'},{w:14,from:'09 / 06 / 1447',to:'13 / 06 / 1447',note:'بعد العودة من الإجازة'},{w:15,from:'16 / 06 / 1447',to:'20 / 06 / 1447'},{w:16,from:'23 / 06 / 1447',to:'27 / 06 / 1447'},{w:17,from:'30 / 06 / 1447',to:'04 / 07 / 1447'},{w:18,from:'07 / 07 / 1447',to:'11 / 07 / 1447'},{w:19,from:'14 / 07 / 1447',to:'18 / 07 / 1447',note:'✳️ ختام الفصل الدراسي الأول'}];
 const TERM2=[{w:1,from:'29 / 07 / 1447',to:'03 / 08 / 1447',note:'بداية الفصل الثاني'},{w:2,from:'06 / 08 / 1447',to:'10 / 08 / 1447'},{w:3,from:'13 / 08 / 1447',to:'17 / 08 / 1447'},{w:4,from:'20 / 08 / 1447',to:'24 / 08 / 1447'},{w:5,from:'27 / 08 / 1447',to:'02 / 09 / 1447'},{w:6,from:'05 / 09 / 1447',to:'09 / 09 / 1447'},{w:7,from:'12 / 09 / 1447',to:'15 / 09 / 1447',note:'آخر أسبوع قبل الإجازة'},{w:'—',from:'16 / 09 / 1447',to:'10 / 10 / 1447',note:'🕌 إجازة رمضان وعيد الفطر'},{w:8,from:'10 / 10 / 1447',to:'14 / 10 / 1447',note:'استئناف الدراسة بعد العيد'},{w:9,from:'17 / 10 / 1447',to:'21 / 10 / 1447'},{w:10,from:'24 / 10 / 1447',to:'28 / 10 / 1447'},{w:11,from:'01 / 11 / 1447',to:'05 / 11 / 1447'},{w:12,from:'08 / 11 / 1447',to:'12 / 11 / 1447'},{w:13,from:'15 / 11 / 1447',to:'19 / 11 / 1447'},{w:14,from:'22 / 11 / 1447',to:'26 / 11 / 1447'},{w:15,from:'29 / 11 / 1447',to:'03 / 12 / 1447'},{w:'—',from:'04 / 12 / 1447',to:'14 / 12 / 1447',note:'🕋 إجازة عيد الأضحى'},{w:16,from:'15 / 12 / 1447',to:'19 / 12 / 1447',note:'استئناف الدراسة بعد الأضحى'},{w:17,from:'22 / 12 / 1447',to:'26 / 12 / 1447'},{w:18,from:'29 / 12 / 1447',to:'03 / 01 / 1448'},{w:19,from:'06 / 01 / 1448',to:'10 / 01 / 1448',note:'ختام أسابيع الفصل'}];
@@ -278,9 +311,9 @@ const SB_URL="https://vullbssjyyrnoyyxyebq.supabase.co";
 const SB_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc";
 const supabase=window.supabase?window.supabase.createClient(SB_URL,SB_ANON):null;
 
-/* ========== 5) رأس التقارير ========== */
+/* ========== 5) رأس التقارير (صورة بعرض الصفحة) ========== */
 function bannerHeaderHTML(){
-  return `<div style="width:100%;height:180px;background:url('logo.png') center/contain no-repeat;margin-bottom:15px;border-radius:8px;"></div>`;
+  return `<img class="reportHeader" src="${LOGO_URL}" alt="شعار التقرير">`;
 }
 
 /* ========== 6) نافذة A4 للطباعة ========== */
@@ -303,6 +336,8 @@ function openDocWindow(title,contentHTML){
     .sig{font-size:12px;text-align:center;margin-top:8px;color:#345}
     @media print{.toolbar{display:none}}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700}
+    /* صورة الهيدر داخل التقارير */
+    .reportHeader{width:100%;height:160px;object-fit:cover;border-radius:8px;display:block;margin-bottom:15px;}
   </style></head><body>
   <div class="wrap">${bannerHeaderHTML()}${contentHTML}
     <div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button><button class="btn" onclick="window.close()">إغلاق</button></div>
@@ -552,6 +587,8 @@ function buildComprehensivePlan(){
 
 /* ========== 14) التشغيل والأزرار ========== */
 window.addEventListener('DOMContentLoaded',()=>{
+  applyLogoToHeader();  // ← يضع الشعار في الهيدر عند التحميل
+
   document.getElementById('btnExt2025').addEventListener('click',()=>{window.open('https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link','_blank')});
   document.getElementById('btnExt2024').addEventListener('click',()=>{window.open('https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link','_blank')});
   document.getElementById('btnAnalyze').addEventListener('click',renderDashboard);
