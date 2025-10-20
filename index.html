@@ -12,29 +12,62 @@
   --moe:#0b7e88; --ink:#06353b; --bg:#f5f8f8; --card:#ffffff;
   --shine1:#e8fbfb; --shine2:#d9f2f3; --muted:#6f8e94;
   --ok:#e9fff4; --vg:#eef5ff; --gd:#fff6ec; --md:#ffefef;
+
   /* ألوان المستويات */
-  --lv-excel:#16a34a;     /* التميّز */
-  --lv-progress:#2563eb;  /* التقدّم */
-  --lv-launch:#f59e0b;    /* الانطلاق */
-  --lv-ready:#e11d48;     /* التهيئة */
+  --lv-excel:#16a34a;     /* التميّز – أخضر */
+  --lv-progress:#2563eb;  /* التقدّم – أزرق */
+  --lv-launch:#f59e0b;    /* الانطلاق – برتقالي */
+  --lv-ready:#e11d48;     /* التهيئة – أحمر قرمزي */
+
+  /* ارتفاع الهيدر المتجاوب لكل الصفحات */
+  --hero-h: clamp(240px, 32vh, 380px);
 }
+
+/* أساسيات */
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
-.page{max-width:1200px;margin:0 auto;padding:10px 14px}
 a{color:#135;text-decoration:none}
 a:hover{text-decoration:underline}
 
-/* رأس المنصة (صورة بعرض الصفحة) */
-.header{
-  width:100%; height:180px; border-radius:16px; overflow:hidden;
-  box-shadow:0 10px 28px rgba(0,0,0,.12);
-  background:linear-gradient(135deg,var(--shine1),var(--shine2));
-  margin:12px auto;
+/* -------- هيدر بنفس لون الصفحة ولمعان على الشعار -------- */
+.hero{
+  width:100vw;
+  margin-left:calc(50% - 50vw);
+  background:var(--bg);                 /* نفس لون الصفحة */
+  border-radius:0 0 24px 24px;
+  box-shadow:0 10px 28px rgba(0,0,0,.08);
+  position:relative; overflow:hidden;
+  padding:0; margin:0 0 14px;
+  height:var(--hero-h);
+  display:flex; align-items:center; justify-content:center;
 }
-.header img{width:100%;height:100%;object-fit:cover;display:block}
+.hero::after{
+  /* خط لامع سفلي رقيق */
+  content:""; position:absolute; left:0; right:0; bottom:0; height:10px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
+  opacity:.6;
+}
+.hero .brand{
+  width:min(1200px,92vw);
+  height:calc(var(--hero-h) - 24px);
+  position:relative;
+  background:url('logo.png') center/contain no-repeat;
+  filter: drop-shadow(0 6px 16px rgba(11,126,136,.18));
+}
+.hero .brand::after{
+  /* لمعان خفيف فوق الشعار */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(120px 80px at 25% 20%, rgba(255,255,255,.55), transparent 60%),
+    radial-gradient(160px 100px at 75% 80%, rgba(255,255,255,.35), transparent 65%);
+  mix-blend-mode:screen; opacity:.9;
+}
+
+/* الحاوية */
+.page{max-width:1200px;margin:0 auto;padding:0 14px}
 
 /* الأزرار */
-.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0 10px}
 .btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25)}
 .btn.light{background:#eef6f7;color:#06353b}
 .btn.ghost{background:#fff;color:var(--moe);border:1px solid #d7ecec}
@@ -47,26 +80,30 @@ a:hover{text-decoration:underline}
 @media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(260px,1fr))}}
 @media (max-width:620px){.grid{grid-template-columns:1fr}}
 
+/* البطاقات */
 .card{
   background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
   border-radius:16px;padding:14px;position:relative;
   box-shadow:0 10px 24px rgba(0,0,0,.08),inset 0 0 0 1px #e6efef;
 }
 .card h2{margin:0 0 6px;color:var(--moe);font-size:20px}
-.kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+.kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px}
 .progress{height:10px;background:#e6efef;border-radius:999px;overflow:hidden;margin:8px 0}
-.bar{height:100%}
-.badge{padding:2px 8px;border-radius:999px;background:#eaf6f6;color:#246;font-size:12px;font-weight:700}
-.badge.excel{background:color-mix(in srgb,var(--lv-excel) 18%,#fff);color:var(--lv-excel)}
-.badge.progress{background:color-mix(in srgb,var(--lv-progress) 22%,#fff);color:var(--lv-progress)}
-.badge.launch{background:color-mix(in srgb,var(--lv-launch) 22%,#fff);color:var(--lv-launch)}
-.badge.ready{background:color-mix(in srgb,var(--lv-ready) 22%,#fff);color:var(--lv-ready)}
-/* الوسم الجديد داخل بطاقات المؤشر (نص ملوّن فقط) */
-.levelTag{font-weight:800;font-size:14px}
-.levelTag.excel{color:var(--lv-excel)}
-.levelTag.progress{color:var(--lv-progress)}
-.levelTag.launch{color:var(--lv-launch)}
-.levelTag.ready{color:var(--lv-ready)}
+.bar{height:100%;background:#2aa897}
+
+/* -------- شارات المستوى كنص ملوّن فقط (خارج الصندوق) -------- */
+.badge{
+  background:none; border:none; padding:0;
+  font-size:16px; font-weight:800; line-height:1;
+  letter-spacing:.2px; white-space:nowrap;
+}
+.badge.excel{color:var(--lv-excel)}
+.badge.progress{color:var(--lv-progress)}
+.badge.launch{color:var(--lv-launch)}
+.badge.ready{color:var(--lv-ready)}
+
+/* كبسولات عامة للشواهد */
+.pill{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:800;color:#fff}
 .centerBar{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0}
 
 /* لوحة التفاصيل */
@@ -105,29 +142,33 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
 @page{size:A4;margin:10mm}
 @media print{
   .controls,.no-print,.fullpanel,.modal{display:none!important}
-  .page{max-width:800px;margin:0 auto!important}
-  .header{box-shadow:none!important;border:0!important}
+  .page{max-width:100%;margin:0 auto!important;padding:0 10mm}
+  .hero{box-shadow:none!important;border-radius:0!important}
 }
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 
-/* صورة الهيدر داخل تقارير/خطط A4 */
-.reportHeader{
-  width:100%; height:160px; object-fit:cover; border-radius:8px; display:block; margin-bottom:15px;
-}
+/* عناوين لا تلتف */
+.nowrap-title{white-space:nowrap;overflow:hidden;text-overflow:clip;text-align:center}
+
+/* حجم أصغر لقوائم التميّز/التحسين/المتابعة داخل التقارير */
+.small-list{font-size:13px;line-height:1.45}
+.small-list li{margin:.2rem 0}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="header" aria-label="وزارة التعليم – شعار">
-    <img id="siteLogo" src="" alt="شعار وزارة التعليم – ثانوية اليعقوبي">
-  </div>
 
+<!-- هيدر بنفس لون الصفحة ولمعان الشعار -->
+<div class="hero" aria-label="وزارة التعليم – شعار">
+  <div class="brand"></div>
+</div>
+
+<div class="page">
   <div class="controls">
     <button class="btn eval" id="btnExt2025">التقييم الخارجي ٢٠٢٥م 📄</button>
     <button class="btn eval" id="btnExt2024">التقييم الخارجي ٢٠٢٤م 📄</button>
     <button class="btn" id="btnAnalyze">تحليل شامل 🔎</button>
     <button class="btn" id="btnFullReport">التقرير الشامل PDF 📘</button>
-    <button class="btn" id="btnFullPlan">الخطة الشاملة PDF 🗂️</button>
+    <button class="btn" id="btnFullPlan">خطة التحسين PDF 🗂️</button>
   </div>
 
   <div id="dashboard" class="grid"></div>
@@ -175,20 +216,10 @@ input[type=text],input[type=file],select{border:1px solid #d7e7e7;border-radius:
 </div>
 
 <script>
-/* ========== 0) شعار موحّد وتخزينه ========== */
-const LOGO_KEY = 'yaqoubi_logo_src';
-let LOGO_URL   = localStorage.getItem(LOGO_KEY) || 'logo.png';
-
-function applyLogoToHeader(){
-  const img = document.getElementById('siteLogo');
-  if(img){ img.src = LOGO_URL; }
-}
-function setLogo(url){
-  if(!url) return;
-  LOGO_URL = url.trim();
-  localStorage.setItem(LOGO_KEY, LOGO_URL);
-  applyLogoToHeader();
-}
+/* ======= مصادر (مخفاة في التقارير) ======= */
+const SRC_2025 = 'https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
+const SRC_2024 = 'https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link';
+const LAST_SYNC = new Date().toLocaleString('ar-SA');
 
 /* ========== 1) أسابيع هجري ========== */
 const TERM1=[{w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},{w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},{w:3,from:'15 / 03 / 1447',to:'19 / 03 / 1447'},{w:4,from:'22 / 03 / 1447',to:'26 / 03 / 1447'},{w:5,from:'29 / 03 / 1447',to:'03 / 04 / 1447'},{w:6,from:'06 / 04 / 1447',to:'10 / 04 / 1447'},{w:7,from:'13 / 04 / 1447',to:'17 / 04 / 1447'},{w:8,from:'20 / 04 / 1447',to:'24 / 04 / 1447'},{w:9,from:'27 / 04 / 1447',to:'01 / 05 / 1447'},{w:10,from:'04 / 05 / 1447',to:'08 / 05 / 1447'},{w:11,from:'11 / 05 / 1447',to:'15 / 05 / 1447'},{w:12,from:'18 / 05 / 1447',to:'22 / 05 / 1447'},{w:13,from:'25 / 05 / 1447',to:'29 / 05 / 1447'},{w:'—',from:'30 / 05 / 1447',to:'08 / 06 / 1447',note:'🍂 إجازة الخريف'},{w:14,from:'09 / 06 / 1447',to:'13 / 06 / 1447',note:'بعد العودة من الإجازة'},{w:15,from:'16 / 06 / 1447',to:'20 / 06 / 1447'},{w:16,from:'23 / 06 / 1447',to:'27 / 06 / 1447'},{w:17,from:'30 / 06 / 1447',to:'04 / 07 / 1447'},{w:18,from:'07 / 07 / 1447',to:'11 / 07 / 1447'},{w:19,from:'14 / 07 / 1447',to:'18 / 07 / 1447',note:'✳️ ختام الفصل الدراسي الأول'}];
@@ -202,6 +233,7 @@ function todayHijri(){
     return f.format(new Date());
   }catch(e){return '.../.. /1447هـ'}
 }
+/* تصنيف المستوى */
 function perfLevel(pct){
   if(pct>=90) return {name:'التميّز', key:'excel',  color:getComputedStyle(document.documentElement).getPropertyValue('--lv-excel').trim()};
   if(pct>=75) return {name:'التقدّم', key:'progress',color:getComputedStyle(document.documentElement).getPropertyValue('--lv-progress').trim()};
@@ -301,19 +333,35 @@ const SB_URL="https://vullbssjyyrnoyyxyebq.supabase.co";
 const SB_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc";
 const supabase=window.supabase?window.supabase.createClient(SB_URL,SB_ANON):null;
 
-/* ========== 5) رأس التقارير (صورة بعرض الصفحة) ========== */
+/* ========== 5) رأس موحّد للتقارير/الخطط (بنفس لون الصفحة + لمعان) ========== */
 function bannerHeaderHTML(){
-  return `<img class="reportHeader" src="${LOGO_URL}" alt="شعار التقرير">`;
+  return `
+  <div class="hero" style="margin:0 0 10px;height:var(--hero-h);background:var(--bg)">
+    <div class="brand" style="height:calc(var(--hero-h) - 24px)"></div>
+  </div>`;
 }
 
-/* ========== 6) نافذة A4 للطباعة ========== */
+/* ========== 6) نافذة A4 للطباعة (الهيدر بلون الصفحة + إخفاء مرجع المصدر) ========== */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/>
   <title>${title}</title>
   <style>
+    :root{
+      --moe:#0b7e88; --ink:#06353b; --bg:#f5f8f8; --card:#ffffff;
+      --shine1:#e8fbfb; --shine2:#d9f2f3;
+      --lv-excel:#16a34a; --lv-progress:#2563eb; --lv-launch:#f59e0b; --lv-ready:#e11d48;
+      --hero-h: clamp(240px, 32vh, 380px);
+    }
     @page{size:A4;margin:10mm}
-    body{font-family:'Tajawal',sans-serif;margin:0;background:#fff;color:#06353b}
+    html,body{margin:0;background:#fff;color:#06353b;font-family:'Tajawal',sans-serif}
+    .hero{width:100vw;margin-left:calc(50% - 50vw);background:var(--bg);border-radius:0 0 24px 24px;box-shadow:0 10px 24px rgba(0,0,0,.10);padding:0;height:var(--hero-h);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);opacity:.6}
+    .brand{width:min(1200px,92vw);height:calc(var(--hero-h) - 24px);margin:0 auto;background:url('logo.png') center/contain no-repeat;position:relative;filter: drop-shadow(0 6px 16px rgba(11,126,136,.18))}
+    .brand::after{content:"";position:absolute;inset:0;background:
+      radial-gradient(120px 80px at 25% 20%, rgba(255,255,255,.55), transparent 60%),
+      radial-gradient(160px 100px at 75% 80%, rgba(255,255,255,.35), transparent 65%);
+      mix-blend-mode:screen;opacity:.9;pointer-events:none}
     .wrap{max-width:1120px;margin:0 auto;padding:12px}
     h2{margin:6px 0;color:#0b7e88;text-align:center}
     h3{color:#0b7e88;margin:8px 0}
@@ -324,11 +372,16 @@ function openDocWindow(title,contentHTML){
     .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec;text-align:center}
     .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin:0 4px}
     .sig{font-size:12px;text-align:center;margin-top:8px;color:#345}
-    @media print{.toolbar{display:none}}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700}
-    .reportHeader{width:100%;height:160px;object-fit:cover;border-radius:8px;display:block;margin-bottom:15px;}
+    .pill{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:800;color:#fff}
+    .nowrap-title{white-space:nowrap;overflow:hidden;text-overflow:clip;text-align:center}
+    .meta{display:none} /* مخفي كما طلبت */
+    .small-list{font-size:13px;line-height:1.45}
+    .small-list li{margin:.2rem 0}
   </style></head><body>
-  <div class="wrap">${bannerHeaderHTML()}${contentHTML}
+  ${bannerHeaderHTML()}
+  <div class="wrap">
+    <div class="meta">مصدر البيانات: <a href="${SRC_2025}" target="_blank">التقويم الخارجي 2025</a> • <a href="${SRC_2024}" target="_blank">التقويم الخارجي 2024</a> • آخر مزامنة: ${LAST_SYNC}</div>
+    ${contentHTML}
     <div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button><button class="btn" onclick="window.close()">إغلاق</button></div>
   </div></body></html>`;
   w.document.open(); w.document.write(doc); w.document.close();
@@ -355,7 +408,7 @@ function renderDashboard(){
       <h2>${f.name}</h2>
       <div class="kpi">
         <span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span>
-        <span class="levelTag ${lvl.key}">${lvl.name}</span>
+        <span class="badge ${lvl.key}">${lvl.name}</span>
       </div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%;background:${lvl.color}"></div></div>
       <div style="display:flex;justify-content:center"><canvas id="donut-${key}" height="140" style="cursor:pointer"></canvas></div>
@@ -397,7 +450,7 @@ function openFieldFullScreen(key){
       const tagColor=perfLevel(Math.min(99,60+(j*7))).color;
       const name=e.text?e.text:'شاهد';
       return `<div class="small" style="margin:.25rem 0">
-        <span class="badge" style="background:${tagColor}22;color:${tagColor};font-weight:700">${name}</span>
+        <span class="pill" style="background:${tagColor}">${name}</span>
         — ${e.hijri}
         ${e.url?`— <a href="${e.url}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${e.url}');">مشاهدة</a>`:''}
       </div>`;
@@ -413,7 +466,7 @@ function openFieldFullScreen(key){
           <button class="btn-evi" onclick="openEvidence('${key}',${i})" title="إضافة شاهد">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>إضافة شاهد
           </button>
-          <button class="btn-evi" onclick="deleteEvidence('${key}',${i})" title="حذف شواهد البند">
+          <button class="btn-evi" onclick="deleteEvidence('${key}',${i})" title="حذف الشواهد">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6v12m8-12v12M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14" stroke-width="2" stroke-linecap="round"/></svg>حذف الشواهد
           </button>
         </div>
@@ -493,9 +546,9 @@ function buildFieldReportHTML(key){
       <td>${r.evidence}</td>
     </tr>`).join('');
   const lvl=perfLevel(f.v2025);
-  return `<h2>تقرير المجال: ${f.name}</h2>
+  return `<h2 class="nowrap-title">تقرير المجال: ${f.name}</h2>
   <div style="text-align:center;margin:4px 0">الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}%
-    <span class="pill" style="background:${lvl.color}20;color:${lvl.color}">مستوى ${lvl.name}</span></div>
+    <span class="badge ${lvl.key}">مستوى ${lvl.name}</span></div>
   <table><thead><tr><th style="width:220px">المستوى/النسبة</th><th style="width:310px">المؤشر</th><th style="width:270px">مقترحات التحسين</th><th style="width:250px">الشواهد</th></tr></thead>
   <tbody>${rows}</tbody></table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
@@ -504,21 +557,26 @@ function buildFieldPlanHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).slice(0,6).map((r,i)=>{
     const durations=['4 أسابيع','6 أسابيع','8 أسابيع','10 أسابيع','12 أسبوعًا','فصل دراسي كامل'];
-    return `<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${durations[i]||'6 أسابيع'}</td><td>${r.evidence}</td></tr>`;
+    return `<tr>
+      <td>${r.indicator}</td>
+      <td>${r.improve}</td>
+      <td>${durations[i]||'6 أسابيع'}</td>
+      <td>${r.evidence}</td>
+    </tr>`;
   }).join('');
-  return `<h2>خطة تحسين المجال: ${f.name}</h2>
+  return `<h2 class="nowrap-title">خطة تحسين المجال: ${f.name}</h2>
   <table><thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة</th><th>الشواهد</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
 function openFieldReport(key){openDocWindow('تقرير المجال',buildFieldReportHTML(key))}
 function openFieldPlan(key){openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key))}
 
-/* ========== 12) التقرير الشامل (2024 ↔ 2025) ========== */
+/* ========== 12) التقرير الشامل (قوائم بخط أصغر ومشرق) ========== */
 function buildComprehensiveReport(){
   const yearBlock=(year)=>{
     const list=Object.entries(fields).map(([k,f])=>{
       const val=year===2024?f.v2024:f.v2025; const lv=perfLevel(val);
-      return `<tr><td style="text-align:right">${f.name}</td><td>${fmt(val)}%</td><td><span class="pill" style="background:${lv.color}20;color:${lv.color}">${lv.name}</span></td></tr>`;
+      return `<tr><td style="text-align:right">${f.name}</td><td>${fmt(val)}%</td><td><span class="badge ${lv.key}">${lv.name}</span></td></tr>`;
     }).join('');
     return `<div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
       <h3 style="text-align:center;margin:4px 0">الأداء العام ${year}م</h3>
@@ -530,59 +588,103 @@ function buildComprehensiveReport(){
   const up=[...diffs].sort((a,b)=>b.d-a.d).slice(0,3);
   const down=[...diffs].sort((a,b)=>a.d-b.d).slice(0,3);
 
+  // تميّز فعلي من detailed (≥90%)
+  const strengthsFromDetails=[];
+  Object.entries(detailed).forEach(([k,arr])=>{
+    arr.forEach(item=>{
+      if(item.perf>=90) strengthsFromDetails.push({field:fields[k].name, indicator:item.indicator, v:item.perf});
+    });
+  });
+
   const lowSubs=Object.entries(fields).flatMap(([k,f])=>f.subs.map(s=>({field:f.name,sub:s.name,v:s.v})));
   lowSubs.sort((a,b)=>a.v-b.v);
-  const urgent=lowSubs.slice(0,5);
+  const urgent=lowSubs.slice(0,5); // (يستخدم للعرض السريع إن رغبت لاحقاً)
 
-  const strengths=lowSubs.filter(x=>x.v>=90).map(x=>`<li>${x.field} — ${x.sub} (${fmt(x.v)}%)</li>`).join('')||'<li>—</li>';
+  const strengthsList=(strengthsFromDetails.length
+    ? strengthsFromDetails.slice(0,8).map(x=>`<li>${x.field} — ${x.indicator} (${fmt(x.v)}%)</li>`).join('')
+    : '<li>—</li>');
   const improvements=lowSubs.filter(x=>x.v<75).map(x=>`<li>${x.field} — ${x.sub} (${fmt(x.v)}%)</li>`).join('')||'<li>—</li>';
   const follow=lowSubs.filter(x=>x.v>=75 && x.v<90).map(x=>`<li>${x.field} — ${x.sub} (${fmt(x.v)}%)</li>`).join('')||'<li>—</li>';
 
-  return `<h2>🟩 التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
+  return `<h2 class="nowrap-title">التقرير الشامل لخطة التحسين المؤسسي – ثانوية اليعقوبي بالخبر (1447هـ)</h2>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${yearBlock(2024)}${yearBlock(2025)}</div>
   <h3>🟦 لوحة الفروقات 2024 ↔ 2025</h3>
   <table><thead><tr><th>المجال</th><th>فرق النسبة</th><th>الاتجاه</th></tr></thead><tbody>
   ${diffs.map(d=>{const sym=d.d>0?'↑ تحسّن':(d.d<0?'↓ تراجع':'⟲ ثبات'); const col=d.d>0?'#16a34a':(d.d<0?'#e11d48':'#2563eb'); return `<tr><td>${d.name}</td><td>${d.d>0?'+':''}${fmt(d.d)}</td><td style="color:${col};font-weight:700">${sym}</td></tr>`}).join('')}</tbody></table>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="margin:4px 0">📈 أكبر وثبات (تحسّن)</h3><ul style="text-align:right;margin:0 18px 8px 0">${up.map(x=>`<li>${x.name}: ${x.d>0?'+':''}${fmt(x.d)} نقطة</li>`).join('')}</ul></div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="margin:4px 0">📉 فجوات (تراجع/ثبات منخفض)</h3><ul style="text-align:right;margin:0 18px 8px 0">${down.map(x=>`<li>${x.name}: ${x.d>0?'+':''}${fmt(x.d)} نقطة</li>`).join('')}</ul></div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="margin:4px 0">⏱️ أولويات التدخل السريع (2025)</h3><ul style="text-align:right;margin:0 18px 8px 0">${urgent.map(x=>`<li>${x.field} – ${x.sub}: ${fmt(x.v)}%</li>`).join('')}</ul></div>
-  </div>
-  <h3>🟦 ملخص نتائج المدرسة 2025</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="color:var(--lv-excel);margin:4px 0">جوانب التميّز</h3><ul style="text-align:right;margin:0 18px 8px 0">${strengths}</ul></div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="color:var(--lv-launch);margin:4px 0">جوانب تحتاج تحسين</h3><ul style="text-align:right;margin:0 18px 8px 0">${improvements}</ul></div>
-    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px"><h3 style="color:var(--lv-progress);margin:4px 0">جوانب متابعة وتثبيت</h3><ul style="text-align:right;margin:0 18px 8px 0">${follow}</ul></div>
+    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
+      <h3 style="margin:4px 0;color:var(--lv-excel)">جوانب التميّز</h3>
+      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${strengthsList}</ul>
+    </div>
+    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
+      <h3 style="margin:4px 0;color:var(--lv-launch)">جوانب تحتاج تحسين</h3>
+      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${improvements}</ul>
+    </div>
+    <div style="border:1px solid #e7eff0;border-radius:12px;padding:8px">
+      <h3 style="margin:4px 0;color:var(--lv-progress)">جوانب متابعة وتثبيت</h3>
+      <ul class="small-list" style="text-align:right;margin:0 18px 8px 0">${follow}</ul>
+    </div>
   </div>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
 
-/* ========== 13) الخطة الشاملة ========== */
-function buildComprehensivePlan(){
-  const planRows=Object.entries(fields).map(([k,f])=>{
-    const lvl=perfLevel(f.v2025).name;
-    const target=f.v2025>=90?'استدامة مستوى التميّز ≥ 92%':(f.v2025>=75?'رفع المتوسط إلى 90%+':(f.v2025>=50?'الارتقاء إلى 75% على الأقل':'الوصول إلى 50% ثم 75% تدريجيًا'));
-    const kpis='نسبة الإنجاز؛ عدد الشواهد المعتمدة؛ تحسن نتائج المؤشرات الفرعية';
-    const tools='لوحة المؤشرات؛ تقارير المتابعة؛ استبانات رضا؛ ملف الشواهد';
-    return `<tr class="${levelRowClass(lvl)}">
-      <td>${fields[k].name}</td><td>${fmt(f.v2025)}% — مستوى ${lvl}</td>
-      <td>${target}</td><td>تدخلات دقيقة في المعايير الضعيفة + تثبيت نقاط القوة</td>
-      <td>${kpis}</td><td>قائد المجال وفريق الجودة</td><td>ف1–ف2</td><td>${tools}</td></tr>`;
+/* ========== 13) خطة التحسين (حذف الموارد والمخاطر وتوسيع الأعمدة) ========== */
+function buildImprovementPlan(){
+  const rows=Object.entries(fields).map(([k,f])=>{
+    const lv=perfLevel(f.v2025);
+    const goalGeneral = (f.v2025>=90)
+      ? 'استدامة مستوى التميّز ورفع المتوسط إلى ≥ 92%'
+      : (f.v2025>=75 ? 'رفع المتوسط إلى نطاق التميّز (≥ 90%)'
+         : (f.v2025>=50 ? 'الارتقاء إلى ≥ 75% ثم التقدّم نحو 90%'
+                        : 'الوصول إلى ≥ 50% ثم مواصلة التحسن إلى 75%'));
+
+    const subs=f.subs.map(s=>`${s.name} (${fmt(s.v)}%)`).join('، ');
+    const indicatorKPI='نسبة الإنجاز الشهرية؛ عدد الشواهد المعتمدة؛ تحسّن مؤشرات العناصر الفرعية؛ رضا المستفيدين';
+    const tools='لوحة المؤشرات؛ تقارير المتابعة؛ استبانات؛ ملف الشواهد؛ زيارات صفية';
+    const mitigation='جدولة واضحة؛ تحفيز ومساءلة؛ إعادة توزيع موارد؛ دعم فني';
+    const followup='اجتماع فريق الجودة أسبوعي؛ تقرير شهري؛ مراجعة فصلية';
+    const outputs='تحسن نقاط الضعف؛ شواهد موثقة؛ نشر أفضل الممارسات';
+
+    return `<tr class="${levelRowClass(lv.name)}">
+      <td style="width:14%">${fields[k].name}</td>
+      <td style="width:12%"><span class="badge ${lv.key}">${lv.name}</span> — ${fmt(f.v2025)}%</td>
+      <td style="width:18%">${goalGeneral}</td>
+      <td style="width:18%">${subs}</td>
+      <td style="width:14%">${indicatorKPI}</td>
+      <td style="width:14%">${tools}</td>
+      <td style="width:10%">${mitigation}</td>
+      <td style="width:10%">${followup}</td>
+      <td style="width:10%">${outputs}</td>
+    </tr>`;
   }).join('');
-  return `<h2>الخطة الشاملة لثانوية اليعقوبي بالخبر</h2>
-  <table><thead><tr><th>المجال الرئيس</th><th>الوضع الراهن (2025)</th><th>الهدف التحسيني</th><th>الإجراءات التنفيذية</th><th>مؤشرات الأداء</th><th>المسؤول</th><th>الإطار الزمني</th><th>أدوات المتابعة</th></tr></thead><tbody>${planRows}</tbody></table>
+
+  return `<h2 class="nowrap-title">خطة التحسين – ثانوية اليعقوبي بالخبر</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>المجال</th>
+        <th>الوضع الراهن</th>
+        <th>الهدف العام</th>
+        <th>الأهداف الخاصة (العناصر)</th>
+        <th>مؤشرات الأداء</th>
+        <th>أدوات التنفيذ والمتابعة</th>
+        <th>المعالجات</th>
+        <th>آلية المتابعة</th>
+        <th>المخرجات المتوقعة</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
   <div class="sig">مدير المدرسة: فهد حامد علي الزهراني — التاريخ: ${todayHijri()}</div>`;
 }
 
 /* ========== 14) التشغيل والأزرار ========== */
 window.addEventListener('DOMContentLoaded',()=>{
-  applyLogoToHeader();
-
-  document.getElementById('btnExt2025').addEventListener('click',()=>{window.open('https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link','_blank')});
-  document.getElementById('btnExt2024').addEventListener('click',()=>{window.open('https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link','_blank')});
+  document.getElementById('btnExt2025').addEventListener('click',()=>{window.open(SRC_2025,'_blank')});
+  document.getElementById('btnExt2024').addEventListener('click',()=>{window.open(SRC_2024,'_blank')});
   document.getElementById('btnAnalyze').addEventListener('click',renderDashboard);
   document.getElementById('btnFullReport').addEventListener('click',()=>openDocWindow('التقرير الشامل',buildComprehensiveReport()));
-  document.getElementById('btnFullPlan').addEventListener('click',()=>openDocWindow('الخطة الشاملة',buildComprehensivePlan()));
+  document.getElementById('btnFullPlan').addEventListener('click',()=>openDocWindow('خطة التحسين',buildImprovementPlan()));
   renderDashboard(); fillWeeks('T1');
 });
 </script>
