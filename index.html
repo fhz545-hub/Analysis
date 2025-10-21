@@ -20,7 +20,7 @@
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
 a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 
-/* هيدر */
+/* هيدر الصفحة الرئيسية */
 .hero{
   width:100vw; margin-left:calc(50% - 50vw); background:var(--bg);
   border-radius:0 0 24px 24px; box-shadow:0 10px 28px rgba(0,0,0,.08);
@@ -37,8 +37,8 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 .btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25);transition:transform .12s, filter .12s}
 .btn:hover{filter:brightness(.97);transform:translateY(-1px)}
 .btn.eval{background:linear-gradient(135deg,#0b7e88,#22b8a0)}
-.btn.plan{background:linear-gradient(135deg,#2d6cdf,#4cc3ff)}    /* خطة التحسين (رابط) */
-.btn.ops{background:linear-gradient(135deg,#f59e0b,#ffd166)}      /* الخطة التشغيلية (رابط) */
+.btn.plan{background:linear-gradient(135deg,#2d6cdf,#4cc3ff)}
+.btn.ops{background:linear-gradient(135deg,#f59e0b,#ffd166)}
 .btn.light{background:#eef6f7;color:#06353b}
 
 /* الشبكة */
@@ -70,10 +70,20 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 .fullpanel .inner{width:min(1280px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.20);padding:14px}
 .fullpanel .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
 .fullpanel .topbar .title{font-weight:700;color:#0b7e88}
-.fullpanel .ghost{background:#fff;border:1px dashed #cfe4e6;color:#0b7e88;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer;font-size:12px}
+
+/* زري تقرير/خطة المجال كبِلّين */
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;
+  padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 6px 16px rgba(0,0,0,.08);
+  transition:transform .12s,filter .12s}
+.pill:hover{filter:brightness(.98);transform:translateY(-1px)}
+.pill svg{width:18px;height:18px}
+.pill.report{background:linear-gradient(135deg,#0b7e88,#1398a2);color:#fff}
+.pill.plan{background:linear-gradient(135deg,#2563eb,#4cc3ff);color:#fff}
+
 .fullpanel .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
 
-/* بطاقات العناصر الفرعية أعلى الجدول */
+/* بطاقات العناصر الفرعية */
 .subgrid{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:10px;margin-bottom:10px}
 @media (max-width:680px){.subgrid{grid-template-columns:1fr}}
 .subCard{background:radial-gradient(60% 60% at 50% 40%, #ffffff 0%, #f6fcfd 100%);border:1px solid #e6efef;border-radius:14px;padding:10px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
@@ -108,7 +118,7 @@ th.col-evi{width:auto}
 .miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease}
 .miniGauge .txt{font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle}
 
-/* أزرار الشاهد – صغيرة وأنيقة */
+/* أزرار الشاهد */
 .eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
 .btn-evi{display:inline-flex;align-items:center;gap:6px;border:1px dashed #cfe4e6;background:#fff;color:#0b7e88;border-radius:999px;padding:5px 8px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px rgba(11,126,136,.12);transition:transform .12s,background .12s;font-size:12px}
 .btn-evi:hover{background:#f4fbfb;transform:translateY(-1px)}
@@ -119,7 +129,7 @@ th.col-evi{width:auto}
 
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 
-/* الطباعة */
+/* الطباعة العامة */
 @page{size:A4;margin:10mm}
 @media print{
   .controls,.no-print,.fullpanel,.modal{display:none!important}
@@ -136,11 +146,22 @@ th.col-evi{width:auto}
 .modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
 .modal .small{font-size:12px;color:#6f8e94}
 @media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
+
+/* ====== أنماط نافذة الطباعة الخاصة بالتقرير/الخطة ====== */
+.print-wrap{max-width:820px;margin:0 auto;padding:16px}
+.print-hero{width:100%;margin:0 auto 10px;display:flex;justify-content:center;align-items:center}
+.print-hero img{display:block;max-width:100%;height:auto}
+.print-toolbar{position:sticky;bottom:0;display:flex;gap:6px;justify-content:center;margin:10px 0}
+.print-btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
+@media print{
+  .print-toolbar{display:none}
+  html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
 </style>
 </head>
 <body>
 
-<!-- هيدر -->
+<!-- هيدر الصفحة الرئيسية -->
 <div class="hero" aria-label="وزارة التعليم – شعار">
   <div class="brand"></div>
 </div>
@@ -164,10 +185,25 @@ th.col-evi{width:auto}
   <div class="inner">
     <div class="topbar">
       <div class="title" id="fpTitle">التحليل التفصيلي</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="ghost" id="btnFieldReport" type="button" title="تقرير المجال">تقرير المجال</button>
-        <button class="ghost" id="btnFieldPlan" type="button" title="خطة المجال">خطة المجال</button>
-        <button class="btn light" id="fpHome" type="button">الصفحة الرئيسية ⟵</button>
+      <div class="pills">
+        <button class="pill report" id="btnFieldReport" type="button" title="تقرير المجال للطباعة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 3v6h6" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 14h6M9 18h6" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>تقرير المجال</span>
+        </button>
+
+        <button class="pill plan" id="btnFieldPlan" type="button" title="خطة تحسين المجال للطباعة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h10" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="18" cy="18" r="2" stroke-width="2"/>
+          </svg>
+          <span>خطة المجال</span>
+        </button>
+
+        <button class="close" id="fpHome" type="button">الصفحة الرئيسية ⟵</button>
         <button class="close" id="fpClose" type="button">إغلاق ✕</button>
       </div>
     </div>
@@ -221,18 +257,18 @@ th.col-evi{width:auto}
       <button class="btn" id="eviSave" type="button">حفظ الشاهد</button>
       <button class="btn light" id="eviCancel" type="button">إلغاء</button>
     </div>
-    <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُحفظ وتُعرض وتُحذف مباشرة من لوحة التحليل التفصيلي.</div>
+    <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُعرض مباشرة بعد الحفظ ويمكن حذفها من الجدول.</div>
   </div>
 </div>
 
 <script>
-/* روابط عليا */
+/* ====== روابط عليا ====== */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
 const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
 const OPS_LINK='https://drive.google.com/file/d/1ItrZpaptSVaR_qFqMLhzHRAduIeJESa2/view?usp=sharing';
 
-/* أسابيع هجري كاملة */
+/* ====== أسابيع هجري ====== */
 const TERM1=[
   {w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},
   {w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},
@@ -279,7 +315,7 @@ const TERM2=[
   {w:19,from:'06 / 01 / 1448',to:'10 / 01 / 1448',note:'ختام أسابيع الفصل'}
 ];
 
-/* أدوات */
+/* ====== أدوات عامة ====== */
 const fmt=v=>Number(v).toFixed(2);
 function todayHijri(){try{const f=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit'});return f.format(new Date());}catch(e){return '1447/.. /..'}}
 function perfLevel(pct){
@@ -295,7 +331,7 @@ function levelRowClass(arLevel){
   return 'row-medium';
 }
 
-/* المجالات (الدونات) */
+/* ====== المجالات (الدونات) ====== */
 const fields={
   management:{name:'الإدارة المدرسية',v2024:75.50,v2025:75.50,subs:[
     {id:'planning',name:'التخطيط',v:54.00},{id:'lead',name:'قيادة العملية التعليمية',v:72.75},
@@ -312,7 +348,7 @@ const fields={
   ]}
 };
 
-/* ===== detailed كما اعتمدناه سابقاً (مختصر هنا لعدم تكرار التعليق) ===== */
+/* ====== detailed (كامل كما زودتني به) ====== */
 const detailed={
   management:[
     {code:'1-1-1-1',level:'التقدّم',perf:81.75,indicator:'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة',improve:'تطوير خطة تشغيلية مرنة بأهداف طموحة وبرامج ومبادرات ومؤشرات أداء ومهام ومسؤوليات مُزمّنة، وخطط استدامة وتحسين.',evidence:'خطة تشغيلية معتمدة + محضر لجنة الخطة + مصفوفة KPI'},
@@ -367,57 +403,88 @@ const detailed={
   ]
 };
 
-/* ===== Supabase (رفع/عرض/حذف الشواهد) ===== */
+/* ====== Supabase ====== */
 const SB_URL="https://vullbssjyyrnoyyxyebq.supabase.co";
 const SB_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc";
-const supabase=window.supabase?window.supabase.createClient(SB_URL,SB_ANON):null;
+const supabase = window.supabase.createClient(SB_URL,SB_ANON);
 
-async function uploadEvidenceFile(file, pathPrefix){
-  if(!supabase || !file) return {url:''};
-  const safe=`${pathPrefix}/${Date.now()}_${file.name}`.replace(/\s+/g,'_');
-  const {data, error}=await supabase.storage.from('evidence').upload(safe, file, {upsert:true, contentType:file.type});
-  if(error) return {error};
-  const { data:pub } = supabase.storage.from('evidence').getPublicUrl(data.path);
-  return {url: pub.publicUrl};
+/* تحويل ملف إلى DataURL (للخطة البديلة) */
+function fileToDataURL(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result);
+    r.onerror=()=>rej(new Error('تعذر قراءة الملف'));
+    r.readAsDataURL(file);
+  });
 }
-async function insertEvidence(row){ if(!supabase) return {error:'noClient'}; return await supabase.from('evidences').insert(row).select(); }
+
+/* رفع ملف إلى bucket evidence إن توفر، وإلا نرجع DataURL */
+async function uploadEvidenceSmart(file, pathPrefix){
+  try{
+    const safe=`${pathPrefix}/${Date.now()}_${file.name}`.replace(/\s+/g,'_');
+    const {data, error}=await supabase.storage.from('evidence').upload(safe, file, {upsert:true, contentType:file.type});
+    if(error) throw error;
+    const { data:pub } = supabase.storage.from('evidence').getPublicUrl(data.path);
+    return pub.publicUrl;
+  }catch(err){
+    // خطة بديلة: DataURL (تعمل حتى لو لا يوجد bucket)
+    const isBucketIssue = (err && (String(err.message||'').toLowerCase().includes('bucket') || String(err.name||'').toLowerCase().includes('storage')));
+    if(isBucketIssue || true){ // أي فشل: نستخدم DataURL لضمان عدم توقف العمل
+      const dataURL = await fileToDataURL(file);
+      return dataURL; // نخزنها مباشرة في الحقل file_url
+    }
+  }
+}
+
+/* إدراج/قراءة/حذف شواهد */
+async function insertEvidence(row){
+  const {error}=await supabase.from('evidences').insert(row);
+  if(error) throw new Error(error.message||'تعذر حفظ الشاهد');
+}
 async function fetchEvidencesByField(fieldKey){
-  if(!supabase) return {error:'noClient', data:[]};
   const {data, error}=await supabase.from('evidences')
     .select('id,field_key,row_index,text,term,week,hijri,file_url,created_at')
     .eq('field_key', fieldKey).order('id',{ascending:true});
-  if(error) return {error, data:[]};
-  const grouped={}; data.forEach(r=>{const idx=Number(r.row_index)||0; (grouped[idx]??=[]).push(r);});
-  return {data:grouped};
+  if(error) throw new Error(error.message||'تعذر جلب الشواهد');
+  const grouped={}; (data||[]).forEach(r=>{const idx=Number(r.row_index)||0; (grouped[idx]??=[]).push(r);});
+  return grouped;
+}
+async function deleteEvidenceAll(fieldKey,rowIdx){
+  const {error}=await supabase.from('evidences').delete().eq('field_key', fieldKey).eq('row_index', rowIdx);
+  if(error) throw new Error(error.message||'تعذر الحذف');
 }
 
-/* فتح مستند (تقرير/خطة المجال) مع هيدر ممتد وهوامش طباعة محسّنة */
+/* نافذة طباعة (هيدر lolo صورة + تمركز الصفحة) */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
   <style>
-    :root{--bg:#f5f8f8;--ink:#06353b;--hero-h: clamp(220px, 28vh, 320px);--moe:#0b7e88}
+    :root{--ink:#06353b}
     *{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--ink);font-family:'Tajawal',sans-serif}
-    @page{size:A4;margin:12mm}
-    @media print{ .hero{box-shadow:none!important} }
-    .hero{width:100vw;margin-left:calc(50% - 50vw);background:var(--bg);border-radius:0 0 24px 24px;box-shadow:0 10px 24px rgba(0,0,0,.10);height:var(--hero-h);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-    .brand{width:min(1280px,94vw);height:calc(var(--hero-h) - 24px);background:url('logo.png') center/contain no-repeat}
-    .wrap{max-width:1200px;margin:0 auto;padding:16px}
-    h2{margin:8px 0;color:#0b7e88;text-align:center}
+    @page{size:A4;margin:10mm}
+    html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .print-wrap{max-width:820px;margin:0 auto;padding:12px}
+    .print-hero{width:100%;display:flex;justify-content:center;align-items:center;margin:8px 0 12px}
+    .print-hero img{display:block;max-width:100%;height:auto}
+    h2{margin:8px 0 6px;color:#0b7e88;text-align:center}
     table{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
     thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
     td,th{padding:8px;border:1px solid #e7eff0;vertical-align:middle;text-align:center;font-size:13px;word-break:break-word}
     .row-excellent{background:#e9fff4}.row-verygood{background:#eef5ff}.row-good{background:#fff6ec}.row-medium{background:#ffefef}
-    .toolbar{position:sticky;bottom:0;display:flex;gap:6px;justify-content:center;margin:10px 0}
-    .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
+    .print-toolbar{position:sticky;bottom:0;display:flex;gap:6px;justify-content:center;margin:10px 0}
+    .print-btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
+    @media print{ .print-toolbar{display:none} }
   </style></head><body>
-  <div class="hero"><div class="brand"></div></div>
-  <div class="wrap">${contentHTML}<div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button></div></div>
+  <div class="print-wrap">
+    <div class="print-hero" aria-label="هيدر lolo"><img src="lolo.png" alt="lolo header"/></div>
+    ${contentHTML}
+    <div class="print-toolbar"><button class="print-btn" onclick="window.print()">طباعة</button></div>
+  </div>
   </body></html>`;
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* توليد تقرير/خطة المجال خوارزميًا من detailed */
+/* تقرير/خطة المجال */
 function buildFieldReportHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map(r=>`
@@ -432,7 +499,7 @@ function buildFieldReportHTML(key){
 function buildFieldPlanHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map((r,i)=>{
-    const duration = i%2? '6 أسابيع':'فصل دراسي';
+    const duration = i%2? '٦ أسابيع':'فصل دراسي';
     return `<tr><td>${r.code}</td><td>${r.indicator}</td><td>${r.improve}</td><td>${duration}</td></tr>`;
   }).join('');
   return `<h2>خطة تحسين المجال: ${f.name}</h2>
@@ -442,8 +509,7 @@ function buildFieldPlanHTML(key){
 /* عارض الشواهد */
 function openEvidenceViewerPDF(url){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
-  const ext=(url.split('?')[0].split('.').pop()||'').toLowerCase();
-  const isPDF=ext==='pdf' || url.includes('application/pdf');
+  const isPDF = url.startsWith('data:application/pdf') || /\.pdf(\?|$)/i.test(url);
   const doc = isPDF
     ? `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>شاهد</title><style>html,body{margin:0;height:100%}</style></head><body><embed src="${url}" type="application/pdf" style="width:100%;height:100vh;border:0"/></body></html>`
     : `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>شاهد</title><style>html,body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#000}</style></head><body><img src="${url}" alt="شاهد" style="max-width:100%;max-height:100vh"/></body></html>`;
@@ -481,7 +547,7 @@ function renderDashboard(){
   });
 }
 
-/* Gauge SVG صغير بتدرّجات */
+/* Gauge صغير */
 function renderMiniGauge(el, pct, color){
   const r=14, c=2*Math.PI*r;
   const gradId = color===getComputedStyle(document.documentElement).getPropertyValue('--lv-excel').trim() ? 'gExcel'
@@ -496,8 +562,8 @@ function renderMiniGauge(el, pct, color){
         <linearGradient id="gLaunch" x1="0" x2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fbbf24"/></linearGradient>
         <linearGradient id="gReady" x1="0" x2="1"><stop offset="0" stop-color="#e11d48"/><stop offset="1" stop-color="#fb7185"/></linearGradient>
       </defs>
-      <circle class="bg" cx="20" cy="20" r="${r}"></circle>
-      <circle class="fg" cx="20" cy="20" r="${r}" stroke="url(#${gradId})" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
+      <circle class="bg" cx="20" cy="20" r="14"></circle>
+      <circle class="fg" cx="20" cy="20" r="14" stroke="url(#${gradId})" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
       <text class="txt" x="20" y="20">${Math.round(pct)}</text>
     </svg>`;
   el.innerHTML=svg;
@@ -508,7 +574,7 @@ function renderMiniGauge(el, pct, color){
   });
 }
 
-/* توليد عرض التحليل التفصيلي */
+/* عرض التحليل التفصيلي */
 let currentFieldKey=null;
 async function openFieldFullScreen(key){
   currentFieldKey=key;
@@ -527,7 +593,8 @@ async function openFieldFullScreen(key){
     </div>`;
   }).join('');
 
-  const {data:evByRow}=await fetchEvidencesByField(key);
+  let evByRow={};
+  try{ evByRow=await fetchEvidencesByField(key); }catch(err){ alert('تعذر جلب الشواهد: '+err.message); }
 
   const rows=(detailed[key]||[]).map((r,i)=>{
     const lb=perfLevel(r.perf);
@@ -558,7 +625,7 @@ async function openFieldFullScreen(key){
           <button class="btn-evi" type="button" onclick="openEvidence('${key}',${i})" title="إضافة شاهد">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg><span>إضافة</span>
           </button>
-          <button class="btn-evi danger" type="button" onclick="deleteEvidence('${key}',${i})" title="حذف جميع الشواهد لهذا البند">
+          <button class="btn-evi danger" type="button" onclick="confirmDeleteEvidence('${key}',${i})" title="حذف جميع الشواهد لهذا البند">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6v12m8-12v12" stroke-width="2" stroke-linecap="round"/></svg><span>حذف</span>
           </button>
         </div>
@@ -614,8 +681,7 @@ function openEvidence(fieldKey,rowIdx){
   const modal=document.getElementById('eviModal');
   modal.style.display='flex';
   modal.setAttribute('aria-hidden','false');
-  // السماح بإغلاق فقط من الأزرار (تجنّب الأعطال سابقًا)
-  modal.onclick=(ev)=>{const sheet=modal.querySelector('.sheet'); if(!sheet.contains(ev.target)) {/* تجاهل */} };
+  modal.onclick=(ev)=>{const sheet=modal.querySelector('.sheet'); if(!sheet.contains(ev.target)) {/* لا يُغلق بالنقر خارجًا */} };
 }
 function closeEvidence(){const modal=document.getElementById('eviModal'); modal.style.display='none'; modal.setAttribute('aria-hidden','true'); modal.onclick=null;}
 document.getElementById('eviClose').onclick=(e)=>{e.preventDefault(); closeEvidence();};
@@ -623,7 +689,6 @@ document.getElementById('eviCancel').onclick=(e)=>{e.preventDefault(); closeEvid
 
 document.getElementById('eviSave').onclick=async (ev)=>{
   ev.preventDefault(); ev.stopPropagation();
-  if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
   const text=(document.getElementById('eviText').value||'').trim();
   const term=document.getElementById('eviTerm').value;
   const week=document.getElementById('eviWeek').value;
@@ -631,32 +696,40 @@ document.getElementById('eviSave').onclick=async (ev)=>{
   const fileEl=document.getElementById('eviFile');
   const file=(fileEl.files && fileEl.files[0]) ? fileEl.files[0] : null;
   const link=(document.getElementById('eviLink').value||'').trim();
-  if(!text && !file && !link){ alert('أدخل اسم الشاهد وأضف ملفًا أو رابطًا.'); return; }
 
-  let file_url='';
-  if(file){
-    const up=await uploadEvidenceFile(file, `${currentEvi.key}/${currentEvi.idx}`);
-    if(up.error){ alert('فشل رفع الملف: '+(up.error.message||'' )+'\nيمكنك اعتماد رابط بدلًا من الرفع.'); return; }
-    file_url=up.url||'';
-  } else if(link){ file_url=link; }
+  if(!text){ alert('أدخل اسم/وصف الشاهد.'); return; }
+  if(!file && !link){ alert('أضف ملفًا أو رابط الشاهد.'); return; }
 
-  const payload={ field_key:currentEvi.key, row_index:currentEvi.idx, text, term, week, hijri, file_url };
-  const {error}=await insertEvidence(payload);
-  if(error){ alert('تعذّر حفظ الشاهد: '+(error.message||'')); return; }
+  try{
+    let file_url=link;
+    if(file){
+      const okType = /^(application\/pdf|image\/)/i.test(file.type);
+      if(!okType){ alert('يسمح فقط بـ PDF أو الصور.'); return; }
+      if(file.size > 50*1024*1024){ alert('حجم الملف يتجاوز ‎50MB‎.'); return; }
+      file_url = await uploadEvidenceSmart(file, `${currentEvi.key}/${currentEvi.idx}`);
+    }
 
-  closeEvidence();
-  document.getElementById('fullPanel').style.display='none';
-  openFieldFullScreen(currentEvi.key);
+    const payload={ field_key:currentEvi.key, row_index:currentEvi.idx, text, term, week, hijri, file_url };
+    await insertEvidence(payload);
+
+    closeEvidence();
+    document.getElementById('fullPanel').style.display='none';
+    await openFieldFullScreen(currentEvi.key);
+  }catch(err){
+    alert('تعذّر حفظ الشاهد: '+(err.message||''));
+  }
 };
 
-async function deleteEvidence(key,index){
-  if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
+async function confirmDeleteEvidence(key,index){
   const ok=confirm('تأكيد حذف جميع الشواهد لهذا البند؟'); if(!ok) return;
-  const {error}=await supabase.from('evidences').delete().eq('field_key', key).eq('row_index', index);
-  if(error){alert('تعذّر حذف الشواهد: '+(error.message||''));return;}
-  alert('تم حذف الشواهد لهذا البند');
-  document.getElementById('fullPanel').style.display='none';
-  openFieldFullScreen(key);
+  try{
+    await deleteEvidenceAll(key,index);
+    alert('تم حذف الشواهد لهذا البند');
+    document.getElementById('fullPanel').style.display='none';
+    await openFieldFullScreen(key);
+  }catch(err){
+    alert('تعذّر الحذف: '+(err.message||'')); 
+  }
 }
 
 /* تشغيل */
