@@ -17,14 +17,8 @@
   --hero-h: clamp(220px, 30vh, 360px);
 }
 *{box-sizing:border-box}
-html,body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:'Tajawal',sans-serif;
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-  text-rendering:optimizeLegibility; font-kerning:normal; font-synthesis:none;
-}
-a{color:#135;text-decoration:none}
-a:hover{text-decoration:underline}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
+a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 
 /* هيدر */
 .hero{
@@ -33,34 +27,27 @@ a:hover{text-decoration:underline}
   position:relative; overflow:hidden; margin:0 0 14px; height:var(--hero-h);
   display:flex; align-items:center; justify-content:center;
 }
-.hero .brand{width:min(1200px,92vw); height:calc(var(--hero-h) - 24px); background:url('logo.png') center/contain no-repeat}
+.hero .brand{width:min(1280px,94vw); height:calc(var(--hero-h) - 24px); background:url('logo.png') center/contain no-repeat}
 
-.page{max-width:1200px;margin:0 auto;padding:0 14px}
+/* الصفحة */
+.page{max-width:1280px;margin:0 auto;padding:0 16px}
 
-/* أزرار أعلى الصفحة */
+/* الأزرار العلوية */
 .controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0 10px}
-.btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25);position:relative;overflow:hidden}
+.btn{background:var(--moe);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,126,136,.25);transition:transform .12s, filter .12s}
+.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.btn.eval{background:linear-gradient(135deg,#0b7e88,#22b8a0)}
+.btn.plan{background:linear-gradient(135deg,#2d6cdf,#4cc3ff)}    /* خطة التحسين (رابط) */
+.btn.ops{background:linear-gradient(135deg,#f59e0b,#ffd166)}      /* الخطة التشغيلية (رابط) */
 .btn.light{background:#eef6f7;color:#06353b}
-.btn.ghost{background:#fff;color:var(--moe);border:1px solid #d7ecec}
-.btn:hover{filter:brightness(.97)}
-.btn.eval{background:linear-gradient(135deg,#0b7e88,#22b8a0);box-shadow:0 8px 20px rgba(11,126,136,.25)}
-
-/* تأثير Ripple متناسق مع الهوية */
-.btn.ripple::after{
-  content:"";
-  position:absolute; inset:0; border-radius:12px; pointer-events:none;
-  background:radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(34,184,160,.25), transparent 40%);
-  opacity:0; transition:opacity .5s ease;
-}
-.btn.ripple:active::after{opacity:1; transition:opacity .2s ease}
 
 /* الشبكة */
-.grid{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:16px}
 @media (max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(220px,1fr))}}
 @media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(220px,1fr))}}
 @media (max-width:520px){.grid{grid-template-columns:1fr}}
 
-/* البطاقات */
+/* البطاقة */
 .card{
   background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
   border-radius:16px;padding:14px;position:relative;
@@ -69,56 +56,32 @@ a:hover{text-decoration:underline}
 .card h2{margin:0 0 6px;color:var(--moe);font-size:20px}
 .kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px;flex-wrap:wrap}
 .progress{height:10px;background:#e6efef;border-radius:999px;overflow:hidden;margin:8px 0}
-.bar{height:100%;background:#2aa897}
+.bar{height:100%}
 
-/* شارات */
-.badge{background:none;border:none;padding:0;font-size:19px;font-weight:700;line-height:1}
-.badge.excel{color:var(--lv-excel)} .badge.progress{color:var(--lv-progress)}
-.badge.launch{color:var(--lv-launch)} .badge.ready{color:var(--lv-ready)}
-
-/* الدائرة (الصفحة الرئيسية) */
-.donutWrap{position:relative; height:180px; display:flex; align-items:center; justify-content:center}
+/* الدونات */
+.donutWrap{position:relative; height:200px; display:flex; align-items:center; justify-content:center}
 .donutCanvas{position:relative; width:100%; height:100%}
 .donutCenter{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:4px; pointer-events:none}
 .donutCenter .lvl{font-size:18px;font-weight:800}
 .donutCenter .pct{font-size:12px;color:#6f8e94}
 
-/* أزرار أسفل الدائرة */
-.centerBar{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0;flex-wrap:wrap}
-.btn.micro{padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; border:1px dashed #cfe4e6; background:#fff; color:var(--moe); box-shadow:0 4px 10px rgba(11,126,136,.12)}
-.btn.micro:hover{background:#f4fbfb}
-
-/* لوحة التفاصيل (ملء الشاشة) */
+/* لوحة التحليل التفصيلي */
 .fullpanel{position:fixed;inset:0;z-index:9998;background:rgba(6,53,59,.06);display:none;align-items:flex-start;justify-content:center;padding:12px 8px 24px}
-.fullpanel .inner{width:min(1200px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.20);padding:14px}
+.fullpanel .inner{width:min(1280px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.20);padding:14px}
 .fullpanel .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
 .fullpanel .topbar .title{font-weight:700;color:#0b7e88}
+.fullpanel .ghost{background:#fff;border:1px dashed #cfe4e6;color:#0b7e88;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer;font-size:12px}
 .fullpanel .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
-.subgrid{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:8px}
+
+/* بطاقات العناصر الفرعية أعلى الجدول */
+.subgrid{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:10px;margin-bottom:10px}
 @media (max-width:680px){.subgrid{grid-template-columns:1fr}}
-.subCard{background:#f7fbfb;border:1px solid #e6efef;border-radius:12px;padding:10px}
+.subCard{background:radial-gradient(60% 60% at 50% 40%, #ffffff 0%, #f6fcfd 100%);border:1px solid #e6efef;border-radius:14px;padding:10px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.subCard .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.subCard .chip{font-size:12px;padding:4px 8px;border-radius:999px;background:#f0fbfb;border:1px dashed #cfe4e6}
 
-/* شريط العناوين الفرعية (بدون مربعات) */
-.subPills{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 10px;border-radius:999px;background:#ffffff;
-  border:1px dashed #d7ecec; box-shadow:0 3px 10px rgba(11,126,136,.10);
-}
-.pill .pill-name{font-weight:800;color:#06353b}
-.pill .pill-pct{font-size:12px;color:#6f8e94}
-.pill .pill-lvl{font-size:12px;font-weight:800}
-.pill .barMini{
-  width:64px;height:7px;border-radius:999px;background:#e6efef;overflow:hidden; position:relative;
-}
-.pill .barMini > span{
-  position:absolute;inset:0 0 0 0; width:0%; height:100%;
-  background:linear-gradient(90deg,var(--g1),var(--g2));
-  transition:width .7s ease;
-}
-
-/* الجداول */
-.tableWrap{margin-top:10px;overflow:auto}
+/* جدول التحليل */
+.tableWrap{margin-top:8px;overflow:auto}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;table-layout:fixed}
 thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
 tbody td{padding:10px;border-bottom:1px solid #eef3f3;vertical-align:top;word-break:break-word}
@@ -127,40 +90,34 @@ tbody tr:last-child td{border-bottom:0}
 .row-verygood{background:var(--vg)}
 .row-good{background:var(--gd)}
 .row-medium{background:var(--md)}
-.level{font-weight:700}
 
-/* زرّي الشاهد (مصغرَين ومميّزين) */
-.btn-evi{display:inline-flex;align-items:center;gap:6px;border:1px dashed #cfe4e6;background:#fff;color:#0b7e88;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px rgba(11,126,136,.12);transition:transform .12s ease,background .12s ease}
-.btn-evi:hover{background:#f4fbfb;transform:translateY(-1px)}
-.btn-evi svg{width:16px;height:16px}
-.btn-evi.danger{color:#e11d48;border-color:#f4c2ca}
-.btn-evi.danger:hover{background:#fff1f3}
+/* توزيع الأعمدة */
+th.col-lvl, td.col-lvl{width:185px}
+th.col-crit{width:31%}
+th.col-imp{width:36%}
+th.col-evi{width:auto}
 
-/* شارة رابط الشاهد */
-.evi-chip{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; margin:.2rem .2rem 0 0; background:rgba(6,53,59,.06); color:#06353b}
-.evi-chip:hover{background:rgba(6,53,59,.12)}
-
-/* مكوّن المستوى/الأداء الصغير (دائري بتدرّج) */
-.lvlCell{display:flex;align-items:center;gap:10px;min-width:200px}
+/* مكوّن Gauge */
+.lvlCell{display:flex;align-items:center;gap:10px;min-width:170px}
 .miniInfo{display:flex;flex-direction:column;line-height:1.1}
 .miniInfo .miniName{font-weight:800}
 .miniInfo .miniPct{font-size:12px;color:#6f8e94}
-.miniGauge{width:42px;height:42px;position:relative;flex:0 0 42px}
-.miniGauge svg{width:42px;height:42px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.08))}
+.miniGauge{width:40px;height:40px;position:relative;flex:0 0 40px}
+.miniGauge svg{width:40px;height:40px;display:block}
 .miniGauge .bg{stroke:#e6efef;stroke-width:6;fill:none}
-.miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease, filter .2s ease}
-.miniGauge:hover .fg{filter:brightness(1.05)}
+.miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease}
 .miniGauge .txt{font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle}
 
-/* نافذة الشواهد (احترافي) */
-.modal{position:fixed;inset:0;display:none;z-index:9999;align-items:center;justify-content:center;background:rgba(6,53,59,.18);padding:12px}
-.modal .sheet{width:min(920px,96vw);background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.25);padding:14px;border:1px solid #e6efef;max-height:90vh;overflow:auto}
-.modal .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
-.modal label{display:block;font-size:12px;color:#355;margin-bottom:4px}
-.modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
-.modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
-.modal .small{font-size:12px;color:#6f8e94}
-@media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
+/* أزرار الشاهد – صغيرة وأنيقة */
+.eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.btn-evi{display:inline-flex;align-items:center;gap:6px;border:1px dashed #cfe4e6;background:#fff;color:#0b7e88;border-radius:999px;padding:5px 8px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px rgba(11,126,136,.12);transition:transform .12s,background .12s;font-size:12px}
+.btn-evi:hover{background:#f4fbfb;transform:translateY(-1px)}
+.btn-evi svg{width:14px;height:14px}
+.btn-evi.danger{color:#e11d48;border-color:#f4c2ca}
+.btn-evi.danger:hover{background:#fff1f3}
+.evi-chip{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; margin:.2rem .2rem 0 0; background:rgba(6,53,59,.06); color:#06353b}
+
+.footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 
 /* الطباعة */
 @page{size:A4;margin:10mm}
@@ -170,11 +127,15 @@ tbody tr:last-child td{border-bottom:0}
   .hero{box-shadow:none!important;border-radius:0!important}
 }
 
-/* للتقارير */
-.nowrap-title{white-space:nowrap;overflow:hidden;text-overflow:clip;text-align:center}
-.small-list{font-size:13px;line-height:1.45}
-.small-list li{margin:.2rem 0}
-.footer{padding:18px 10px;text-align:center;color:#7a9aa0}
+/* نافذة الشواهد */
+.modal{position:fixed;inset:0;display:none;z-index:9999;align-items:center;justify-content:center;background:rgba(6,53,59,.18);padding:12px}
+.modal .sheet{width:min(920px,96vw);background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.25);padding:14px;border:1px solid #e6efef;max-height:90vh;overflow:auto}
+.modal .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
+.modal label{display:block;font-size:12px;color:#355;margin-bottom:4px}
+.modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
+.modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
+.modal .small{font-size:12px;color:#6f8e94}
+@media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -186,11 +147,11 @@ tbody tr:last-child td{border-bottom:0}
 
 <div class="page">
   <div class="controls">
-    <button class="btn eval ripple" id="btnExt2025" type="button">التقييم الخارجي ٢٠٢٥م 📄</button>
-    <button class="btn eval ripple" id="btnExt2024" type="button">التقييم الخارجي ٢٠٢٤م 📄</button>
-    <button class="btn ripple" id="btnAnalyze" type="button">تحليل شامل 🔎</button>
-    <!-- تم حذف زر التقرير الشامل حسب طلبكم -->
-    <button class="btn ripple" id="btnFullPlan" type="button" title="فتح خطة التحسين">خطة التحسين 🗂️</button>
+    <button class="btn eval" id="btnExt2025" type="button">التقييم الخارجي ٢٠٢٥م 📄</button>
+    <button class="btn eval" id="btnExt2024" type="button">التقييم الخارجي ٢٠٢٤م 📄</button>
+    <button class="btn" id="btnAnalyze" type="button">تحليل شامل 🔎</button>
+    <button class="btn plan" id="btnFullPlan" type="button">خطة التحسين 🗂️</button>
+    <button class="btn ops" id="btnOps" type="button">الخطة التشغيلية 🗂️</button>
   </div>
 
   <div id="dashboard" class="grid"></div>
@@ -198,18 +159,18 @@ tbody tr:last-child td{border-bottom:0}
   <div class="footer">تنفيذ وتصميم فهد حامد الزهراني</div>
 </div>
 
-<!-- تفاصيل المجال -->
+<!-- التحليل التفصيلي -->
 <div class="fullpanel" id="fullPanel" aria-hidden="true">
   <div class="inner">
     <div class="topbar">
-      <div class="title" id="fpTitle">التفاصيل</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="title" id="fpTitle">التحليل التفصيلي</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="ghost" id="btnFieldReport" type="button" title="تقرير المجال">تقرير المجال</button>
+        <button class="ghost" id="btnFieldPlan" type="button" title="خطة المجال">خطة المجال</button>
         <button class="btn light" id="fpHome" type="button">الصفحة الرئيسية ⟵</button>
         <button class="close" id="fpClose" type="button">إغلاق ✕</button>
       </div>
     </div>
-    <!-- شريط العناوين الفرعية الإبداعي يوضع هنا قبل الجدول -->
-    <div id="fpSubs" class="subPills"></div>
     <div id="fpBody"></div>
   </div>
 </div>
@@ -257,27 +218,70 @@ tbody tr:last-child td{border-bottom:0}
     </div>
 
     <div style="display:flex;gap:8px;margin-top:8px;justify-content:center">
-      <button class="btn ripple" id="eviSave" type="button">حفظ الشاهد</button>
+      <button class="btn" id="eviSave" type="button">حفظ الشاهد</button>
       <button class="btn light" id="eviCancel" type="button">إلغاء</button>
     </div>
-    <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُحفظ في القاعدة السحابية وتُسحب تلقائياً للتقارير وخطط التحسين.</div>
+    <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُحفظ وتُعرض وتُحذف مباشرة من لوحة التحليل التفصيلي.</div>
   </div>
 </div>
 
 <script>
-/* مصادر خارجية */
+/* روابط عليا */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
 const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
-const LAST_SYNC=new Date().toLocaleString('ar-SA');
+const OPS_LINK='https://drive.google.com/file/d/1ItrZpaptSVaR_qFqMLhzHRAduIeJESa2/view?usp=sharing';
 
-/* أسابيع هجري */
-const TERM1=[{w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},{w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},{w:3,from:'15 / 03 / 1447',to:'19 / 03 / 1447'},{w:4,from:'22 / 03 / 1447',to:'26 / 03 / 1447'},{w:5,from:'29 / 03 / 1447',to:'03 / 04 / 1447'},{w:6,from:'06 / 04 / 1447',to:'10 / 04 / 1447'},{w:7,from:'13 / 04 / 1447',to:'17 / 04 / 1447'},{w:8,from:'20 / 04 / 1447',to:'24 / 04 / 1447'},{w:9,from:'27 / 04 / 1447',to:'01 / 05 / 1447'},{w:10,from:'04 / 05 / 1447',to:'08 / 05 / 1447'},{w:11,from:'11 / 05 / 1447',to:'15 / 05 / 1447'},{w:12,from:'18 / 05 / 1447',to:'22 / 05 / 1447'},{w:13,from:'25 / 05 / 1447',to:'29 / 05 / 1447'},{w:'—',from:'30 / 05 / 1447',to:'08 / 06 / 1447',note:'🍂 إجازة الخريف'},{w:14,from:'09 / 06 / 1447',to:'13 / 06 / 1447',note:'بعد العودة من الإجازة'},{w:15,from:'16 / 06 / 1447',to:'20 / 06 / 1447'},{w:16,from:'23 / 06 / 1447',to:'27 / 06 / 1447'},{w:17,from:'30 / 06 / 1447',to:'04 / 07 / 1447'},{w:18,from:'07 / 07 / 1447',to:'11 / 07 / 1447'},{w:19,from:'14 / 07 / 1447',to:'18 / 07 / 1447',note:'✳️ ختام الفصل الدراسي الأول'}];
-const TERM2=[{w:1,from:'29 / 07 / 1447',to:'03 / 08 / 1447',note:'بداية الفصل الثاني'},{w:2,from:'06 / 08 / 1447',to:'10 / 08 / 1447'},{w:3,from:'13 / 08 / 1447',to:'17 / 08 / 1447'},{w:4,from:'20 / 08 / 1447',to:'24 / 08 / 1447'},{w:5,from:'27 / 08 / 1447',to:'02 / 09 / 1447'},{w:6,from:'05 / 09 / 1447',to:'09 / 09 / 1447'},{w:7,from:'12 / 09 / 1447',to:'15 / 09 / 1447',note:'آخر أسبوع قبل الإجازة'},{w:'—',from:'16 / 09 / 1447',to:'10 / 10 / 1447',note:'🕌 إجازة رمضان وعيد الفطر'},{w:8,from:'10 / 10 / 1447',to:'14 / 10 / 1447',note:'استئناف الدراسة بعد العيد'},{w:9,from:'17 / 10 / 1447',to:'21 / 10 / 1447'},{w:10,from:'24 / 10 / 1447',to:'28 / 10 / 1447'},{w:11,from:'01 / 11 / 1447',to:'05 / 11 / 1447'},{w:12,from:'08 / 11 / 1447',to:'12 / 11 / 1447'},{w:13,from:'15 / 11 / 1447',to:'19 / 11 / 1447'},{w:14,from:'22 / 11 / 1447',to:'26 / 11 / 1447'},{w:15,from:'29 / 11 / 1447',to:'03 / 12 / 1447'},{w:'—',from:'04 / 12 / 1447',to:'14 / 12 / 1447',note:'🕋 إجازة عيد الأضحى'},{w:16,from:'15 / 12 / 1447',to:'19 / 12 / 1447',note:'استئناف الدراسة بعد الأضحى'},{w:17,from:'22 / 12 / 1447',to:'26 / 12 / 1447'},{w:18,from:'29 / 12 / 1447',to:'03 / 01 / 1448'},{w:19,from:'06 / 01 / 1448',to:'10 / 01 / 1448',note:'ختام أسابيع الفصل'}];
+/* أسابيع هجري كاملة */
+const TERM1=[
+  {w:1,from:'01 / 03 / 1447',to:'05 / 03 / 1447',note:'بداية العام الدراسي'},
+  {w:2,from:'08 / 03 / 1447',to:'12 / 03 / 1447'},
+  {w:3,from:'15 / 03 / 1447',to:'19 / 03 / 1447'},
+  {w:4,from:'22 / 03 / 1447',to:'26 / 03 / 1447'},
+  {w:5,from:'29 / 03 / 1447',to:'03 / 04 / 1447'},
+  {w:6,from:'06 / 04 / 1447',to:'10 / 04 / 1447'},
+  {w:7,from:'13 / 04 / 1447',to:'17 / 04 / 1447'},
+  {w:8,from:'20 / 04 / 1447',to:'24 / 04 / 1447'},
+  {w:9,from:'27 / 04 / 1447',to:'01 / 05 / 1447'},
+  {w:10,from:'04 / 05 / 1447',to:'08 / 05 / 1447'},
+  {w:11,from:'11 / 05 / 1447',to:'15 / 05 / 1447'},
+  {w:12,from:'18 / 05 / 1447',to:'22 / 05 / 1447'},
+  {w:13,from:'25 / 05 / 1447',to:'29 / 05 / 1447'},
+  {w:'—',from:'30 / 05 / 1447',to:'08 / 06 / 1447',note:'🍂 إجازة الخريف'},
+  {w:14,from:'09 / 06 / 1447',to:'13 / 06 / 1447',note:'بعد العودة من الإجازة'},
+  {w:15,from:'16 / 06 / 1447',to:'20 / 06 / 1447'},
+  {w:16,from:'23 / 06 / 1447',to:'27 / 06 / 1447'},
+  {w:17,from:'30 / 06 / 1447',to:'04 / 07 / 1447'},
+  {w:18,from:'07 / 07 / 1447',to:'11 / 07 / 1447'},
+  {w:19,from:'14 / 07 / 1447',to:'18 / 07 / 1447',note:'✳️ ختام الفصل الدراسي الأول'}
+];
+const TERM2=[
+  {w:1,from:'29 / 07 / 1447',to:'03 / 08 / 1447',note:'بداية الفصل الثاني'},
+  {w:2,from:'06 / 08 / 1447',to:'10 / 08 / 1447'},
+  {w:3,from:'13 / 08 / 1447',to:'17 / 08 / 1447'},
+  {w:4,from:'20 / 08 / 1447',to:'24 / 08 / 1447'},
+  {w:5,from:'27 / 08 / 1447',to:'02 / 09 / 1447'},
+  {w:6,from:'05 / 09 / 1447',to:'09 / 09 / 1447'},
+  {w:7,from:'12 / 09 / 1447',to:'15 / 09 / 1447',note:'آخر أسبوع قبل الإجازة'},
+  {w:'—',from:'16 / 09 / 1447',to:'10 / 10 / 1447',note:'🕌 إجازة رمضان وعيد الفطر'},
+  {w:8,from:'10 / 10 / 1447',to:'14 / 10 / 1447',note:'استئناف الدراسة بعد العيد'},
+  {w:9,from:'17 / 10 / 1447',to:'21 / 10 / 1447'},
+  {w:10,from:'24 / 10 / 1447',to:'28 / 10 / 1447'},
+  {w:11,from:'01 / 11 / 1447',to:'05 / 11 / 1447'},
+  {w:12,from:'08 / 11 / 1447',to:'12 / 11 / 1447'},
+  {w:13,from:'15 / 11 / 1447',to:'19 / 11 / 1447'},
+  {w:14,from:'22 / 11 / 1447',to:'26 / 11 / 1447'},
+  {w:15,from:'29 / 11 / 1447',to:'03 / 12 / 1447'},
+  {w:'—',from:'04 / 12 / 1447',to:'14 / 12 / 1447',note:'🕋 إجازة عيد الأضحى'},
+  {w:16,from:'15 / 12 / 1447',to:'19 / 12 / 1447',note:'استئناف الدراسة بعد الأضحى'},
+  {w:17,from:'22 / 12 / 1447',to:'26 / 12 / 1447'},
+  {w:18,from:'29 / 12 / 1447',to:'03 / 01 / 1448'},
+  {w:19,from:'06 / 01 / 1448',to:'10 / 01 / 1448',note:'ختام أسابيع الفصل'}
+];
 
 /* أدوات */
 const fmt=v=>Number(v).toFixed(2);
-function todayHijri(){try{const f=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'long'});return f.format(new Date());}catch(e){return '.../.. /1447هـ'}}
+function todayHijri(){try{const f=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{year:'numeric',month:'2-digit',day:'2-digit'});return f.format(new Date());}catch(e){return '1447/.. /..'}}
 function perfLevel(pct){
   if(pct>=90) return {name:'التميّز', key:'excel',  color:getComputedStyle(document.documentElement).getPropertyValue('--lv-excel').trim()};
   if(pct>=75) return {name:'التقدّم', key:'progress',color:getComputedStyle(document.documentElement).getPropertyValue('--lv-progress').trim()};
@@ -291,10 +295,10 @@ function levelRowClass(arLevel){
   return 'row-medium';
 }
 
-/* البيانات */
+/* المجالات (الدونات) */
 const fields={
   management:{name:'الإدارة المدرسية',v2024:75.50,v2025:75.50,subs:[
-    {id:'plans',name:'التخطيط',v:54.00},{id:'lead',name:'قيادة العملية التعليمية',v:72.75},
+    {id:'planning',name:'التخطيط',v:54.00},{id:'lead',name:'قيادة العملية التعليمية',v:72.75},
     {id:'soc',name:'المجتمع المدرسي',v:57.25},{id:'dev',name:'التطوير المؤسسي',v:60.25}
   ]},
   teaching:{name:'التعليم والتعلّم',v2024:80.75,v2025:81.50,subs:[
@@ -308,71 +312,70 @@ const fields={
   ]}
 };
 
-/* التفاصيل */
+/* ===== detailed كما اعتمدناه سابقاً (مختصر هنا لعدم تكرار التعليق) ===== */
 const detailed={
   management:[
-    {level:'التميّز',perf:94.50,indicator:'تنشر المدرسة قواعد السلوك والمواظبة وتتابع تطبيقها بانتظام.',improve:'نشر القواعد رقميًا وربطها بمتابعة أسبوعية للانضباط.',evidence:'لوحات السلوك، تقارير الانضباط، سجلات إشعارات.'},
-    {level:'التقدّم',perf:90.25,indicator:'تهيئة وصيانة مرافق المبنى وتجهيزاته.',improve:'نظام صيانة رقمي وتوثيق بالصور والتقارير.',evidence:'أوامر عمل، صور قبل/بعد، محاضر إنجاز.'},
-    {level:'التقدّم',perf:89.25,indicator:'مناخ آمن ومحفّز للتعلّم والنمو.',improve:'برامج دعم نفسي وقياس رضا المستفيدين دوريًا.',evidence:'استبانات رضا، سجلات إرشاد، خطط وقائية.'},
-    {level:'الانطلاق',perf:87.00,indicator:'متابعة أداء العاملين ودعم التطوير المهني.',improve:'خطط تطوير فردية مبنية على تقويم سنوي.',evidence:'نماذج تقويم، خطط تحسين، محاضر تغذية راجعة.'},
-    {level:'الانطلاق',perf:85.25,indicator:'متابعة تنفيذ الخطة التشغيلية وتطويرها.',improve:'لوحة مؤشرات أسبوعية وربط المهام بالمخرجات.',evidence:'لوحة أداء، تقارير تقدم، محاضر فرق العمل.'},
-    {level:'الانطلاق',perf:83.75,indicator:'تواصل فعّال مع أولياء الأمور والمجتمع.',improve:'قنوات تواصل موحّدة وجدولة لقاءات دورية.',evidence:'منصة تواصل، محاضر لقاءات، تقارير تفاعل.'},
-    {level:'الانطلاق',perf:82.00,indicator:'تشجيع الحصول على الرخصة المهنية.',improve:'برنامج تحفيزي وجدولة دخول الاختبارات.',evidence:'قوائم تسجيل، شهادات حضور، نتائج الرخصة.'},
-    {level:'التهيئة',perf:80.00,indicator:'تعزيز ثقافة العمل الجماعي.',improve:'فرق تميّز بمهمات واضحة ومتابعة إنجاز.',evidence:'تشكيل الفرق، خطط فرق، تقارير مختصرة.'},
-    {level:'التهيئة',perf:78.00,indicator:'توثيق القيم والهوية الوطنية.',improve:'ملف رقمي للهوية مرتبط بالأنشطة.',evidence:'صور فعاليات، ملفات إنجاز، نماذج توثيق.'},
-    {level:'التهيئة',perf:76.50,indicator:'تفعيل قنوات التواصل الداخلي.',improve:'تنظيم المراسلات والاجتماعات إلكترونيًا.',evidence:'سجلات تعميمات، محاضر، لوائح إجراءات.'},
-    {level:'التهيئة',perf:75.50,indicator:'تفعيل الشراكات المجتمعية.',improve:'ثلاث شراكات نوعية مرتبطة بالتعلّم.',evidence:'مذكرات تفاهم، تقارير فعاليات، شهادات شراكة.'},
-    {level:'التهيئة',perf:72.00,indicator:'تطوير أنظمة المتابعة الإلكترونية.',improve:'لوحة مؤشرات ذكية وتحليلات شهرية.',evidence:'تقارير تحليلية، لوحات قياس، أرشيف رقمي.'},
-    {level:'التهيئة',perf:70.25,indicator:'توظيف التقنية في الإدارة اليومية.',improve:'رفع استخدام (نور/فارس/مدرستي) وتتبع التقارير.',evidence:'سجلات دخول، تقارير استخدام، مصفوفة التزام.'}
+    {code:'1-1-1-1',level:'التقدّم',perf:81.75,indicator:'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة',improve:'تطوير خطة تشغيلية مرنة بأهداف طموحة وبرامج ومبادرات ومؤشرات أداء ومهام ومسؤوليات مُزمّنة، وخطط استدامة وتحسين.',evidence:'خطة تشغيلية معتمدة + محضر لجنة الخطة + مصفوفة KPI'},
+    {code:'2-1-1-1',level:'التهيئة',perf:42.00,indicator:'تتابع المدرسة تنفيذ خطتها وتطورها بما يضمن تحقيق أهدافها',improve:'متابعة التنفيذ وتقويمه بانتظام وفق مؤشرات واضحة، وتطوير الخطة لضمان تحقيق الأهداف.',evidence:'تقارير متابعة شهرية + اجتماعات متابعة + إجراءات تصحيح'},
+    {code:'1-1-2-1',level:'التقدّم',perf:76.25,indicator:'تعزز المدرسة القيم الإسلامية والهوية الوطنية',improve:'غرس القيم والهوية وتعزيز الانتماء عبر أنشطة ومناسبات وبرامج مبتكرة داخل المدرسة ومع المجتمع.',evidence:'خطة مناسبات وطنية + توثيق التنفيذ + استبانات أثر'},
+    {code:'1-2-1-2',level:'التقدّم',perf:81.25,indicator:'تلتزم المدرسة بقيم مهنة التعليم وأخلاقياتها',improve:'تعزيز الالتزام بقواعد السلوك الوظيفي وأخلاقيات المهنة والتوعية بأساليب مبتكرة ودعم العلاقات الإيجابية.',evidence:'تعميم الميثاق + توقيعات اطلاع + برنامج توعوي'},
+    {code:'1-2-1-3',level:'التقدّم',perf:83.00,indicator:'توفر المدرسة مناخًا آمنًا للتعلم والنمو نفسيًّا واجتماعيًّا',improve:'مناخ آمن للحوار والتعاون والاحترام، وبرامج علاجية/وقائية لتقليل التنمر.',evidence:'برنامج إرشاد + سجل حالات ومعالجة + حملات توعية'},
+    {code:'1-2-1-4',level:'التميّز',perf:94.75,indicator:'تنشر المدرسة قواعد السلوك والمواظبة، وتتابع تطبيقها',improve:'الاستمرار في نشر القواعد وتحديد التوقعات ومتابعة التطبيق بانتظام بأساليب مبتكرة.',evidence:'لائحة منشورة + دلائل نشر + تقارير انضباط'},
+    {code:'5-1-2-1',level:'الانطلاق',perf:62.50,indicator:'توفر المدرسة برامج وأنشطة تربوية داعمة للسلوك الإيجابي',improve:'أنشطة علاجية/وقائية شاملة مرتبطة بتشخيص المشكلات، متابعة وتطوير واستثمار الشراكات.',evidence:'خطة تعزيز السلوك + أدوات تشخيص + قياس أثر'},
+    {code:'6-1-2-1',level:'التهيئة',perf:45.00,indicator:'برامج وأنشطة إثرائية غير صفية لتطوير مواهب المتعلمين وتهيئتهم للمستقبل',improve:'أساليب كشف الموهبة وتحفيز مقاييس موهبة وأنشطة إثرائية مرتبطة بالاحتياجات وحوافز ومشاركات تنافسية.',evidence:'قاعدة الموهوبين + مشاركات موهبة + خطة إثرائية'},
+    {code:'1-3-1-1',level:'الانطلاق',perf:68.25,indicator:'تعزز المدرسة بناء العلاقات الإيجابية والتعاون في المجتمع المدرسي',improve:'مهام تشجع العمل بروح الفريق وتعزيز العلاقات الإنسانية ومتابعة واستدامة وتطوير.',evidence:'محاضر فرق/PLC + توزيع أدوار + استبانة تماسك'},
+    {code:'2-1-3-1',level:'الانطلاق',perf:55.25,indicator:'تعزز المدرسة مشاركة الأسرة في تعلم أبنائهم والتحضير لمستقبلهم',improve:'فرص تواصل فعّالة مع الأسرة وبرامج توعوية مبتكرة وإشراكهم في التحضير للمستقبل وتقويم الخدمات.',evidence:'لقاءات أولياء الأمور + قنوات تواصل + تغذية راجعة'},
+    {code:'3-1-3-1',level:'التهيئة',perf:39.75,indicator:'تعزز المدرسة الشراكة المجتمعية لدعم التعلم والتأثير الإيجابي',improve:'تواصل متنوع مع المجتمع، استثمار إمكانات المؤسسات الوطنية، فعاليات توعوية وإتاحة الإمكانات.',evidence:'خطابات/اتفاقيات شراكة + فعاليات + قياس أثر'},
+    {code:'1-1-4-1',level:'التهيئة',perf:24.75,indicator:'تشجع المدرسة منسوبيها للحصول على الرخصة المهنية',improve:'برامج توعوية/تحفيزية ومتابعة التقدم وفق الرتب المهنية.',evidence:'سجل الرخص + خطة تحفيزية + مواعيد اختبارات'},
+    {code:'1-4-1-2',level:'الانطلاق',perf:53.00,indicator:'تدعم المدرسة التطوير المهني وفق نتائج تقويم الأداء واحتياجاتهم',improve:'خطة تطوير مهني مرتبطة بتقويم الأداء، متابعة التنفيذ وقياس الأثر وتشجيع PLC والبحوث الإجرائية.',evidence:'خطة تدريب سنوية + سجلات حضور + قياس أثر'},
+    {code:'3-1-4-1',level:'التقدّم',perf:79.25,indicator:'تطبق المدرسة التقويم الذاتيّ المبنيّ على معايير الهيئة',improve:'تنفيذ التقويم الذاتي وفق الإطار، نشر الثقافة، إشراك المجتمع المدرسي، وخطة طموحة لنقل المعرفة.',evidence:'أداة وتقارير تقويم ذاتي + خطة تحسين مشتقة'},
+    {code:'1-4-1-4',level:'الانطلاق',perf:74.00,indicator:'تنفذ المدرسة خطة للتحسين بناءً على نتائج التقويم وتتابعها',improve:'تطوير خطة تحسين بأولويات تعالج جوانب مؤثرة في نواتج التعلم ومتابعة التنفيذ.',evidence:'خطة تحسين معتمدة + تقارير تقدم + مواءمة تشغيلية'}
   ],
   teaching:[
-    {level:'التميّز',perf:99.25,indicator:'برامج تدريبية نوعية تطوّر المهارات الصفّية.',improve:'مواءمة التدريب وتتبع الأثر داخل الحصة.',evidence:'خطط تدريب، تقارير أثر.'},
-    {level:'التميّز',perf:97.75,indicator:'بيئة محفّزة للتفكير الإبداعي/الناقد.',improve:'تضمين مهارات التفكير العليا.',evidence:'خطط دروس، ملاحظات صفية.'},
-    {level:'التميّز',perf:97.50,indicator:'تنمية التعلّم الذاتي والبحث.',improve:'مشاريع بحث رقمية.',evidence:'بحوث طلابية.'},
-    {level:'التقدّم',perf:96.75,indicator:'استراتيجيات تدريس حديثة.',improve:'توثيق التطبيق وزيارات صفية.',evidence:'تقارير زيارات.'},
-    {level:'التقدّم',perf:94.75,indicator:'وسائل تعليمية رقمية متنوعة.',improve:'إنتاج محتوى تفاعلي.',evidence:'ملفات دروس رقمية.'},
-    {level:'التقدّم',perf:93.25,indicator:'تنوع أدوات التقويم.',improve:'تحليل أسبوعي وربط بعلاج/إثراء.',evidence:'سجلات تحليل.'},
-    {level:'الانطلاق',perf:91.75,indicator:'تغذية راجعة بنّاءة.',improve:'نموذج موحّد وأنشطة تصحيحية.',evidence:'نماذج متابعة.'},
-    {level:'الانطلاق',perf:89.50,indicator:'توظيف التقنية في التعلّم.',improve:'أدوات تفاعلية داخل الحصة.',evidence:'تقارير «مدرستي».'},
-    {level:'التهيئة',perf:88.00,indicator:'تعلّم تعاوني ومشاريع.',improve:'Rubrics وتقويم أدوار.',evidence:'ملفات مشاريع.'},
-    {level:'التهيئة',perf:86.75,indicator:'تنمية التفكير الناقد.',improve:'أنشطة تحليل ونقاش.',evidence:'خطط أنشطة.'},
-    {level:'التهيئة',perf:84.50,indicator:'برامج إثرائية للموهوبين.',improve:'ورش أسبوعية.',evidence:'قوائم مشاركين.'},
-    {level:'التهيئة',perf:82.75,indicator:'بناء الدروس بنواتج واضحة.',improve:'مراجعة الخطط اليومية.',evidence:'خطط محدثة.'},
-    {level:'التهيئة',perf:76.75,indicator:'تنويع الأساليب للفروق الفردية.',improve:'أنشطة متعددة الأنماط.',evidence:'تقارير صفية.'}
+    {code:'2-1-1-2',level:'التميّز',perf:97.75,indicator:'تدعم المدرسة تنفيذ المناهج وفق الخطة الدراسية',improve:'الاستمرار في توفير أنشطة ومصادر مبتكرة تدعم تعلم المعارف/المهارات والقيم ومتابعة التنفيذ لتحقيق التوقعات العالية.',evidence:'خطط توزيع + سجلات تطبيق + دروس نموذجية'},
+    {code:'2-2-1-3',level:'التميّز',perf:93.25,indicator:'تقدم المدرسة التغذية الراجعة للمتعلمين بانتظام',improve:'الاستمرار في التغذية الراجعة الفورية والبنّاءة بطرق متنوعة لدعم التعلم وتحسين الأداء.',evidence:'نماذج تغذية راجعة + متابعة فردية'},
+    {code:'8-1-1-2',level:'التقدّم',perf:88.50,indicator:'تنمي المدرسة المهارات العاطفية والاجتماعية لدى المتعلمين',improve:'بيئة تعلم تعزز التحكم بالعواطف والثقة بالنفس والتعاون والتواصل والحوار والاحترام المتبادل.',evidence:'برامج SEL + جلسات إرشاد + استبانات مهارية'},
+    {code:'2-1-2-2',level:'التقدّم',perf:79.50,indicator:'تحلل نتائج التقويم وتوظفها في تحسين نواتج التعلم',improve:'تحليل النتائج وتفسيرها واتخاذ قرارات وبناء خطط علاجية/إثرائية لتحقيق التوقعات المستهدفة.',evidence:'تقارير تحليل + خطط علاج/إثراء + متابعة تقدم'},
+    {code:'3-1-1-2',level:'التقدّم',perf:79.25,indicator:'تنوع المدرسة في إستراتيجيات التدريس',improve:'خبرات تعلم ثرية تشجع البحث/التجريب وتراعي الفروق وتلبي الاحتياجات (ومنهم ذوو الإعاقة والموهوبون).',evidence:'خطط دروس متنوعة + زيارات صفية'},
+    {code:'6-1-1-2',level:'التقدّم',perf:77.50,indicator:'تنمي المدرسة المهارات القرائية والعددية الأساسية',improve:'تعزيز القراءة/الكتابة والمهارات العددية عبر أنشطة صفية ولاصفية وخطة مركزة طويلة المدى.',evidence:'اختبارات تشخيصية + خطة علاج + تتبع فردي'},
+    {code:'2-2-1-1',level:'التقدّم',perf:77.25,indicator:'تقوّم المدرسة أداء المتعلمين بأساليب وأدوات متنوعة وفاعلة',improve:'أساليب تشخيصية/تكوينية/ختامية، تماثل مهارات المعلمين في التقويم، مشاركة المتعلمين في تقويم أدائهم.',evidence:'بنك أسئلة + أدوات تقويم + ملفات إنجاز'},
+    {code:'2-1-1-10',level:'التقدّم',perf:77.25,indicator:'تعزز المدرسة دافعية المتعلمين للتعلم والاستمتاع به',improve:'بيئة تعلم تحقق الرفاه وتثير الفضول وتطبق أساليب تحفيز تراعي الميول والاهتمامات.',evidence:'برامج تحفيزية + مسابقات + بطاقات تشجيع'},
+    {code:'1-1-1-2',level:'التقدّم',perf:76.75,indicator:'توفر المدرسة فرصًا متكافئة للتعلم (ذوو الإعاقة/الموهوبون)',improve:'فرص تعلم متكافئة واستجابة للاحتياجات المختلفة والوصول الشامل ومتابعة الالتزام.',evidence:'خطط فردية IEP + تكييفات + قوائم موهوبين'},
+    {code:'7-1-1-2',level:'التقدّم',perf:75.25,indicator:'تنمي المدرسة مهارات التفكير العليا لدى المتعلمين',improve:'أساليب وأنشطة متميزة لتنمية التحليل والاستنتاج والتقويم والإبداع وحل المشكلات.',evidence:'منتجات تعلم + Rubrics تفكير عليا'},
+    {code:'4-1-1-2',level:'الانطلاق',perf:69.75,indicator:'تفعّل المدرسة التعلم الإلكتروني',improve:'تجهيزات تقنية وأنشطة تدمج التعلم الصفي والإلكتروني يوميًا وللطوارئ.',evidence:'تفعيل منصة + دروس رقمية + تقارير دخول'},
+    {code:'5-1-1-2',level:'الانطلاق',perf:62.00,indicator:'توفر المدرسة أنشطة تعلم تطبيقية مرتبطة بالحياة',improve:'ربط الخبرات بالواقع وتشجيع التجارب العلمية والاستقصاء وتطبيق المعرفة.',evidence:'مشاريع/مهام أدائية + سلالم تقدير'},
+    {code:'9-1-1-2',level:'الانطلاق',perf:60.75,indicator:'تنمي المدرسة المهارات الرقمية لدى المتعلمين',improve:'تعزيز استخدام التقنية، التعامل مع البيانات، فرص تعلم رقمية ثرية وتوظيف البرمجيات للوصول للمعرفة.',evidence:'تدريبات تقنية + منتجات رقمية طلابية'}
   ],
   learning:[
-    {level:'التميّز',perf:96.75,indicator:'اعتزاز بالقيم والهوية الوطنية.',improve:'ربط الأنشطة بالقيم.',evidence:'منتجات وصور فعاليات.'},
-    {level:'التميّز',perf:96.25,indicator:'اتجاهات إيجابية ودافعية.',improve:'برامج تحفيزية وإرشاد.',evidence:'استبانات وخطط.'},
-    {level:'التميّز',perf:95.50,indicator:'نتائج وطنية/دولية متميزة.',improve:'اختبارات معيارية وخطط علاج.',evidence:'تحليلات نتائج.'},
-    {level:'التميّز',perf:94.00,indicator:'التزام وانضباط.',improve:'متابعة يومية وتكريم.',evidence:'سجلات الانضباط.'},
-    {level:'الانطلاق',perf:91.75,indicator:'اتجاهات نحو الذات والنمو.',improve:'برامج مهارية ومسارات قيادة.',evidence:'تقارير برامج.'},
-    {level:'الانطلاق',perf:89.25,indicator:'مهارات البحث والتعلّم الذاتي.',improve:'مشاريع بحث رقمية.',evidence:'بحوث طلابية.'},
-    {level:'الانطلاق',perf:86.25,indicator:'مهارات اجتماعية وصحية.',improve:'حملات توعوية.',evidence:'نشرات وتقارير.'},
-    {level:'التهيئة',perf:84.25,indicator:'مبادرات مجتمعية.',improve:'شراكات نوعية.',evidence:'مذكرات تعاون.'},
-    {level:'التهيئة',perf:82.94,indicator:'تقدم في نتائج المواد.',improve:'تحليل النتائج وخطط دعم.',evidence:'تقارير تحليل.'},
-    {level:'التهيئة',perf:79.04,indicator:'تحقق نواتج المواد الأساسية.',improve:'تقويم مستمر وخطط تحسين.',evidence:'أدوات تقويم.'},
-    {level:'التهيئة',perf:63.25,indicator:'مشاركة ثقافية/قيمية.',improve:'تحفيز المشاركة.',evidence:'تقارير أنشطة.'}
+    {code:'3-2-1-1',level:'التميّز',perf:95.50,indicator:'يظهر المتعلمون الاعتزاز بالقيم والهوية الوطنية',improve:'الاستمرار في تعزيز القيم والهوية واللغة العربية واستثمار المناسبات الوطنية بأساليب مبتكرة.',evidence:'فعاليات وطنية موثقة + أعمال طلابية + استبانات اتجاهات'},
+    {code:'5-1-2-3',level:'التميّز',perf:94.00,indicator:'يلتزم المتعلمون بقواعد السلوك والانضباط المدرسي',improve:'الاستمرار ببرامج متنوعة ومبتكرة وتجسيد المسؤولية الذاتية.',evidence:'تقارير انضباط + برامج تعزيز + متابعة حضور'},
+    {code:'3-2-1-2',level:'التميّز',perf:91.75,indicator:'يظهر المتعلمون اتجاهات إيجابية نحو ذواتهم',improve:'الاستمرار في تعزيز الرفاه والرضا والسعادة.',evidence:'برامج رفاه + استبانات سعادة + جلسات إرشاد'},
+    {code:'7-1-2-3',level:'التميّز',perf:91.75,indicator:'يظهر المتعلمون اعتزازًا بثقافتهم واحترامًا للتنوع الثقافي',improve:'الاستمرار في تعزيز الثوابت الوطنية والفخر بالعربية واحترام التنوع الثقافي.',evidence:'منتجات ثقافية/لغوية + فعاليات + سياسات تنوّع'},
+    {code:'6-1-2-3',level:'التقدّم',perf:84.25,indicator:'يظهر المتعلمون القدرة على البحث والتعلم الذاتي',improve:'تنمية مهارات البحث والتعلم الذاتي ومهام أدائية ترتبط بالحياة وإدارة الوقت وتوظيف التقنية.',evidence:'ملفات مشاريع + Rubrics بحوث + دورات مهارات بحث'},
+    {code:'2-1-1-3',level:'التقدّم',perf:82.94,indicator:'يحقق المتعلمون نتائج متقدمة في اختبارات القدرات العامة',improve:'تعزيز القدرات التحليلية والاستدلالية والمنطقية والقياس وحل المشكلات.',evidence:'نتائج قدرات + خطة تدريب (لفظي/كمي) + محاكاة'},
+    {code:'3-1-2-3',level:'التقدّم',perf:82.50,indicator:'يلتزم المتعلمون بالممارسات الصحية السليمة',improve:'تعزيز الممارسات الصحية وبرامج النشاط البدني والغذاء الصحي والنظافة.',evidence:'خطة صحة مدرسية + فعاليات + سجلات'},
+    {code:'1-1-1-3',level:'التقدّم',perf:79.04,indicator:'يحقق المتعلمون نتائج متقدمة في الاختبارات التحصيلية',improve:'بناء أساس قوي في المعارف والمهارات وتعزيز الاستعداد الدراسي.',evidence:'نتائج تحصيلي + خطة رفع تحصيل + مجموعات تقوية'},
+    {code:'4-1-2-3',level:'الانطلاق',perf:63.25,indicator:'يشارك المتعلمون في الأنشطة المجتمعية والأعمال التطوعية',improve:'برامج نوعية تحفز المشاركة والتطبيق لحلول مبتكرة تعزز المسؤولية.',evidence:'منصة تطوع + شهادات ساعات + تقارير مبادرات'}
   ],
   environment:[
-    {level:'التميّز',perf:97.50,indicator:'تهيئة وصيانة مرافق المبنى.',improve:'سجل رقمي للصيانة.',evidence:'تقارير وصور.'},
-    {level:'التميّز',perf:97.00,indicator:'المحافظة على النظافة.',improve:'تعزيز الإشراف اليومي.',evidence:'تقارير إشرافية.'},
-    {level:'الانطلاق',perf:94.00,indicator:'توافر معايير الأمن والسلامة.',improve:'فرضيات دورية وتحديث أدوات.',evidence:'سجلات الأمن والسلامة.'},
-    {level:'الانطلاق',perf:79.00,indicator:'وصولات آمنة وميسَّرة.',improve:'تهيئة الممرات لذوي الإعاقة.',evidence:'صور تجهيزات.'},
-    {level:'التهيئة',perf:73.25,indicator:'جاذبية البيئة المدرسية.',improve:'تحسين جمالي ووظيفي.',evidence:'صور الفصول.'},
-    {level:'التهيئة',perf:64.00,indicator:'مخارج الطوارئ والمتطلبات.',improve:'مراجعة مخارج وإرشادات.',evidence:'تقارير الدفاع المدني.'},
-    {level:'التهيئة',perf:62.50,indicator:'الإضاءة والتهوية.',improve:'تحسين الإضاءة وصيانة التهوية.',evidence:'تقارير فنية.'}
+    {code:'4-2-1-2',level:'التميّز',perf:97.00,indicator:'تعمل المدرسة على صيانة جميع مرافق المبنى وتجهيزاته بانتظام',improve:'الاستمرار في متابعة الصيانة لضمان كفاءة المبنى وفاعليته.',evidence:'أوامر عمل صيانة + جدول صيانة وقائية + تقارير إنجاز'},
+    {code:'4-2-1-3',level:'التقدّم',perf:79.50,indicator:'تعمل المدرسة على نظافة المبنى المدرسي وجميع مرافقه بانتظام',improve:'العمل على النظافة والمتابعة بانتظام وتوفير أدوات النظافة.',evidence:'عقد نظافة + جداول إشراف + بطاقات متابعة'},
+    {code:'2-1-1-4',level:'التقدّم',perf:79.00,indicator:'تتوافر فصول ومعامل ملائمة للعملية التعليمية تلبي احتياجات المتعلمين بمن فيهم ذوو الإعاقة',improve:'تنظيم الفصول والمعامل وتجهيزاتها وفق المعايير وتوفير الوسائل والأدوات اللازمة.',evidence:'جرد تجهيزات + محاضر تشغيل معامل + صيانة وقائية'},
+    {code:'4-1-1-1',level:'الانطلاق',perf:73.25,indicator:'تنظيم مبنى المدرسة ملائم لعدد المتعلمين والمرحلة العمرية',improve:'العمل مع الجهات ذات العلاقة لتطوير المبنى وتنظيم الأثاث بما يحقق الرفاه ويلبي المتطلبات.',evidence:'مراسلات رسمية + مخططات قاعات + صور قبل/بعد'},
+    {code:'4-2-1-1',level:'الانطلاق',perf:64.00,indicator:'تتوافر في فصول المدرسة ومعاملها وجميع مرافقها متطلبات الأمن والسلامة',improve:'متابعة متطلبات وتجهيزات السلامة وتعزيز ثقافتها والتوعية بالمخاطر ومتابعة الدخول والخروج.',evidence:'كشوف فحص سلامة + فرضيات إخلاء + خطط مخاطر'},
+    {code:'4-1-1-3',level:'الانطلاق',perf:62.50,indicator:'تلبي المرافق والخدمات المساندة احتياجات المتعلمين بمن فيهم ذوو الإعاقة',improve:'توفير مرافق وخدمات مساندة ملائمة وتحقيق الرفاه والمحافظة على استدامتها.',evidence:'تقارير جاهزية مرافق + استبانات رضا + طلبات تحسين'}
   ]
 };
 
-/* Supabase */
+/* ===== Supabase (رفع/عرض/حذف الشواهد) ===== */
 const SB_URL="https://vullbssjyyrnoyyxyebq.supabase.co";
 const SB_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc";
 const supabase=window.supabase?window.supabase.createClient(SB_URL,SB_ANON):null;
 
 async function uploadEvidenceFile(file, pathPrefix){
   if(!supabase || !file) return {url:''};
-  const path=`${pathPrefix}/${Date.now()}_${file.name}`.replace(/\s+/g,'_');
-  const {data, error}=await supabase.storage.from('evidence').upload(path, file, {upsert:true, contentType:file.type});
+  const safe=`${pathPrefix}/${Date.now()}_${file.name}`.replace(/\s+/g,'_');
+  const {data, error}=await supabase.storage.from('evidence').upload(safe, file, {upsert:true, contentType:file.type});
   if(error) return {error};
   const { data:pub } = supabase.storage.from('evidence').getPublicUrl(data.path);
   return {url: pub.publicUrl};
@@ -380,61 +383,74 @@ async function uploadEvidenceFile(file, pathPrefix){
 async function insertEvidence(row){ if(!supabase) return {error:'noClient'}; return await supabase.from('evidences').insert(row).select(); }
 async function fetchEvidencesByField(fieldKey){
   if(!supabase) return {error:'noClient', data:[]};
-  const {data, error}=await supabase.from('evidences').select('id,field_key,row_index,text,term,week,hijri,file_url,created_at').eq('field_key', fieldKey).order('id', {ascending:true});
+  const {data, error}=await supabase.from('evidences')
+    .select('id,field_key,row_index,text,term,week,hijri,file_url,created_at')
+    .eq('field_key', fieldKey).order('id',{ascending:true});
   if(error) return {error, data:[]};
-  const grouped={}; data.forEach(r=>{const idx=Number(r.row_index)||0; if(!grouped[idx]) grouped[idx]=[]; grouped[idx].push(r);});
+  const grouped={}; data.forEach(r=>{const idx=Number(r.row_index)||0; (grouped[idx]??=[]).push(r);});
   return {data:grouped};
 }
 
-/* رأس التقارير */
-function bannerHeaderHTML(){
-  return `
-    <div class="hero" style="margin:0 0 10px;height:var(--hero-h);background:var(--bg)">
-      <div class="brand" style="height:calc(var(--hero-h) - 24px)"></div>
-    </div>`;
-}
-
-/* نافذة تقارير (تستخدم لتقرير/خطة المجال فقط) */
+/* فتح مستند (تقرير/خطة المجال) مع هيدر ممتد وهوامش طباعة محسّنة */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
   <style>
-    :root{--moe:#0b7e88;--ink:#06353b;--bg:#f5f8f8;--card:#ffffff;--lv-excel:#16a34a;--lv-progress:#2563eb;--lv-launch:#f59e0b;--lv-ready:#e11d48;--hero-h: clamp(220px, 30vh, 360px);}
-    @page{size:A4;margin:10mm}
-    html,body{margin:0;background:#fff;color:#06353b;font-family:'Tajawal',sans-serif}
-    .hero{width:100vw;margin-left:calc(50% - 50vw);background:var(--bg);border-radius:0 0 24px 24px;box-shadow:0 10px 24px rgba(0,0,0,.10);padding:0;height:var(--hero-h);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-    .brand{width:min(1200px,92vw);height:calc(var(--hero-h) - 24px);margin:0 auto;background:url('logo.png') center/contain no-repeat}
-    .wrap{max-width:1120px;margin:0 auto;padding:12px}
-    h2{margin:6px 0;color:#0b7e88;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:clip}
-    h3{color:#0b7e88;margin:8px 0}
+    :root{--bg:#f5f8f8;--ink:#06353b;--hero-h: clamp(220px, 28vh, 320px);--moe:#0b7e88}
+    *{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--ink);font-family:'Tajawal',sans-serif}
+    @page{size:A4;margin:12mm}
+    @media print{ .hero{box-shadow:none!important} }
+    .hero{width:100vw;margin-left:calc(50% - 50vw);background:var(--bg);border-radius:0 0 24px 24px;box-shadow:0 10px 24px rgba(0,0,0,.10);height:var(--hero-h);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+    .brand{width:min(1280px,94vw);height:calc(var(--hero-h) - 24px);background:url('logo.png') center/contain no-repeat}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    h2{margin:8px 0;color:#0b7e88;text-align:center}
     table{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
-    thead th{background:#0f6f79;color:#fff;padding:8px;font-weight:700}
+    thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
     td,th{padding:8px;border:1px solid #e7eff0;vertical-align:middle;text-align:center;font-size:13px;word-break:break-word}
     .row-excellent{background:#e9fff4}.row-verygood{background:#eef5ff}.row-good{background:#fff6ec}.row-medium{background:#ffefef}
-    .toolbar{position:sticky;top:0;background:#fff;padding:6px 0;margin:6px 0;border-bottom:1px dashed #e1ecec;text-align:center}
-    .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:8px;background:#0b7e88;color:#fff;cursor:pointer;margin:0 4px}
-    .sig{font-size:12px;text-align:center;margin-top:8px;color:#345}
+    .toolbar{position:sticky;bottom:0;display:flex;gap:6px;justify-content:center;margin:10px 0}
+    .btn{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
   </style></head><body>
-  ${bannerHeaderHTML()}
-  <div class="wrap">
-    ${contentHTML}
-    <div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button><button class="btn" onclick="window.close()">إغلاق</button></div>
-  </div></body></html>`;
+  <div class="hero"><div class="brand"></div></div>
+  <div class="wrap">${contentHTML}<div class="toolbar no-print"><button class="btn" onclick="window.print()">طباعة</button></div></div>
+  </body></html>`;
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* عارض PDF/صورة للشواهد */
-function openEvidenceViewer(url){
+/* توليد تقرير/خطة المجال خوارزميًا من detailed */
+function buildFieldReportHTML(key){
+  const f=fields[key];
+  const rows=(detailed[key]||[]).map(r=>`
+    <tr class="${levelRowClass(r.level)}">
+      <td style="width:190px">${r.level} — ${fmt(r.perf)}%<br/><small>${r.code}</small></td>
+      <td>${r.indicator}</td>
+      <td>${r.improve}</td>
+    </tr>`).join('');
+  return `<h2>تقرير المجال: ${f.name}</h2>
+  <table><thead><tr><th>المستوى/النسبة/الرمز</th><th>المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function buildFieldPlanHTML(key){
+  const f=fields[key];
+  const rows=(detailed[key]||[]).map((r,i)=>{
+    const duration = i%2? '6 أسابيع':'فصل دراسي';
+    return `<tr><td>${r.code}</td><td>${r.indicator}</td><td>${r.improve}</td><td>${duration}</td></tr>`;
+  }).join('');
+  return `<h2>خطة تحسين المجال: ${f.name}</h2>
+  <table><thead><tr><th>رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* عارض الشواهد */
+function openEvidenceViewerPDF(url){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const ext=(url.split('?')[0].split('.').pop()||'').toLowerCase();
   const isPDF=ext==='pdf' || url.includes('application/pdf');
   const doc = isPDF
-    ? `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>شاهد</title><style>@page{size:A4;margin:10mm}html,body{margin:0;height:100%}</style></head><body><embed src="${url}" type="application/pdf" style="width:100%;height:100vh;border:0"/></body></html>`
+    ? `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>شاهد</title><style>html,body{margin:0;height:100%}</style></head><body><embed src="${url}" type="application/pdf" style="width:100%;height:100vh;border:0"/></body></html>`
     : `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>شاهد</title><style>html,body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#000}</style></head><body><img src="${url}" alt="شاهد" style="max-width:100%;max-height:100vh"/></body></html>`;
   w.document.open(); w.document.write(doc); w.document.close();
 }
 
-/* ===== الصفحة الرئيسية ===== */
+/* الصفحة الرئيسية (الدونات) */
 function renderDashboard(){
   const dash=document.getElementById('dashboard');
   dash.innerHTML='';
@@ -447,46 +463,41 @@ function renderDashboard(){
       <div class="kpi"><span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%;background:${lvl.color}"></div></div>
       <div class="donutWrap">
-        <canvas id="donut-${key}" class="donutCanvas" aria-label="مخطط دائري"></canvas>
+        <canvas id="donut-${key}" class="donutCanvas" aria-label="تفاصيل ${f.name}"></canvas>
         <div class="donutCenter">
           <div class="lvl" style="color:${lvl.color}">${lvl.name}</div>
           <div class="pct">${fmt(f.v2025)}%</div>
         </div>
-      </div>
-      <div class="centerBar">
-        <button class="btn micro" type="button" onclick="openFieldReport('${key}')">تقرير المجال</button>
-        <button class="btn micro" type="button" onclick="openFieldPlan('${key}')">خطة المجال</button>
       </div>`;
     dash.appendChild(card);
 
-    try{
-      const ctx=document.getElementById(`donut-${key}`).getContext('2d');
-      new Chart(ctx,{
-        type:'doughnut',
-        data:{labels:f.subs.map(s=>s.name),datasets:[{data:f.subs.map(s=>s.v),backgroundColor:f.subs.map(s=>perfLevel(s.v).color)}]},
-        options:{plugins:{legend:{display:false}},cutout:'72%',responsive:true,maintainAspectRatio:false}
-      });
-      document.getElementById(`donut-${key}`).addEventListener('click',()=>openFieldFullScreen(key));
-    }catch(e){ console.warn('Chart error', e); }
+    const ctx=document.getElementById(`donut-${key}`).getContext('2d');
+    new Chart(ctx,{
+      type:'doughnut',
+      data:{labels:f.subs.map(s=>s.name),datasets:[{data:f.subs.map(s=>s.v),backgroundColor:f.subs.map(s=>perfLevel(s.v).color)}]},
+      options:{plugins:{legend:{display:false}},cutout:'72%',responsive:true,maintainAspectRatio:false}
+    });
+    document.getElementById(`donut-${key}`).addEventListener('click',()=>openFieldFullScreen(key));
   });
 }
 
-/* ===== Gauge صغير بتدرّج ===== */
+/* Gauge SVG صغير بتدرّجات */
 function renderMiniGauge(el, pct, color){
   const r=14, c=2*Math.PI*r;
-  const gid='grad_'+Math.random().toString(36).slice(2);
-  const g1=color; // لون المستوى
-  const g2='#0b7e88'; // مزج بسيط للهوية
+  const gradId = color===getComputedStyle(document.documentElement).getPropertyValue('--lv-excel').trim() ? 'gExcel'
+               : color===getComputedStyle(document.documentElement).getPropertyValue('--lv-progress').trim() ? 'gProg'
+               : color===getComputedStyle(document.documentElement).getPropertyValue('--lv-launch').trim() ? 'gLaunch'
+               : 'gReady';
   const svg=`
     <svg viewBox="0 0 40 40" aria-hidden="true">
       <defs>
-        <linearGradient id="${gid}" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${g1}"/>
-          <stop offset="100%" stop-color="${g2}"/>
-        </linearGradient>
+        <linearGradient id="gExcel" x1="0" x2="1"><stop offset="0" stop-color="#16a34a"/><stop offset="1" stop-color="#22c55e"/></linearGradient>
+        <linearGradient id="gProg" x1="0" x2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#60a5fa"/></linearGradient>
+        <linearGradient id="gLaunch" x1="0" x2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fbbf24"/></linearGradient>
+        <linearGradient id="gReady" x1="0" x2="1"><stop offset="0" stop-color="#e11d48"/><stop offset="1" stop-color="#fb7185"/></linearGradient>
       </defs>
       <circle class="bg" cx="20" cy="20" r="${r}"></circle>
-      <circle class="fg" cx="20" cy="20" r="${r}" stroke="url(#${gid})" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
+      <circle class="fg" cx="20" cy="20" r="${r}" stroke="url(#${gradId})" stroke-dasharray="${c}" stroke-dashoffset="${c}"></circle>
       <text class="txt" x="20" y="20">${Math.round(pct)}</text>
     </svg>`;
   el.innerHTML=svg;
@@ -497,26 +508,23 @@ function renderMiniGauge(el, pct, color){
   });
 }
 
-/* ===== التحليل التفصيلي ===== */
+/* توليد عرض التحليل التفصيلي */
+let currentFieldKey=null;
 async function openFieldFullScreen(key){
+  currentFieldKey=key;
   const panel=document.getElementById('fullPanel');
   const title=document.getElementById('fpTitle');
-  const subsBar=document.getElementById('fpSubs');
   const body=document.getElementById('fpBody');
   const f=fields[key]; title.textContent='التحليل التفصيلي – '+f.name;
 
-  /* شريط العناوين الفرعية (بدون مربعات) + مستوى الأداء بجوارها */
-  subsBar.innerHTML = f.subs.map(s=>{
+  const subsHtml=f.subs.map(s=>{
     const lb=perfLevel(s.v);
-    // تدرج خاص لكل وسم
-    const g1=lb.color, g2='#0b7e88';
-    return `
-      <div class="pill" style="--g1:${g1};--g2:${g2}" title="${s.name}">
-        <span class="pill-name">${s.name}</span>
-        <span class="barMini"><span style="width:${Math.max(4,s.v)}%"></span></span>
-        <span class="pill-pct">${fmt(s.v)}%</span>
-        <span class="pill-lvl" style="color:${lb.color}">• ${lb.name}</span>
-      </div>`;
+    return `<div class="subCard" style="border-color:${lb.color}30">
+      <div class="row">
+        <strong>${s.name}</strong>
+        <span class="chip" style="color:${lb.color};border-color:${lb.color}55">${fmt(s.v)}% • ${lb.name}</span>
+      </div>
+    </div>`;
   }).join('');
 
   const {data:evByRow}=await fetchEvidencesByField(key);
@@ -528,38 +536,44 @@ async function openFieldFullScreen(key){
       const link = e.file_url || '';
       const name = (e.text && e.text.trim()) ? e.text.trim() : ('شاهد '+(j+1));
       return link
-        ? `<a class="evi-chip" href="${link}" target="_blank" onclick="event.preventDefault();openEvidenceViewer('${link}')">${name}</a>`
+        ? `<a class="evi-chip" href="${link}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${link}')">${name}</a>`
         : `<span class="evi-chip">${name}</span>`;
     }).join('');
+
     return `<tr class="${levelRowClass(r.level)}">
-      <td>
+      <td class="col-lvl">
         <div class="lvlCell">
           <div class="miniGauge" data-p="${r.perf}" data-color="${lb.color}"></div>
           <div class="miniInfo">
             <span class="miniName" style="color:${lb.color}">${r.level}</span>
-            <span class="miniPct">${fmt(r.perf)}% • ${lb.name}</span>
+            <span class="miniPct">${fmt(r.perf)}% • ${r.code}</span>
           </div>
         </div>
       </td>
-      <td>${r.indicator}</td>
-      <td>${r.improve}</td>
-      <td>
-        ${r.evidence}
-        ${evisHTML?`<div style="margin-top:6px">${evisHTML}</div>`:''}
-        <div style="margin-top:10px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+      <td class="col-crit"><strong>${r.indicator}</strong><br/><small style="color:#6f8e94">${r.evidence||''}</small></td>
+      <td class="col-imp">${r.improve}</td>
+      <td class="col-evi">
+        <div>${evisHTML || '—'}</div>
+        <div class="eviBar">
           <button class="btn-evi" type="button" onclick="openEvidence('${key}',${i})" title="إضافة شاهد">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg><span>إضافة شاهد</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg><span>إضافة</span>
           </button>
-          <button class="btn-evi danger" type="button" onclick="deleteEvidence('${key}',${i})" title="حذف الشواهد">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 6h18M8 6v12m8-12v12M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14" stroke-width="2" stroke-linecap="round"/></svg><span>حذف الشواهد</span>
+          <button class="btn-evi danger" type="button" onclick="deleteEvidence('${key}',${i})" title="حذف جميع الشواهد لهذا البند">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6v12m8-12v12" stroke-width="2" stroke-linecap="round"/></svg><span>حذف</span>
           </button>
         </div>
       </td>
     </tr>`;
   }).join('');
 
-  body.innerHTML=`<div class="tableWrap"><table>
-    <thead><tr><th style="width:220px">المستوى/الأداء</th><th>المعيار</th><th>مقترحات التحسين</th><th>الشواهد</th></tr></thead>
+  body.innerHTML=`<div class="subgrid">${subsHtml}</div>
+  <div class="tableWrap"><table>
+    <thead><tr>
+      <th class="col-lvl">المستوى/الأداء</th>
+      <th class="col-crit">المعيار/المؤشر</th>
+      <th class="col-imp">مقترحات التحسين</th>
+      <th class="col-evi">الشواهد</th>
+    </tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 
   document.querySelectorAll('.miniGauge').forEach(el=>{
@@ -568,12 +582,15 @@ async function openFieldFullScreen(key){
     renderMiniGauge(el,p,color);
   });
 
-  panel.style.display='flex';
+  document.getElementById('btnFieldReport').onclick=()=>openDocWindow('تقرير المجال',buildFieldReportHTML(key));
+  document.getElementById('btnFieldPlan').onclick=()=>openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key));
   document.getElementById('fpClose').onclick=(e)=>{e.preventDefault(); panel.style.display='none';};
   document.getElementById('fpHome').onclick=(e)=>{e.preventDefault(); panel.style.display='none';window.scrollTo({top:0,behavior:'smooth'})};
+
+  panel.style.display='flex';
 }
 
-/* الشواهد */
+/* الشواهد (فتح/حفظ/حذف) */
 let currentEvi={key:'',idx:0};
 function fillWeeks(termVal){
   const sel=document.getElementById('eviWeek'); sel.innerHTML='';
@@ -589,7 +606,7 @@ function openEvidence(fieldKey,rowIdx){
   currentEvi={key:fieldKey,idx:rowIdx};
   document.getElementById('eviOwner').value=`${fields[fieldKey].name} — بند ${rowIdx+1}`;
   document.getElementById('eviText').value='';
-  document.getElementById('eviHijri').value=todayHijri().replace(/\s/g,'');
+  document.getElementById('eviHijri').value=todayHijri();
   document.getElementById('eviFile').value='';
   document.getElementById('eviLink').value='';
   document.getElementById('eviTerm').value='T1'; fillWeeks('T1');
@@ -597,23 +614,13 @@ function openEvidence(fieldKey,rowIdx){
   const modal=document.getElementById('eviModal');
   modal.style.display='flex';
   modal.setAttribute('aria-hidden','false');
-
-  // منع الإغلاق بالضغط على الخلفية بالخطأ
-  modal.addEventListener('click', (ev)=>{
-    const sheet=modal.querySelector('.sheet');
-    if(!sheet.contains(ev.target)) ev.preventDefault();
-  }, { once:true });
+  // السماح بإغلاق فقط من الأزرار (تجنّب الأعطال سابقًا)
+  modal.onclick=(ev)=>{const sheet=modal.querySelector('.sheet'); if(!sheet.contains(ev.target)) {/* تجاهل */} };
 }
-
-function closeEvidence(){
-  const modal=document.getElementById('eviModal');
-  modal.style.display='none';
-  modal.setAttribute('aria-hidden','true');
-}
+function closeEvidence(){const modal=document.getElementById('eviModal'); modal.style.display='none'; modal.setAttribute('aria-hidden','true'); modal.onclick=null;}
 document.getElementById('eviClose').onclick=(e)=>{e.preventDefault(); closeEvidence();};
 document.getElementById('eviCancel').onclick=(e)=>{e.preventDefault(); closeEvidence();};
 
-/* حفظ الشاهد (ملف أو رابط) */
 document.getElementById('eviSave').onclick=async (ev)=>{
   ev.preventDefault(); ev.stopPropagation();
   if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
@@ -624,17 +631,14 @@ document.getElementById('eviSave').onclick=async (ev)=>{
   const fileEl=document.getElementById('eviFile');
   const file=(fileEl.files && fileEl.files[0]) ? fileEl.files[0] : null;
   const link=(document.getElementById('eviLink').value||'').trim();
-
   if(!text && !file && !link){ alert('أدخل اسم الشاهد وأضف ملفًا أو رابطًا.'); return; }
 
   let file_url='';
   if(file){
     const up=await uploadEvidenceFile(file, `${currentEvi.key}/${currentEvi.idx}`);
-    if(up.error){ alert('فشل رفع الملف.'); return; }
+    if(up.error){ alert('فشل رفع الملف: '+(up.error.message||'' )+'\nيمكنك اعتماد رابط بدلًا من الرفع.'); return; }
     file_url=up.url||'';
-  } else if(link){
-    file_url=link;
-  }
+  } else if(link){ file_url=link; }
 
   const payload={ field_key:currentEvi.key, row_index:currentEvi.idx, text, term, week, hijri, file_url };
   const {error}=await insertEvidence(payload);
@@ -645,104 +649,26 @@ document.getElementById('eviSave').onclick=async (ev)=>{
   openFieldFullScreen(currentEvi.key);
 };
 
-/* حذف الشواهد لهذا البند */
-async function deleteEvidence(key, index){
-  try{
-    if(!supabase){
-      alert('تعذّر الاتصال بقاعدة البيانات (Supabase).'); 
-      return;
-    }
-    const ok = confirm('تأكيد حذف جميع الشواهد لهذا البند؟');
-    if(!ok) return;
-
-    const { error, count } = await supabase
-      .from('evidences')
-      .delete({ count: 'exact' })
-      .eq('field_key', key)
-      .eq('row_index', index);
-
-    if(error){
-      alert('تعذّر حذف الشواهد: ' + (error.message || 'خطأ غير معروف'));
-      return;
-    }
-
-    alert(count && count>0 ? `تم حذف ${count} شاهد/شواهد.` : 'لا توجد شواهد محفوظة لهذا البند.');
-
-    const panel = document.getElementById('fullPanel');
-    panel.style.display = 'none';
-    await openFieldFullScreen(key);
-
-  }catch(err){
-    alert('حدث خطأ أثناء الحذف: ' + err.message);
-  }
+async function deleteEvidence(key,index){
+  if(!supabase){alert('تعذّر الاتصال بقاعدة البيانات.');return;}
+  const ok=confirm('تأكيد حذف جميع الشواهد لهذا البند؟'); if(!ok) return;
+  const {error}=await supabase.from('evidences').delete().eq('field_key', key).eq('row_index', index);
+  if(error){alert('تعذّر حذف الشواهد: '+(error.message||''));return;}
+  alert('تم حذف الشواهد لهذا البند');
+  document.getElementById('fullPanel').style.display='none';
+  openFieldFullScreen(key);
 }
-
-/* تقارير وخطط المجالات (لكل مجال) */
-function buildFieldReportHTML(key){
-  const f=fields[key];
-  const rows=(detailed[key]||[]).map(r=>`
-    <tr class="${levelRowClass(r.level)}">
-      <td>${r.level} — ${fmt(r.perf)}%</td>
-      <td>${r.indicator}</td>
-      <td>${r.improve}</td>
-      <td>${r.evidence}</td>
-    </tr>`).join('');
-  const lvl=perfLevel(f.v2025);
-  return `<h2 class="nowrap-title">تقرير المجال: ${f.name}</h2>
-  <div style="text-align:center;margin:4px 0">الأداء 2024: ${fmt(f.v2024)}% — الأداء 2025: ${fmt(f.v2025)}%
-    <span class="badge ${lvl.key}">مستوى ${lvl.name}</span></div>
-  <div class="tableWrap"><table>
-    <thead><tr><th style="width:220px">المستوى/النسبة</th><th style="width:310px">المؤشر</th><th style="width:270px">مقترحات التحسين</th><th style="width:250px">الشواهد</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>
-  <div class="sig">مدير المدرسة: فهد حامد الزهراني — التاريخ: ${todayHijri()}</div>`;
-}
-function buildFieldPlanHTML(key){
-  const f=fields[key];
-  const rows=(detailed[key]||[]).slice(0,6).map((r,i)=>{
-    const durations=['4 أسابيع','6 أسابيع','8 أسابيع','10 أسابيع','12 أسبوعًا','فصل دراسي كامل'];
-    return `<tr><td>${r.indicator}</td><td>${r.improve}</td><td>${durations[i]||'6 أسابيع'}</td><td>${r.evidence}</td></tr>`;
-  }).join('');
-  return `<h2 class="nowrap-title">خطة تحسين المجال: ${f.name}</h2>
-  <div class="tableWrap"><table>
-    <thead><tr><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th>المدة</th><th>الشواهد</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>
-  <div class="sig">مدير المدرسة: فهد حامد الزهراني — التاريخ: ${todayHijri()}</div>`;
-}
-function openFieldReport(key){openDocWindow('تقرير المجال',buildFieldReportHTML(key))}
-function openFieldPlan(key){openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key))}
 
 /* تشغيل */
 window.addEventListener('DOMContentLoaded',()=>{
-  // تفعيل Ripple
-  document.querySelectorAll('.btn.ripple').forEach(btn=>{
-    btn.addEventListener('pointerdown',(e)=>{
-      const rect=e.currentTarget.getBoundingClientRect();
-      e.currentTarget.style.setProperty('--x', (e.clientX-rect.left)+'px');
-      e.currentTarget.style.setProperty('--y', (e.clientY-rect.top)+'px');
-    });
-  });
-
   document.getElementById('btnExt2025').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2025,'_blank','noopener');});
   document.getElementById('btnExt2024').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2024,'_blank','noopener');});
   document.getElementById('btnAnalyze').addEventListener('click',(e)=>{e.preventDefault(); renderDashboard();});
-  // إلغاء صفحة التقرير الشامل سابقاً — لا زر ولا دوال
-  // زر خطة التحسين العامة يفتح الرابط الخارجي المطلوب
-  document.getElementById('btnFullPlan').addEventListener('click',(e)=>{
-    e.preventDefault();
-    window.open(PLAN_LINK,'_blank','noopener');
-  });
+  document.getElementById('btnFullPlan').addEventListener('click',(e)=>{e.preventDefault(); window.open(PLAN_LINK,'_blank','noopener');});
+  document.getElementById('btnOps').addEventListener('click',(e)=>{e.preventDefault(); window.open(OPS_LINK,'_blank','noopener');});
 
   renderDashboard();
   fillWeeks('T1');
-
-  // فحص اتصال Supabase (تنبيهات مفيدة)
-  if(supabase){
-    supabase.from('evidences').select('id').limit(1).then(({error})=>{
-      if(error){ console.warn('Supabase error:', error); }
-    });
-  }
 });
 </script>
 </body>
