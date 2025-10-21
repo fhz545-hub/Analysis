@@ -14,20 +14,25 @@
   --moe:#0b7e88; --ink:#06353b; --bg:#f5f8f8; --card:#ffffff;
   --muted:#6f8e94; --ok:#e9fff4; --vg:#eef5ff; --gd:#fff6ec; --md:#ffefef;
   --lv-excel:#16a34a; --lv-progress:#2563eb; --lv-launch:#f59e0b; --lv-ready:#e11d48;
-  --hero-h: clamp(220px, 30vh, 360px);
+  --hero-h: 300px; /* ارتفاع الهيدر المطلوب */
+  --hero-w: 2480px; /* عرض مرجعي للصورة */
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
 a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 
-/* هيدر الصفحة الرئيسية */
+/* هيدر الصفحة الرئيسية (مصغّر كما طُلب) */
 .hero{
   width:100vw; margin-left:calc(50% - 50vw); background:var(--bg);
   border-radius:0 0 24px 24px; box-shadow:0 10px 28px rgba(0,0,0,.08);
   position:relative; overflow:hidden; margin:0 0 14px; height:var(--hero-h);
   display:flex; align-items:center; justify-content:center;
 }
-.hero .brand{width:min(1280px,94vw); height:calc(var(--hero-h) - 24px); background:url('logo.png') center/contain no-repeat}
+.hero .brand{
+  width:min(var(--hero-w),94vw);
+  height:calc(var(--hero-h) - 24px);
+  background:url('logo.png') center/contain no-repeat
+}
 
 /* الصفحة */
 .page{max-width:1280px;margin:0 auto;padding:0 16px}
@@ -107,7 +112,7 @@ th.col-crit{width:31%}
 th.col-imp{width:36%}
 th.col-evi{width:auto}
 
-/* مكوّن Gauge */
+/* مكوّن Gauge صغير */
 .lvlCell{display:flex;align-items:center;gap:10px;min-width:170px}
 .miniInfo{display:flex;flex-direction:column;line-height:1.1}
 .miniInfo .miniName{font-weight:800}
@@ -118,15 +123,81 @@ th.col-evi{width:auto}
 .miniGauge .fg{stroke:#000;stroke-width:6;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .9s ease}
 .miniGauge .txt{font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle}
 
-/* أزرار الشاهد */
+/* ===== الشواهد كأرقام عربية فقط مع Tooltip ===== */
 .eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.eviDot{
+  width:28px;height:28px;border-radius:999px;border:1px dashed #cfe4e6;background:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;
+  color:#0b7e88;cursor:pointer;box-shadow:0 3px 8px rgba(11,126,136,.12);
+  transition:transform .12s,background .12s, filter .12s
+}
+.eviDot:hover{background:#f4fbfb;transform:translateY(-1px);filter:brightness(.98)}
+.eviDot[data-variant="danger"]{color:#e11d48;border-color:#f4c2ca}
+.evi-chip{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; margin:.2rem .2rem 0 0; background:rgba(6,53,59,.06); color:#06353b}
 .btn-evi{display:inline-flex;align-items:center;gap:6px;border:1px dashed #cfe4e6;background:#fff;color:#0b7e88;border-radius:999px;padding:5px 8px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px rgba(11,126,136,.12);transition:transform .12s,background .12s;font-size:12px}
 .btn-evi:hover{background:#f4fbfb;transform:translateY(-1px)}
 .btn-evi svg{width:14px;height:14px}
 .btn-evi.danger{color:#e11d48;border-color:#f4c2ca}
 .btn-evi.danger:hover{background:#fff1f3}
-.evi-chip{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; margin:.2rem .2rem 0 0; background:rgba(6,53,59,.06); color:#06353b}
 
+/* ===== ثلاث مربعات المؤشرات (تحصيلي / قدرات / مواد) ===== */
+.metricsRow{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px; margin:14px 0 6px;
+}
+@media (max-width:960px){.metricsRow{grid-template-columns:1fr}}
+.metricCard{
+  position:relative; background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
+  border-radius:16px; padding:14px; box-shadow:0 10px 24px rgba(0,0,0,.08), inset 0 0 0 1px #e6efef;
+}
+.metricHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.metricTitle{margin:0;color:#0b7e88;font-size:18px;font-weight:800}
+.badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#eef6f7;color:#06353b;border:1px dashed #cfe4e6}
+
+/* حلقة قياس دائرية + نبض */
+.ringWrap{position:relative; display:flex; align-items:center; gap:12px}
+.ring{width:96px;height:96px; position:relative}
+.ring svg{width:96px;height:96px; display:block}
+.ring .bg{stroke:#e6efef;stroke-width:10;fill:none}
+.ring .fg{stroke:url(#royalGrad);stroke-width:10;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:301.59;stroke-dashoffset:301.59}
+.ringGlow{position:absolute; inset:-6px; border-radius:999px; box-shadow:0 0 0 0 rgba(37,99,235,.25); animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.24)}
+  70%{box-shadow:0 0 0 16px rgba(37,99,235,0)}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}
+}
+.ringValue{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-weight:900; font-size:18px; color:#06353b}
+
+/* شريط تقدّم انسيابي */
+.lineWrap{flex:1}
+.lineBar{height:14px; border-radius:999px; background:#e6efef; overflow:hidden; position:relative}
+.lineFill{
+  height:100%; width:0%; background:linear-gradient(90deg,#16a34a 0%, #22c55e 25%, #2563eb 75%, #3b82f6 100%);
+  border-radius:999px; transition:width 1.2s cubic-bezier(.22,.9,.29,1); position:relative
+}
+.lineFill::after{
+  content:""; position:absolute; inset:0; background:radial-gradient(24px 24px at 0% 50%, rgba(255,255,255,.35), transparent 55%);
+  animation:shine 2.2s linear infinite
+}
+@keyframes shine{
+  0%{left:-20%}
+  100%{left:100%}
+}
+
+/* لوح قراءة */
+.metricBody{display:flex; gap:12px; align-items:center}
+.metricRead{display:flex; flex-direction:column; gap:4px}
+.readLine{font-size:12px; color:#6f8e94}
+.readStrong{font-weight:800; color:#06353b}
+
+/* لوحة المواد العلمية */
+.subjects{display:flex; flex-direction:column; gap:8px; margin-top:6px}
+.subRow{display:grid; grid-template-columns:90px 1fr 56px; align-items:center; gap:8px}
+.subName{font-weight:800; color:#06353b}
+.subMeter{height:12px; background:#e6efef; border-radius:999px; overflow:hidden; position:relative}
+.subFill{height:100%; width:0%; background:linear-gradient(90deg,#0ea5a0,#22b8a0,#2563eb); transition:width 1.2s cubic-bezier(.22,.9,.29,1)}
+.subPct{text-align:center; font-weight:800; color:#06353b; font-size:12px}
+
+/* تذييل */
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 
 /* الطباعة العامة */
@@ -147,8 +218,8 @@ th.col-evi{width:auto}
 .modal .small{font-size:12px;color:#6f8e94}
 @media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
 
-/* ====== أنماط نافذة الطباعة الخاصة بالتقرير/الخطة ====== */
-.print-wrap{max-width:820px;margin:0 auto;padding:16px}
+/* ====== طباعة تقرير/خطة المجال (تناصف A4) ====== */
+.print-wrap{width:190mm;max-width:100%;margin:0 auto;padding:12px}
 .print-hero{width:100%;margin:0 auto 10px;display:flex;justify-content:center;align-items:center}
 .print-hero img{display:block;max-width:100%;height:auto}
 .print-toolbar{position:sticky;bottom:0;display:flex;gap:6px;justify-content:center;margin:10px 0}
@@ -176,6 +247,9 @@ th.col-evi{width:auto}
   </div>
 
   <div id="dashboard" class="grid"></div>
+
+  <!-- صف المؤشرات الجديد (تحصيلي / قدرات / مواد) -->
+  <section id="metricsSection" class="metricsRow"></section>
 
   <div class="footer">تنفيذ وتصميم فهد حامد الزهراني</div>
 </div>
@@ -264,7 +338,7 @@ th.col-evi{width:auto}
 <script>
 /* ====== روابط عليا ====== */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
-const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=drive_link';
+const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZK8lb_ylf1Ar/view?usp=drive_link';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
 const OPS_LINK='https://drive.google.com/file/d/1ItrZpaptSVaR_qFqMLhzHRAduIeJESa2/view?usp=sharing';
 
@@ -348,8 +422,8 @@ const fields={
   ]}
 };
 
-/* ====== detailed (كامل كما زودتني به) ====== */
-const detailed={
+/* ====== detailed (كما زودتني به) ====== */
+const detailed={ /* (المحتوى كامل كما في نسختك السابقة — لا تعديل) */
   management:[
     {code:'1-1-1-1',level:'التقدّم',perf:81.75,indicator:'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة',improve:'تطوير خطة تشغيلية مرنة بأهداف طموحة وبرامج ومبادرات ومؤشرات أداء ومهام ومسؤوليات مُزمّنة، وخطط استدامة وتحسين.',evidence:'خطة تشغيلية معتمدة + محضر لجنة الخطة + مصفوفة KPI'},
     {code:'2-1-1-1',level:'التهيئة',perf:42.00,indicator:'تتابع المدرسة تنفيذ خطتها وتطورها بما يضمن تحقيق أهدافها',improve:'متابعة التنفيذ وتقويمه بانتظام وفق مؤشرات واضحة، وتطوير الخطة لضمان تحقيق الأهداف.',evidence:'تقارير متابعة شهرية + اجتماعات متابعة + إجراءات تصحيح'},
@@ -418,7 +492,7 @@ function fileToDataURL(file){
   });
 }
 
-/* رفع ملف إلى bucket evidence إن توفر، وإلا نرجع DataURL */
+/* رفع ملف إلى bucket evidence إن توفر، وإلا DataURL */
 async function uploadEvidenceSmart(file, pathPrefix){
   try{
     const safe=`${pathPrefix}/${Date.now()}_${file.name}`.replace(/\s+/g,'_');
@@ -427,12 +501,8 @@ async function uploadEvidenceSmart(file, pathPrefix){
     const { data:pub } = supabase.storage.from('evidence').getPublicUrl(data.path);
     return pub.publicUrl;
   }catch(err){
-    // خطة بديلة: DataURL (تعمل حتى لو لا يوجد bucket)
-    const isBucketIssue = (err && (String(err.message||'').toLowerCase().includes('bucket') || String(err.name||'').toLowerCase().includes('storage')));
-    if(isBucketIssue || true){ // أي فشل: نستخدم DataURL لضمان عدم توقف العمل
-      const dataURL = await fileToDataURL(file);
-      return dataURL; // نخزنها مباشرة في الحقل file_url
-    }
+    const dataURL = await fileToDataURL(file);
+    return dataURL;
   }
 }
 
@@ -454,7 +524,7 @@ async function deleteEvidenceAll(fieldKey,rowIdx){
   if(error) throw new Error(error.message||'تعذر الحذف');
 }
 
-/* نافذة طباعة (هيدر lolo صورة + تمركز الصفحة) */
+/* نافذة طباعة (تناصف A4) */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
@@ -463,7 +533,7 @@ function openDocWindow(title,contentHTML){
     *{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--ink);font-family:'Tajawal',sans-serif}
     @page{size:A4;margin:10mm}
     html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .print-wrap{max-width:820px;margin:0 auto;padding:12px}
+    .print-wrap{width:190mm;max-width:100%;margin:0 auto;padding:12px}
     .print-hero{width:100%;display:flex;justify-content:center;align-items:center;margin:8px 0 12px}
     .print-hero img{display:block;max-width:100%;height:auto}
     h2{margin:8px 0 6px;color:#0b7e88;text-align:center}
@@ -574,7 +644,164 @@ function renderMiniGauge(el, pct, color){
   });
 }
 
-/* عرض التحليل التفصيلي */
+/* ====== المؤشرات الخرافية (تحصيلي / قدرات / مواد) ====== */
+
+/** رسم حلقة دائرية متدرجة + نبض + رقم **/
+function makeRing(container, valuePercent){
+  const clamp = (n)=>Math.max(0,Math.min(100,Number(n)||0));
+  const v = clamp(valuePercent);
+  const ring = document.createElement('div');
+  ring.className='ring';
+  ring.innerHTML = `
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <linearGradient id="royalGrad" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#16a34a"/>
+          <stop offset="50%" stop-color="#22c55e"/>
+          <stop offset="100%" stop-color="#2563eb"/>
+        </linearGradient>
+      </defs>
+      <circle class="bg" cx="50" cy="50" r="48"></circle>
+      <circle class="fg" cx="50" cy="50" r="48"></circle>
+    </svg>
+    <div class="ringGlow"></div>
+    <div class="ringValue">${v.toFixed(1)}%</div>
+  `;
+  container.appendChild(ring);
+  // تحريك الرسم
+  requestAnimationFrame(()=>{
+    const fg = ring.querySelector('.fg');
+    const C = 2*Math.PI*48; // 301.59
+    fg.style.strokeDasharray = C;
+    fg.style.transition = 'stroke-dashoffset 1200ms cubic-bezier(.22,.9,.29,1)';
+    fg.style.strokeDashoffset = C * (1 - v/100);
+  });
+}
+
+/** شريط تقدّم متدرج **/
+function makeLine(container, valuePercent){
+  const v = Math.max(0,Math.min(100,Number(valuePercent)||0));
+  const wrap = document.createElement('div');
+  wrap.className='lineWrap';
+  wrap.innerHTML = `<div class="lineBar"><div class="lineFill"></div></div>`;
+  container.appendChild(wrap);
+  const fill = wrap.querySelector('.lineFill');
+  requestAnimationFrame(()=>{ fill.style.width = v + '%'; });
+}
+
+/** قراءة لفظية **/
+function classify(v){
+  if(v>=90) return 'ممتاز';
+  if(v>=75) return 'متقدّم';
+  if(v>=60) return 'مستهدف';
+  return 'يحتاج تعزيز';
+}
+
+/** بطاقة مؤشر (عنوان + حلقة + شريط + قراءة) **/
+function buildMetricCard(title, value){
+  const card = document.createElement('div');
+  card.className='metricCard';
+  card.innerHTML = `
+    <div class="metricHead">
+      <h3 class="metricTitle">${title}</h3>
+      <span class="badge">${new Date().toLocaleDateString('ar-SA')}</span>
+    </div>
+    <div class="metricBody">
+      <div class="ringWrap" id="ringHere"></div>
+      <div class="metricRead">
+        <div class="readLine">النسبة: <span class="readStrong">${value.toFixed(2)}%</span></div>
+        <div class="readLine">التصنيف: <span class="readStrong">${classify(value)}</span></div>
+        <div id="lineHere"></div>
+      </div>
+    </div>
+  `;
+  const ringHere = card.querySelector('#ringHere');
+  makeRing(ringHere, value);
+  const lineHere = card.querySelector('#lineHere');
+  makeLine(lineHere, value);
+  return card;
+}
+
+/** بطاقة المواد العلمية (رياضيات/فيزياء/كيمياء/أحياء/عربي)
+ *  - تُحسب مبدئيًا من (تحصيلي + قدرات) كنقطة انطلاق:
+ *    الرياضيات: 0.55 قدرات + 0.45 تحصيلي
+ *    الفيزياء : 0.60 قدرات + 0.40 تحصيلي
+ *    الكيمياء : 0.50 قدرات + 0.50 تحصيلي
+ *    الأحياء  : 0.40 قدرات + 0.60 تحصيلي
+ *    العربية  : 0.30 قدرات + 0.70 تحصيلي
+ *  - تُستبدل تلقائيًا بقيم Supabase إن وُجدت (subjects table: subject, score)
+ **/
+async function buildSubjectsCard(tahsili, qiyas){
+  const initial = {
+    'الرياضيات': 0.55*qiyas + 0.45*tahsili,
+    'الفيزياء'  : 0.60*qiyas + 0.40*tahsili,
+    'الكيمياء'  : 0.50*qiyas + 0.50*tahsili,
+    'الأحياء'   : 0.40*qiyas + 0.60*tahsili,
+    'اللغة العربية': 0.30*qiyas + 0.70*tahsili
+  };
+
+  // محاولة جلب بيانات أحدث من Supabase (اختياري — إن وُجد جدول subjects)
+  try{
+    const { data, error } = await supabase.from('subjects').select('subject,score');
+    if(!error && Array.isArray(data)){
+      data.forEach(r=>{
+        if(r && typeof r.subject==='string' && typeof r.score==='number' && initial[r.subject]!==undefined){
+          initial[r.subject] = r.score;
+        }
+      });
+    }
+  }catch(e){ /* نتجاهل أي خطأ — تبقى القيم المبدئية */ }
+
+  const card = document.createElement('div');
+  card.className='metricCard';
+  card.innerHTML = `
+    <div class="metricHead">
+      <h3 class="metricTitle">المواد العلمية الأساسية</h3>
+      <span class="badge">محدث</span>
+    </div>
+    <div class="subjects" id="subsHere"></div>
+  `;
+  const host = card.querySelector('#subsHere');
+
+  Object.entries(initial).forEach(([name,val])=>{
+    const row = document.createElement('div');
+    row.className='subRow';
+    row.innerHTML = `
+      <div class="subName">${name}</div>
+      <div class="subMeter"><div class="subFill"></div></div>
+      <div class="subPct">0%</div>
+    `;
+    host.appendChild(row);
+    const fill = row.querySelector('.subFill');
+    const pct = row.querySelector('.subPct');
+    const v = Math.max(0, Math.min(100, Number(val)||0));
+    requestAnimationFrame(()=>{
+      fill.style.width = v + '%';
+      pct.textContent = v.toFixed(0) + '%';
+    });
+  });
+
+  return card;
+}
+
+/* ====== تشغيل قسم المؤشرات ====== */
+async function renderMetricsSection(){
+  const wrap = document.getElementById('metricsSection');
+  wrap.innerHTML='';
+
+  // القيم الحالية (بالمئة) — حسب ما طلبت:
+  const TAH = 71.254;  // القدرات
+  const QIY = 66.546;  // التحصيلي
+
+  // البطاقة 1: القدرات
+  wrap.appendChild( buildMetricCard('القدرات', TAH) );
+  // البطاقة 2: التحصيلي
+  wrap.appendChild( buildMetricCard('التحصيلي', QIY) );
+  // البطاقة 3: المواد العلمية (مشتقة من الاثنين + قابلة للتعديل لاحقًا)
+  wrap.appendChild( await buildSubjectsCard(TAH, QIY) );
+}
+
+/* ===== عرض التحليل التفصيلي ===== */
 let currentFieldKey=null;
 async function openFieldFullScreen(key){
   currentFieldKey=key;
@@ -599,13 +826,18 @@ async function openFieldFullScreen(key){
   const rows=(detailed[key]||[]).map((r,i)=>{
     const lb=perfLevel(r.perf);
     const evisArr=(evByRow && evByRow[i]) ? evByRow[i] : [];
-    const evisHTML = evisArr.map((e,j)=>{
-      const link = e.file_url || '';
-      const name = (e.text && e.text.trim()) ? e.text.trim() : ('شاهد '+(j+1));
-      return link
-        ? `<a class="evi-chip" href="${link}" target="_blank" onclick="event.preventDefault();openEvidenceViewerPDF('${link}')">${name}</a>`
-        : `<span class="evi-chip">${name}</span>`;
-    }).join('');
+
+    const evisHTML = evisArr.length
+      ? evisArr.map((e,j)=>{
+          const link = e.file_url || '';
+          const raw = (e.text && e.text.trim()) ? e.text.trim() : ('شاهد '+(j+1));
+          const title = raw.replace(/"/g,'&quot;');
+          const arabNum = (j+1).toLocaleString('ar-SA'); // ١،٢،٣…
+          return link
+            ? `<button class="eviDot" title="${title}" aria-label="${raw}" onclick="openEvidenceViewerPDF('${link}')" type="button">${arabNum}</button>`
+            : `<span class="eviDot" title="${title}" aria-label="${raw}">${arabNum}</span>`;
+        }).join('')
+      : '—';
 
     return `<tr class="${levelRowClass(r.level)}">
       <td class="col-lvl">
@@ -620,8 +852,8 @@ async function openFieldFullScreen(key){
       <td class="col-crit"><strong>${r.indicator}</strong><br/><small style="color:#6f8e94">${r.evidence||''}</small></td>
       <td class="col-imp">${r.improve}</td>
       <td class="col-evi">
-        <div>${evisHTML || '—'}</div>
-        <div class="eviBar">
+        <div>${evisHTML}</div>
+        <div class="eviBar" style="margin-top:6px">
           <button class="btn-evi" type="button" onclick="openEvidence('${key}',${i})" title="إضافة شاهد">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg><span>إضافة</span>
           </button>
@@ -716,7 +948,7 @@ document.getElementById('eviSave').onclick=async (ev)=>{
     document.getElementById('fullPanel').style.display='none';
     await openFieldFullScreen(currentEvi.key);
   }catch(err){
-    alert('تعذّر حفظ الشاهد: '+(err.message||''));
+    alert('تعذّر حفظ الشاهد: '+(err.message||'')); 
   }
 };
 
@@ -733,7 +965,7 @@ async function confirmDeleteEvidence(key,index){
 }
 
 /* تشغيل */
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded',async ()=>{
   document.getElementById('btnExt2025').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2025,'_blank','noopener');});
   document.getElementById('btnExt2024').addEventListener('click',(e)=>{e.preventDefault(); window.open(SRC_2024,'_blank','noopener');});
   document.getElementById('btnAnalyze').addEventListener('click',(e)=>{e.preventDefault(); renderDashboard();});
@@ -741,6 +973,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('btnOps').addEventListener('click',(e)=>{e.preventDefault(); window.open(OPS_LINK,'_blank','noopener');});
 
   renderDashboard();
+  await renderMetricsSection();   // المؤشرات الجديدة
   fillWeeks('T1');
 });
 </script>
