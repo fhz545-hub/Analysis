@@ -7,7 +7,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -46,7 +45,13 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 @media (max-width:520px){.grid{grid-template-columns:1fr}}
 
 /* Card */
-.card{background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);border-radius:16px;padding:14px;border:1px solid #e6efef;cursor:pointer}
+.card{
+  background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
+  border-radius:16px;padding:14px;border:1px solid #e6efef;cursor:pointer;
+  transition:transform .12s, box-shadow .12s;
+  box-shadow:0 4px 14px rgba(0,0,0,.045);
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
 .card h2{margin:0 0 6px;color:#0b7e88;font-size:20px}
 .kpi{display:flex;justify-content:space-between;align-items:center;color:#6f8e94;font-size:13px;gap:8px;flex-wrap:wrap}
 .progress{height:10px;background:#e6efef;border-radius:999px;overflow:hidden;margin:8px 0}
@@ -83,33 +88,58 @@ tbody td{padding:10px;border-bottom:1px solid #eef3f3;vertical-align:top;word-br
 tbody tr:last-child td{border-bottom:0}
 .row-excellent{background:var(--ok)} .row-verygood{background:var(--vg)} .row-good{background:var(--gd)} .row-medium{background:var(--md)}
 
-/* Report/Plan columns (adjusted widths) */
+/* Report/Plan columns */
 th.col-lvl, td.col-lvl{width:160px}
 th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 
-/* Evidence actions (icons, not pills) */
+/* Evidence actions (icon-only) */
 .eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
 .eviDot{width:26px;height:26px;border-radius:999px;border:1px dashed #cfe4e6;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0b7e88}
-.eviActions{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:6px}
-.eviAct{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:13px;cursor:pointer;color:#0b7e88}
-.eviAct.delete{color:#e11d48}
-.eviAct svg{width:16px;height:16px}
+.eviActions{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:6px}
+.eviIcon{font-size:20px;line-height:1;cursor:pointer;user-select:none;transition:transform .12s}
+.eviIcon:hover{transform:translateY(-1px)}
+.eviIcon.add{color:#0b7e88}
+.eviIcon.delete{color:#e11d48}
 
-/* Metrics row (no measuring lines, centered rings) */
-.metricsRow{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:16px;margin:14px 0 6px}
-@media (max-width:960px){.metricsRow{grid-template-columns:1fr}}
-.metricCard{position:relative;background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);border-radius:16px;padding:14px;border:1px solid #e6efef}
+/* ===== الوسط: (تحصيلي | لوحة القيادة | القدرات) في صف واحد ===== */
+.metricsRow{
+  display:flex; justify-content:center; align-items:stretch; gap:18px;
+  margin:14px 0 6px; flex-wrap:wrap
+}
+.metricCard{
+  position:relative;background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
+  border-radius:16px;padding:14px;border:1px solid #e6efef;
+  box-shadow:0 6px 18px rgba(0,0,0,.06), inset 0 0 0 1px #e6efef;
+  transition:transform .12s, box-shadow .12s;
+}
+.metricCard:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.09), inset 0 0 0 1px #e6efef}
 .metricHead{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:6px}
 .metricTitle{margin:0;color:#0b7e88;font-size:18px;font-weight:800}
 .metricBody{display:flex;align-items:center;justify-content:center}
+
+/* مربعات التحصيلي/القدرات (مربّع تمامًا) */
+.metricCard.small{
+  width:320px; height:320px; display:flex; flex-direction:column;
+  justify-content:flex-start; align-items:stretch; margin-inline:auto
+}
+.metricCard.small .metricBody{flex:1; display:flex; align-items:center; justify-content:center}
+.metricCard.small .ring{width:110px;height:110px}
+.metricCard.small .ring svg{width:110px;height:110px}
+.metricCard.small .ringValue{font-size:18px}
+
+/* لوحة القيادة (أعرض قليلًا لمنع التفاف مزعج) */
+.metricCard.lead{
+  width:560px; min-height:320px; margin-inline:auto
+}
+
+/* Rings */
 .ringWrap{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
-.ring{width:110px;height:110px;position:relative} .ring svg{width:110px;height:110px;display:block}
+.ring{width:96px;height:96px;position:relative} .ring svg{width:96px;height:96px;display:block}
 .ring .bg{stroke:#e6efef;stroke-width:10;fill:none}
 .ring .fg{stroke:url(#royalGrad);stroke-width:10;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
 .ringGlow{position:absolute;inset:-6px;border-radius:999px;box-shadow:0 0 0 0 rgba(37,99,235,.25);animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,99,235,.24)}70%{box-shadow:0 0 0 16px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
-.ringValue{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;font-size:18px;color:#06353b}
-.metricCard.small .ring{width:100px;height:100px} .metricCard.small .ring svg{width:100px;height:100px}
+.ringValue{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;font-size:16px;color:#06353b}
 
 /* Leadership icons */
 .kbd-icons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;justify-content:center}
@@ -131,6 +161,11 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 .modal label{display:block;font-size:12px;color:#355;margin-bottom:4px}
 .modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
 .modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
+@media (max-width:1200px){
+  .metricsRow{justify-content:center}
+  .metricCard.lead{width:min(560px,95vw)}
+}
+@media (max-width:960px){ .metricsRow{flex-direction:column;align-items:center} }
 @media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
 
 /* Footer & print */
@@ -241,7 +276,7 @@ function levelRowClass(arLevel){
   return 'row-medium';
 }
 
-/* === Supabase config (استبدل القيم أدناه بقيم مشروعك) === */
+/* Supabase (استبدل بقيم مشروعك) */
 const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
 const SUPABASE_ANON= 'YOUR-ANON-KEY';
 let supa = null;
@@ -269,6 +304,7 @@ const fields={
 };
 
 const detailed={
+  /* --- الإدارة المدرسية --- */
   management:[
     {code:'1-1-1-1',level:'التقدّم',perf:81.75,indicator:'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة',improve:'تطوير خطة تشغيلية مرنة بأهداف طموحة وبرامج ومبادرات ومؤشرات أداء ومهام ومسؤوليات مُزمّنة، وخطط استدامة وتحسين.',evidence:'خطة تشغيلية معتمدة + محضر لجنة الخطة + مصفوفة KPI'},
     {code:'2-1-1-1',level:'التهيئة',perf:42.00,indicator:'تتابع المدرسة تنفيذ خطتها وتطورها بما يضمن تحقيق أهدافها',improve:'متابعة التنفيذ وتقويمه بانتظام وفق مؤشرات واضحة، وتطوير الخطة لضمان تحقيق الأهداف.',evidence:'تقارير متابعة شهرية + اجتماعات متابعة + إجراءات تصحيح'},
@@ -286,39 +322,42 @@ const detailed={
     {code:'3-1-4-1',level:'التقدّم',perf:79.25,indicator:'تطبق المدرسة التقويم الذاتيّ المبنيّ على معايير الهيئة',improve:'تنفيذ التقويم الذاتي وفق الإطار، نشر الثقافة، إشراك المجتمع المدرسي، وخطة طموحة لنقل المعرفة.',evidence:'أداة وتقارير تقويم ذاتي + خطة تحسين مشتقة'},
     {code:'1-4-1-4',level:'الانطلاق',perf:74.00,indicator:'تنفذ المدرسة خطة للتحسين بناءً على نتائج التقويم وتتابعها',improve:'تطوير خطة تحسين بأولويات تعالج جوانب مؤثرة في نواتج التعلم ومتابعة التنفيذ.',evidence:'خطة تحسين معتمدة + تقارير تقدم + مواءمة تشغيلية'}
   ],
+  /* --- التعليم والتعلم --- */
   teaching:[
     {code:'2-1-1-2',level:'التميّز',perf:97.75,indicator:'تدعم المدرسة تنفيذ المناهج وفق الخطة الدراسية',improve:'الاستمرار في توفير أنشطة ومصادر مبتكرة تدعم تعلم المعارف/المهارات والقيم ومتابعة التنفيذ لتحقيق التوقعات العالية.',evidence:'خطط توزيع + سجلات تطبيق + دروس نموذجية'},
     {code:'2-2-1-3',level:'التميّز',perf:93.25,indicator:'تقدم المدرسة التغذية الراجعة للمتعلمين بانتظام',improve:'الاستمرار في التغذية الراجعة الفورية والبنّاءة بطرق متنوعة لدعم التعلم وتحسين الأداء.',evidence:'نماذج تغذية راجعة + متابعة فردية'},
     {code:'8-1-1-2',level:'التقدّم',perf:88.50,indicator:'تنمي المدرسة المهارات العاطفية والاجتماعية لدى المتعلمين',improve:'بيئة تعلم تعزز التحكم بالعواطف والثقة بالنفس والتعاون والتواصل والحوار والاحترام المتبادل.',evidence:'برامج SEL + جلسات إرشاد + استبانات مهارية'},
     {code:'2-1-2-2',level:'التقدّم',perf:79.50,indicator:'تحلل نتائج التقويم وتوظفها في تحسين نواتج التعلم',improve:'تحليل النتائج وتفسيرها واتخاذ قرارات وبناء خطط علاجية/إثرائية لتحقيق التوقعات المستهدفة.',evidence:'تقارير تحليل + خطط علاج/إثراء + متابعة تقدم'},
-    {code:'3-1-1-2',level:'التقدّم',perf:79.25,indicator:'تنوع المدرسة في إستراتيجيات التدريس',improve:'خبرات تعلم ثرية تشجع البحث/التجريب وتراعي الفروق وتلبي الاحتياجات (ومنهم ذوو الإعاقة والموهوبون).',evidence:'خطط دروس متنوعة + زيارات صفية'},
+    {code:'3-1-1-2',level:'التقدّم',perf:79.25,indicator:'تنوع المدرسة في إستراتيجيات التدريس',improve:'خبرات تعلم ثرية تشجع البحث/التجريب وتراعي الفروق وتلبي الاحتياجات.',evidence:'خطط دروس متنوعة + زيارات صفية'},
     {code:'6-1-1-2',level:'التقدّم',perf:77.50,indicator:'تنمي المدرسة المهارات القرائية والعددية الأساسية',improve:'تعزيز القراءة/الكتابة والمهارات العددية عبر أنشطة صفية ولاصفية وخطة مركزة طويلة المدى.',evidence:'اختبارات تشخيصية + خطة علاج + تتبع فردي'},
-    {code:'2-2-1-1',level:'التقدّم',perf:77.25,indicator:'تقوّم المدرسة أداء المتعلمين بأساليب وأدوات متنوعة وفاعلة',improve:'أساليب تشخيصية/تكوينية/ختامية، تماثل مهارات المعلمين في التقويم، مشاركة المتعلمين في تقويم أدائهم.',evidence:'بنك أسئلة + أدوات تقويم + ملفات إنجاز'},
-    {code:'2-1-1-10',level:'التقدّم',perf:77.25,indicator:'تعزز المدرسة دافعية المتعلمين للتعلم والاستمتاع به',improve:'بيئة تعلم تحقق الرفاه وتثير الفضول وتطبق أساليب تحفيز تراعي الميول والاهتمامات.',evidence:'برامج تحفيزية + مسابقات + بطاقات تشجيع'},
-    {code:'1-1-1-2',level:'التقدّم',perf:76.75,indicator:'توفر المدرسة فرصًا متكافئة للتعلم (ذوو الإعاقة/الموهوبون)',improve:'فرص تعلم متكافئة واستجابة للاحتياجات المختلفة والوصول الشامل ومتابعة الالتزام.',evidence:'خطط فردية IEP + تكييفات + قوائم موهوبين'},
-    {code:'7-1-1-2',level:'التقدّم',perf:75.25,indicator:'تنمي المدرسة مهارات التفكير العليا لدى المتعلمين',improve:'أساليب وأنشطة متميزة لتنمية التحليل والاستنتاج والتقويم والإبداع وحل المشكلات.',evidence:'منتجات تعلم + Rubrics تفكير عليا'},
-    {code:'4-1-1-2',level:'الانطلاق',perf:69.75,indicator:'تفعّل المدرسة التعلم الإلكتروني',improve:'تجهيزات تقنية وأنشطة تدمج التعلم الصفي والإلكتروني يوميًا وللطوارئ.',evidence:'تفعيل منصة + دروس رقمية + تقارير دخول'},
-    {code:'5-1-1-2',level:'الانطلاق',perf:62.00,indicator:'توفر المدرسة أنشطة تعلم تطبيقية مرتبطة بالحياة',improve:'ربط الخبرات بالواقع وتشجيع التجارب العلمية والاستقصاء وتطبيق المعرفة.',evidence:'مشاريع/مهام أدائية + سلالم تقدير'},
-    {code:'9-1-1-2',level:'الانطلاق',perf:60.75,indicator:'تنمي المدرسة المهارات الرقمية لدى المتعلمين',improve:'تعزيز استخدام التقنية، التعامل مع البيانات، فرص تعلم رقمية ثرية وتوظيف البرمجيات للوصول للمعرفة.',evidence:'تدريبات تقنية + منتجات رقمية طلابية'}
+    {code:'2-2-1-1',level:'التقدّم',perf:77.25,indicator:'تقوّم المدرسة أداء المتعلمين بأساليب متنوعة',improve:'تشخيصي/تكويني/ختامي ومشاركة المتعلمين في تقويم أدائهم.',evidence:'بنك أسئلة + أدوات تقويم + ملفات إنجاز'},
+    {code:'2-1-1-10',level:'التقدّم',perf:77.25,indicator:'تعزز المدرسة دافعية المتعلمين',improve:'بيئة تعلم تحقق الرفاه وتثير الفضول وتحفز وفق الميول.',evidence:'برامج تحفيزية + مسابقات + بطاقات تشجيع'},
+    {code:'1-1-1-2',level:'التقدّم',perf:76.75,indicator:'فرص متكافئة للتعلم',improve:'استجابة للاحتياجات المختلفة والوصول الشامل.',evidence:'IEP + تكييفات + قوائم موهوبين'},
+    {code:'7-1-1-2',level:'التقدّم',perf:75.25,indicator:'تنمية مهارات التفكير العليا',improve:'أنشطة لتنمية التحليل والاستنتاج والتقويم والإبداع.',evidence:'منتجات تعلم + Rubrics تفكير'},
+    {code:'4-1-1-2',level:'الانطلاق',perf:69.75,indicator:'تفعيل التعلم الإلكتروني',improve:'دمج التعلم الصفي والإلكتروني.',evidence:'منصة + دروس رقمية + تقارير دخول'},
+    {code:'5-1-1-2',level:'الانطلاق',perf:62.00,indicator:'أنشطة تعلم تطبيقية',improve:'ربط الخبرات بالواقع وتشجيع الاستقصاء.',evidence:'مشاريع/مهام أدائية + سلالم تقدير'},
+    {code:'9-1-1-2',level:'الانطلاق',perf:60.75,indicator:'المهارات الرقمية',improve:'تعزيز استخدام التقنية والتعامل مع البيانات.',evidence:'تدريبات تقنية + منتجات رقمية'}
   ],
+  /* --- نواتج التعلم --- */
   learning:[
-    {code:'3-2-1-1',level:'التميّز',perf:95.50,indicator:'يظهر المتعلمون الاعتزاز بالقيم والهوية الوطنية',improve:'الاستمرار في تعزيز القيم والهوية واللغة العربية واستثمار المناسبات الوطنية بأساليب مبتكرة.',evidence:'فعاليات وطنية موثقة + أعمال طلابية + استبانات اتجاهات'},
-    {code:'5-1-2-3',level:'التميّز',perf:94.00,indicator:'يلتزم المتعلمون بقواعد السلوك والانضباط المدرسي',improve:'الاستمرار ببرامج متنوعة ومبتكرة وتجسيد المسؤولية الذاتية.',evidence:'تقارير انضباط + برامج تعزيز + متابعة حضور'},
-    {code:'3-2-1-2',level:'التميّز',perf:91.75,indicator:'يظهر المتعلمون اتجاهات إيجابية نحو ذواتهم',improve:'الاستمرار في تعزيز الرفاه والرضا والسعادة.',evidence:'برامج رفاه + استبانات سعادة + جلسات إرشاد'},
-    {code:'7-1-2-3',level:'التميّز',perf:91.75,indicator:'يظهر المتعلمون اعتزازًا بثقافتهم واحترامًا للتنوع الثقافي',improve:'الاستمرار في تعزيز الثوابت الوطنية والفخر بالعربية واحترام التنوع الثقافي.',evidence:'منتجات ثقافية/لغوية + فعاليات + سياسات تنوّع'},
-    {code:'6-1-2-3',level:'التقدّم',perf:84.25,indicator:'يظهر المتعلمون القدرة على البحث والتعلم الذاتي',improve:'تنمية مهارات البحث والتعلم الذاتي ومهام أدائية ترتبط بالحياة وإدارة الوقت وتوظيف التقنية.',evidence:'ملفات مشاريع + Rubrics بحوث + دورات مهارات بحث'},
-    {code:'2-1-1-3',level:'التقدّم',perf:82.94,indicator:'يحقق المتعلمون نتائج متقدمة في اختبارات القدرات العامة',improve:'تعزيز القدرات التحليلية والاستدلالية والمنطقية والقياس وحل المشكلات.',evidence:'نتائج قدرات + خطة تدريب (لفظي/كمي) + محاكاة'},
-    {code:'3-1-2-3',level:'التقدّم',perf:82.50,indicator:'يلتزم المتعلمون بالممارسات الصحية السليمة',improve:'تعزيز الممارسات الصحية وبرامج النشاط البدني والغذاء الصحي والنظافة.',evidence:'خطة صحة مدرسية + فعاليات + سجلات'},
-    {code:'1-1-1-3',level:'التقدّم',perf:79.04,indicator:'يحقق المتعلمون نتائج متقدمة في الاختبارات التحصيلية',improve:'بناء أساس قوي في المعارف والمهارات وتعزيز الاستعداد الدراسي.',evidence:'نتائج تحصيلي + خطة رفع تحصيل + مجموعات تقوية'},
-    {code:'4-1-2-3',level:'الانطلاق',perf:63.25,indicator:'يشارك المتعلمون في الأنشطة المجتمعية والأعمال التطوعية',improve:'برامج نوعية تحفز المشاركة والتطبيق لحلول مبتكرة تعزز المسؤولية.',evidence:'منصة تطوع + شهادات ساعات + تقارير مبادرات'}
+    {code:'3-2-1-1',level:'التميّز',perf:95.50,indicator:'اعتزاز بالقيم والهوية',improve:'تعزيز القيم واللغة العربية.',evidence:'فعاليات وطنية + أعمال طلابية'},
+    {code:'5-1-2-3',level:'التميّز',perf:94.00,indicator:'انضباط مدرسي',improve:'برامج متنوعة ومبتكرة.',evidence:'تقارير انضباط + متابعة حضور'},
+    {code:'3-2-1-2',level:'التميّز',perf:91.75,indicator:'اتجاهات إيجابية نحو الذات',improve:'تعزيز الرفاه والسعادة.',evidence:'برامج رفاه + جلسات إرشاد'},
+    {code:'7-1-2-3',level:'التميّز',perf:91.75,indicator:'اعتزاز بالثقافة واحترام التنوع',improve:'تعزيز الثوابت الوطنية واحترام التنوع.',evidence:'منتجات ثقافية + فعاليات'},
+    {code:'6-1-2-3',level:'التقدّم',perf:84.25,indicator:'بحث وتعلم ذاتي',improve:'مهام أدائية وإدارة وقت وتوظيف التقنية.',evidence:'مشاريع + Rubrics بحوث'},
+    {code:'2-1-1-3',level:'التقدّم',perf:82.94,indicator:'نتائج متقدمة في القدرات',improve:'تعزيز التحليل والاستدلال والمنطق.',evidence:'نتائج + خطة تدريب + محاكاة'},
+    {code:'3-1-2-3',level:'التقدّم',perf:82.50,indicator:'ممارسات صحية',improve:'نشاط بدني وغذاء صحي.',evidence:'خطة صحة + سجلات'},
+    {code:'1-1-1-3',level:'التقدّم',perf:79.04,indicator:'نتائج الاختبارات التحصيلية',improve:'تعزيز الأساسيات والاستعداد.',evidence:'نتائج + خطة رفع + تقوية'},
+    {code:'4-1-2-3',level:'الانطلاق',perf:63.25,indicator:'مشاركة مجتمعية وتطوع',improve:'برامج نوعية تعزز المسؤولية.',evidence:'منصة تطوع + شهادات'}
   ],
+  /* --- البيئة --- */
   environment:[
-    {code:'4-2-1-2',level:'التميّز',perf:97.00,indicator:'تعمل المدرسة على صيانة جميع مرافق المبنى وتجهيزاته بانتظام',improve:'الاستمرار في متابعة الصيانة لضمان كفاءة المبنى وفاعليته.',evidence:'أوامر عمل صيانة + جدول صيانة وقائية + تقارير إنجاز'},
-    {code:'4-2-1-3',level:'التقدّم',perf:79.50,indicator:'تعمل المدرسة على نظافة المبنى المدرسي وجميع مرافقه بانتظام',improve:'العمل على النظافة والمتابعة بانتظام وتوفير أدوات النظافة.',evidence:'عقد نظافة + جداول إشراف + بطاقات متابعة'},
-    {code:'2-1-1-4',level:'التقدّم',perf:79.00,indicator:'تتوافر فصول ومعامل ملائمة للعملية التعليمية تلبي احتياجات المتعلمين بمن فيهم ذوو الإعاقة',improve:'تنظيم الفصول والمعامل وتجهيزاتها وفق المعايير وتوفير الوسائل والأدوات اللازمة.',evidence:'جرد تجهيزات + محاضر تشغيل معامل + صيانة وقائية'},
-    {code:'4-1-1-1',level:'الانطلاق',perf:73.25,indicator:'تنظيم مبنى المدرسة ملائم لعدد المتعلمين والمرحلة العمرية',improve:'العمل مع الجهات ذات العلاقة لتطوير المبنى وتنظيم الأثاث بما يحقق الرفاه ويلبي المتطلبات.',evidence:'مراسلات رسمية + مخططات قاعات + صور قبل/بعد'},
-    {code:'4-2-1-1',level:'الانطلاق',perf:64.00,indicator:'تتوافر في فصول المدرسة ومعاملها وجميع مرافقها متطلبات الأمن والسلامة',improve:'متابعة متطلبات وتجهيزات السلامة وتعزيز ثقافتها والتوعية بالمخاطر ومتابعة الدخول والخروج.',evidence:'كشوف فحص سلامة + فرضيات إخلاء + خطط مخاطر'},
-    {code:'4-1-1-3',level:'الانطلاق',perf:62.50,indicator:'تلبي المرافق والخدمات المساندة احتياجات المتعلمين بمن فيهم ذوو الإعاقة',improve:'توفير مرافق وخدمات مساندة ملائمة وتحقيق الرفاه والمحافظة على استدامتها.',evidence:'تقارير جاهزية مرافق + استبانات رضا + طلبات تحسين'}
+    {code:'4-2-1-2',level:'التميّز',perf:97.00,indicator:'صيانة منتظمة للمبنى',improve:'استمرار متابعة الصيانة.',evidence:'أوامر عمل + جداول وقائية'},
+    {code:'4-2-1-3',level:'التقدّم',perf:79.50,indicator:'نظافة المبنى',improve:'متابعة وتوفير أدوات النظافة.',evidence:'عقد نظافة + بطاقات متابعة'},
+    {code:'2-1-1-4',level:'التقدّم',perf:79.00,indicator:'ملاءمة الفصول والمعامل',improve:'تنظيم وتجهيز وفق المعايير.',evidence:'جرد تجهيزات + محاضر تشغيل'},
+    {code:'4-1-1-1',level:'الانطلاق',perf:73.25,indicator:'تنظيم المبنى للعدد والمرحلة',improve:'تطوير المبنى وتنظيم الأثاث.',evidence:'مراسلات + مخططات + صور'},
+    {code:'4-2-1-1',level:'الانطلاق',perf:64.00,indicator:'متطلبات الأمن والسلامة',improve:'تعزيز ثقافة السلامة والتوعية.',evidence:'كشوف فحص + فرضيات إخلاء'},
+    {code:'4-1-1-3',level:'الانطلاق',perf:62.50,indicator:'المرافق والخدمات المساندة',improve:'توفير مرافق ملائمة ومستدامة.',evidence:'استبانات رضا + تقارير جاهزية'}
   ]
 };
 </script>
@@ -373,12 +412,11 @@ function renderDashboard(){
       options:{plugins:{legend:{display:false}},cutout:'68%',responsive:true,maintainAspectRatio:false,animation:{animateRotate:true,animateScale:true}}
     });
 
-    // النقر على كامل البطاقة أسهل
     card.addEventListener('click',()=>openFieldFullScreen(key));
   });
 }
 
-/* Helpers for ring only */
+/* Ring helper */
 function makeRing(container, valuePercent){
   const v=Math.max(0,Math.min(100,Number(valuePercent)||0));
   const ring=document.createElement('div'); ring.className='ring';
@@ -404,24 +442,22 @@ function buildMetricCard(title, value, openHandler){
   card.innerHTML=`
     <div class="metricHead"><h3 class="metricTitle">${title}</h3></div>
     <div class="metricBody">
-      <div class="ringWrap" id="ringHere"></div>
+      <div class="ringWrap" id="ringHere" role="button" aria-label="عرض ${title}"></div>
     </div>
     <div style="text-align:center;font-weight:800;color:#06353b;margin-top:6px">${value.toFixed(2)}% • ${classify(value)}</div>`;
   makeRing(card.querySelector('#ringHere'), value);
-  card.addEventListener('click', openHandler);
+  card.querySelector('#ringHere').addEventListener('click', openHandler);
   return card;
 }
 
-/* Leadership center card */
+/* Leadership (middle, wider) */
 function buildMiddleLeadership(tahsili, qiyas){
-  const card=document.createElement('div'); card.className='metricCard';
+  const card=document.createElement('div'); card.className='metricCard lead';
   card.innerHTML=`
     <div class="metricHead"><h3 class="metricTitle">لوحة قيادة رفع القدرات والتحصيلي</h3></div>
-    <div class="metricBody">
-      <div class="ringWrap" id="ringHere"></div>
-    </div>
+    <div class="metricBody"><div class="ringWrap" id="ringHere"></div></div>
     <div style="font-size:12px;color:#6f8e94;text-align:center;margin-top:6px">أفكار فاعلة</div>
-    <ul style="margin:6px 20px;line-height:1.8">
+    <ul style="margin:6px 18px;line-height:1.7">
       <li>🗂️ خطة علاجية أسبوعية + إثرائية وفق التشخيص.</li>
       <li>🕒 محاكاة يومية (15–20 دقيقة) + 🧠 بنك أسئلة متدرّج.</li>
       <li>🤝 PLC مركّزة على الأخطاء الشائعة ورفع الإتقان.</li>
@@ -430,7 +466,6 @@ function buildMiddleLeadership(tahsili, qiyas){
     <div class="kbd-icons" id="kbdIcons"></div>`;
   const avg=(tahsili+qiyas)/2; makeRing(card.querySelector('#ringHere'), avg);
 
-  // Icons
   const iconsWrap=card.querySelector('#kbdIcons');
   drivingSubjects.forEach(sub=>{
     const btn=document.createElement('button');
@@ -468,17 +503,17 @@ function openSubjectPopup(sub){
   document.body.appendChild(sheet);
 }
 
-/* Metrics render */
+/* Metrics render — (تحصيلي | لوحة القيادة | القدرات) */
 function renderMetricsSection(){
   const wrap=document.getElementById('metricsSection'); wrap.innerHTML='';
-  const TAH=66.546, QIY=71.254; // بدون تواريخ
+  const TAH=66.546, QIY=71.254;
   wrap.appendChild( buildMetricCard('التحصيلي', TAH, ()=>metricModal.open('التحصيلي','tahsili_image.png')) );
   wrap.appendChild( buildMiddleLeadership(TAH, QIY) );
   wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png')) );
 }
 </script>
 <script>
-/* Evidence store (fallback إذا لم تُضبط Supabase) */
+/* Evidence store (fallback) */
 let eviStore = {}; // { rowId: [ {id?, text, term, week, date, link, fileName} ] }
 
 /* Supabase helpers */
@@ -507,21 +542,14 @@ async function supaDeleteLast(rowId){
   return true;
 }
 
-/* Full panel & evidence */
 let currentFieldKey=null;
 const eviModalEl = { modal:null, text:null, term:null, week:null, hijri:null, file:null, link:null, owner:null, save:null, cancel:null, rowId:null };
 
 function eviIconsHTML(){
   return `
     <div class="eviActions">
-      <span class="eviAct add" title="إضافة شاهد">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>إضافة شاهد</span>
-      </span>
-      <span class="eviAct delete" title="حذف آخر شاهد">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6v12m8-12v12M10 6l1-2h2l1 2" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>حذف</span>
-      </span>
+      <span class="eviIcon add" title="إضافة شاهد" aria-label="إضافة شاهد">＋</span>
+      <span class="eviIcon delete" title="حذف آخر شاهد" aria-label="حذف آخر شاهد">🗑️</span>
     </div>`;
 }
 
@@ -542,7 +570,6 @@ async function openFieldFullScreen(key){
     </div>`;
   }).join('');
 
-  // صفوف الجدول
   const rows=(detailed[key]||[]).map((r,idx)=>{
     const rowId = `${key}-${idx}`;
     const lb=perfLevel(r.perf);
@@ -588,7 +615,7 @@ async function openFieldFullScreen(key){
     requestAnimationFrame(()=>{el.querySelector('.fg').style.transition='.9s ease';el.querySelector('.fg').style.strokeDashoffset=c*(1 - (p/100));});
   });
 
-  // تحميل الشواهد من Supabase أو الذاكرة
+  // تحميل الشواهد
   await Promise.all((detailed[key]||[]).map(async (_r,idx)=>{
     const rowId=`${key}-${idx}`;
     const items = await supaFetchRow(rowId);
@@ -597,17 +624,17 @@ async function openFieldFullScreen(key){
     refreshRowEvidence(rowId);
   }));
 
-  // actions listeners
+  // روابط الأيقونات
   body.querySelectorAll('tr[data-row]').forEach(tr=>{
     const rowId=tr.getAttribute('data-row');
-    tr.querySelector('.eviAct.add').addEventListener('click',()=>openEvidenceModal(rowId));
-    tr.querySelector('.eviAct.delete').addEventListener('click',async ()=>{
+    tr.querySelector('.eviIcon.add').addEventListener('click',()=>openEvidenceModal(rowId));
+    tr.querySelector('.eviIcon.delete').addEventListener('click',async ()=>{
       const ok=await supaDeleteLast(rowId);
       if(ok) refreshRowEvidence(rowId);
     });
   });
 
-  // top buttons
+  // أزرار أعلى اللوحة
   document.getElementById('btnFieldReport').onclick=()=>openDocWindow('تقرير المجال',buildFieldReportHTML(key));
   document.getElementById('btnFieldPlan').onclick=()=>openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key));
   document.getElementById('fpClose').onclick=(e)=>{e.preventDefault(); panel.style.display='none';};
@@ -625,7 +652,7 @@ function refreshRowEvidence(rowId){
     : '—';
 }
 
-/* Evidence modal control */
+/* Evidence modal */
 function openEvidenceModal(rowId){
   eviModalEl.rowId=rowId;
   eviModalEl.modal.style.display='flex'; eviModalEl.modal.setAttribute('aria-hidden','false');
@@ -645,16 +672,17 @@ async function saveEvidence(){
   eviModalEl.text.value=''; eviModalEl.hijri.value=''; eviModalEl.link.value=''; eviModalEl.file.value='';
 }
 
-/* Report builder — هيدر كبير */
+/* Header (WHITE) for print pages */
 function buildPrintHeaderHTML(titleText){
   return `
-  <div style="width:100%;text-align:center;margin:0 0 12px">
-    <div style="font-size:24px;font-weight:900;color:#0b7e88;margin-bottom:6px">${titleText}</div>
-    <div style="height:70px;background:url('logo.png') center/contain no-repeat"></div>
-  </div>`;
+    <div style="width:100%;padding:10px 0 6px;display:flex;justify-content:center;align-items:center;background:#fff;border-bottom:1px solid #e7eff0">
+      <div style="height:90px;width:95%;background:url('logo.png') center/contain no-repeat"></div>
+    </div>
+    <h2 style="text-align:center;color:#0b7e88;margin:10px 0 10px;font-size:24px">${titleText}</h2>
+  `;
 }
 
-/* تقرير المجال (صغّر عمود المستوى/النسبة/الرمز وزّد اتساع الباقي) */
+/* تقرير المجال */
 function buildFieldReportHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map(r=>`
@@ -667,7 +695,7 @@ function buildFieldReportHTML(key){
   <table><thead><tr><th style="width:160px">المستوى/النسبة/الرمز</th><th style="width:42%">المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* خطة المجال (صغّر رمز المؤشر والمدة) */
+/* خطة المجال */
 function buildFieldPlanHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map((r,i)=>{
@@ -683,7 +711,7 @@ function buildFieldPlanHTML(key){
   <table><thead><tr><th style="width:120px">رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th style="width:120px">المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* Print window (أعرض + وسط) */
+/* Print window */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
