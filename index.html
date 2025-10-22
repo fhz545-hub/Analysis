@@ -17,7 +17,7 @@
   --hero-h: 220px;  --hero-w: 1400px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
+html,body{margin:0;background:var(--bg);color:#06353b;font-family:'Tajawal',sans-serif}
 a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 
 /* Hero */
@@ -94,18 +94,16 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 
 /* Evidence actions (icon-only) */
 .eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.eviDot{width:26px;height:26px;border-radius:999px;border:1px dashed #cfe4e6;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0b7e88}
+.eviDot{width:26px;height:26px;border-radius:999px;border:1px dashed #cfe4e6;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0b7e88;transition:transform .12s, box-shadow .12s, background .12s}
+.eviDot:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.08);background:#f4fbfb}
 .eviActions{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:6px}
 .eviIcon{font-size:20px;line-height:1;cursor:pointer;user-select:none;transition:transform .12s}
 .eviIcon:hover{transform:translateY(-1px)}
 .eviIcon.add{color:#0b7e88}
 .eviIcon.delete{color:#e11d48}
 
-/* ===== الوسط: (تحصيلي | لوحة القيادة | القدرات) في صف واحد ===== */
-.metricsRow{
-  display:flex; justify-content:center; align-items:stretch; gap:18px;
-  margin:14px 0 6px; flex-wrap:wrap
-}
+/* ===== الوسط: (تحصيلي | لوحة القيادة | القدرات) ===== */
+.metricsRow{display:flex;justify-content:center;align-items:stretch;gap:18px;margin:14px 0 6px;flex-wrap:wrap}
 .metricCard{
   position:relative;background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);
   border-radius:16px;padding:14px;border:1px solid #e6efef;
@@ -116,25 +114,17 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 .metricHead{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:6px}
 .metricTitle{margin:0;color:#0b7e88;font-size:18px;font-weight:800}
 .metricBody{display:flex;align-items:center;justify-content:center}
-
-/* مربعات التحصيلي/القدرات (مربّع تمامًا) */
-.metricCard.small{
-  width:320px; height:320px; display:flex; flex-direction:column;
-  justify-content:flex-start; align-items:stretch; margin-inline:auto
-}
-.metricCard.small .metricBody{flex:1; display:flex; align-items:center; justify-content:center}
+.metricCard.small{width:320px;height:320px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;margin-inline:auto}
+.metricCard.small .metricBody{flex:1;display:flex;align-items:center;justify-content:center}
 .metricCard.small .ring{width:110px;height:110px}
 .metricCard.small .ring svg{width:110px;height:110px}
 .metricCard.small .ringValue{font-size:18px}
-
-/* لوحة القيادة (أعرض قليلًا لمنع التفاف مزعج) */
-.metricCard.lead{
-  width:560px; min-height:320px; margin-inline:auto
-}
+.metricCard.lead{width:560px;min-height:320px;margin-inline:auto}
 
 /* Rings */
 .ringWrap{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
-.ring{width:96px;height:96px;position:relative} .ring svg{width:96px;height:96px;display:block}
+.ring{width:96px;height:96px;position:relative}
+.ring svg{width:96px;height:96px;display:block}
 .ring .bg{stroke:#e6efef;stroke-width:10;fill:none}
 .ring .fg{stroke:url(#royalGrad);stroke-width:10;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
 .ringGlow{position:absolute;inset:-6px;border-radius:999px;box-shadow:0 0 0 0 rgba(37,99,235,.25);animation:pulse 2.2s ease-in-out infinite}
@@ -161,10 +151,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 .modal label{display:block;font-size:12px;color:#355;margin-bottom:4px}
 .modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
 .modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
-@media (max-width:1200px){
-  .metricsRow{justify-content:center}
-  .metricCard.lead{width:min(560px,95vw)}
-}
+@media (max-width:1200px){.metricsRow{justify-content:center}.metricCard.lead{width:min(560px,95vw)}}
 @media (max-width:960px){ .metricsRow{flex-direction:column;align-items:center} }
 @media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
 
@@ -178,6 +165,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 }
 </style>
 </head>
+
 <body>
   <!-- Hero -->
   <div class="hero" aria-label="وزارة التعليم – شعار">
@@ -254,10 +242,30 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
       <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُعرض مباشرة بعد الحفظ ويمكن حذفها من الصف.</div>
     </div>
   </div>
+
+  <!-- Password mini-modal (للإضافة والحذف) -->
+  <div class="modal" id="pwdModal" aria-hidden="true">
+    <div class="sheet" style="max-width:420px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
+        <h4 style="margin:0;color:#0b7e88" id="pwdTitle">تحقق كلمة المرور</h4>
+        <button class="close" id="pwdClose" type="button">✕</button>
+      </div>
+      <div>
+        <label>أدخل كلمة المرور</label>
+        <input id="pwdInput" type="password" placeholder="••••" />
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+        <button class="btn" id="pwdOk" type="button">تأكيد</button>
+        <button class="btn light" id="pwdCancel" type="button">إلغاء</button>
+      </div>
+      <div style="text-align:center;color:#6f8e94;font-size:12px;margin-top:6px">* كلمة المرور المطلوبة: 1447</div>
+    </div>
+  </div>
+
 <script>
-/* Links */
+/* Links (تم تصحيح رابط 2024) */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
-const SRC_2024 = 'https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=sharing';
+const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=sharing';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
 const OPS_LINK='https://drive.google.com/file/d/1ItrZpaptSVaR_qFqMLhzHRAduIeJESa2/view?usp=sharing';
 
@@ -276,19 +284,18 @@ function levelRowClass(arLevel){
   return 'row-medium';
 }
 
-/* Supabase (استبدل بقيم مشروعك) */
-/* ✅ إعداد اتصال Supabase */
+/* Supabase */
 const SUPABASE_URL  = 'https://vullbssjyyrnoyyxyebq.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc';
-
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
+let supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 try{
   if(typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('https')){
     supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   }
 }catch(e){ console.warn('Supabase init skipped:', e); }
 </script>
+
+<!-- ===== بيانات الحقول والمؤشرات (كما وفّرتها) ===== -->
 <script>
 const fields={
   management:{name:'الإدارة المدرسية',v2024:75.50,v2025:75.50,subs:[
@@ -307,7 +314,6 @@ const fields={
 };
 
 const detailed={
-  /* --- الإدارة المدرسية --- */
   management:[
     {code:'1-1-1-1',level:'التقدّم',perf:81.75,indicator:'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة',improve:'تطوير خطة تشغيلية مرنة بأهداف طموحة وبرامج ومبادرات ومؤشرات أداء ومهام ومسؤوليات مُزمّنة، وخطط استدامة وتحسين.',evidence:'خطة تشغيلية معتمدة + محضر لجنة الخطة + مصفوفة KPI'},
     {code:'2-1-1-1',level:'التهيئة',perf:42.00,indicator:'تتابع المدرسة تنفيذ خطتها وتطورها بما يضمن تحقيق أهدافها',improve:'متابعة التنفيذ وتقويمه بانتظام وفق مؤشرات واضحة، وتطوير الخطة لضمان تحقيق الأهداف.',evidence:'تقارير متابعة شهرية + اجتماعات متابعة + إجراءات تصحيح'},
@@ -325,7 +331,6 @@ const detailed={
     {code:'3-1-4-1',level:'التقدّم',perf:79.25,indicator:'تطبق المدرسة التقويم الذاتيّ المبنيّ على معايير الهيئة',improve:'تنفيذ التقويم الذاتي وفق الإطار، نشر الثقافة، إشراك المجتمع المدرسي، وخطة طموحة لنقل المعرفة.',evidence:'أداة وتقارير تقويم ذاتي + خطة تحسين مشتقة'},
     {code:'1-4-1-4',level:'الانطلاق',perf:74.00,indicator:'تنفذ المدرسة خطة للتحسين بناءً على نتائج التقويم وتتابعها',improve:'تطوير خطة تحسين بأولويات تعالج جوانب مؤثرة في نواتج التعلم ومتابعة التنفيذ.',evidence:'خطة تحسين معتمدة + تقارير تقدم + مواءمة تشغيلية'}
   ],
-  /* --- التعليم والتعلم --- */
   teaching:[
     {code:'2-1-1-2',level:'التميّز',perf:97.75,indicator:'تدعم المدرسة تنفيذ المناهج وفق الخطة الدراسية',improve:'الاستمرار في توفير أنشطة ومصادر مبتكرة تدعم تعلم المعارف/المهارات والقيم ومتابعة التنفيذ لتحقيق التوقعات العالية.',evidence:'خطط توزيع + سجلات تطبيق + دروس نموذجية'},
     {code:'2-2-1-3',level:'التميّز',perf:93.25,indicator:'تقدم المدرسة التغذية الراجعة للمتعلمين بانتظام',improve:'الاستمرار في التغذية الراجعة الفورية والبنّاءة بطرق متنوعة لدعم التعلم وتحسين الأداء.',evidence:'نماذج تغذية راجعة + متابعة فردية'},
@@ -341,7 +346,6 @@ const detailed={
     {code:'5-1-1-2',level:'الانطلاق',perf:62.00,indicator:'أنشطة تعلم تطبيقية',improve:'ربط الخبرات بالواقع وتشجيع الاستقصاء.',evidence:'مشاريع/مهام أدائية + سلالم تقدير'},
     {code:'9-1-1-2',level:'الانطلاق',perf:60.75,indicator:'المهارات الرقمية',improve:'تعزيز استخدام التقنية والتعامل مع البيانات.',evidence:'تدريبات تقنية + منتجات رقمية'}
   ],
-  /* --- نواتج التعلم --- */
   learning:[
     {code:'3-2-1-1',level:'التميّز',perf:95.50,indicator:'اعتزاز بالقيم والهوية',improve:'تعزيز القيم واللغة العربية.',evidence:'فعاليات وطنية + أعمال طلابية'},
     {code:'5-1-2-3',level:'التميّز',perf:94.00,indicator:'انضباط مدرسي',improve:'برامج متنوعة ومبتكرة.',evidence:'تقارير انضباط + متابعة حضور'},
@@ -353,7 +357,6 @@ const detailed={
     {code:'1-1-1-3',level:'التقدّم',perf:79.04,indicator:'نتائج الاختبارات التحصيلية',improve:'تعزيز الأساسيات والاستعداد.',evidence:'نتائج + خطة رفع + تقوية'},
     {code:'4-1-2-3',level:'الانطلاق',perf:63.25,indicator:'مشاركة مجتمعية وتطوع',improve:'برامج نوعية تعزز المسؤولية.',evidence:'منصة تطوع + شهادات'}
   ],
-  /* --- البيئة --- */
   environment:[
     {code:'4-2-1-2',level:'التميّز',perf:97.00,indicator:'صيانة منتظمة للمبنى',improve:'استمرار متابعة الصيانة.',evidence:'أوامر عمل + جداول وقائية'},
     {code:'4-2-1-3',level:'التقدّم',perf:79.50,indicator:'نظافة المبنى',improve:'متابعة وتوفير أدوات النظافة.',evidence:'عقد نظافة + بطاقات متابعة'},
@@ -363,8 +366,7 @@ const detailed={
     {code:'4-1-1-3',level:'الانطلاق',perf:62.50,indicator:'المرافق والخدمات المساندة',improve:'توفير مرافق ملائمة ومستدامة.',evidence:'استبانات رضا + تقارير جاهزية'}
   ]
 };
-</script>
-<script>
+
 const drivingSubjects = [
   {key:'math',  name:'الرياضيات', icon:'➗', tips:[
     'خطة مكثفة لمسائل لفظية وكميّة (3 حصص علاجي/أسبوع).',
@@ -393,6 +395,7 @@ const drivingSubjects = [
   ]}
 ];
 </script>
+
 <script>
 function renderDashboard(){
   const dash=document.getElementById('dashboard'); dash.innerHTML='';
@@ -444,9 +447,7 @@ function buildMetricCard(title, value, openHandler){
   const card=document.createElement('div'); card.className='metricCard small';
   card.innerHTML=`
     <div class="metricHead"><h3 class="metricTitle">${title}</h3></div>
-    <div class="metricBody">
-      <div class="ringWrap" id="ringHere" role="button" aria-label="عرض ${title}"></div>
-    </div>
+    <div class="metricBody"><div class="ringWrap" id="ringHere" role="button" aria-label="عرض ${title}"></div></div>
     <div style="text-align:center;font-weight:800;color:#06353b;margin-top:6px">${value.toFixed(2)}% • ${classify(value)}</div>`;
   makeRing(card.querySelector('#ringHere'), value);
   card.querySelector('#ringHere').addEventListener('click', openHandler);
@@ -506,7 +507,7 @@ function openSubjectPopup(sub){
   document.body.appendChild(sheet);
 }
 
-/* Metrics render — (تحصيلي | لوحة القيادة | القدرات) */
+/* Metrics render */
 function renderMetricsSection(){
   const wrap=document.getElementById('metricsSection'); wrap.innerHTML='';
   const TAH=66.546, QIY=71.254;
@@ -515,9 +516,38 @@ function renderMetricsSection(){
   wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png')) );
 }
 </script>
+
 <script>
 /* Evidence store (fallback) */
 let eviStore = {}; // { rowId: [ {id?, text, term, week, date, link, fileName} ] }
+
+/* ===== Password mini-modal controller ===== */
+const PASSWORD_REQUIRED = '1447';
+const pwdModal = {
+  el: null, input: null, ok: null, cancel: null, closeBtn: null,
+  _resolver: null,
+  open(){
+    this.input.value='';
+    this.el.style.display='flex';
+    this.el.setAttribute('aria-hidden','false');
+    this.input.focus();
+    return new Promise((resolve)=>{ this._resolver=resolve; });
+  },
+  close(){
+    this.el.style.display='none';
+    this.el.setAttribute('aria-hidden','true');
+    this._resolver && this._resolver(false);
+    this._resolver=null;
+  },
+  confirm(){
+    const ok = (this.input.value.trim() === PASSWORD_REQUIRED);
+    if(!ok){ alert('كلمة المرور غير صحيحة'); return; }
+    this.el.style.display='none';
+    this.el.setAttribute('aria-hidden','true');
+    this._resolver && this._resolver(true);
+    this._resolver=null;
+  },
+};
 
 /* Supabase helpers */
 async function supaFetchRow(rowId){
@@ -526,18 +556,39 @@ async function supaFetchRow(rowId){
   if(error){ console.warn(error); return (eviStore[rowId]||[]); }
   return data.map(d=>({ id:d.id, text:d.text, term:d.term, week:d.week, date:d.date, link:d.link, fileName:d.file_name }));
 }
+
+/* رفع ملف (إن وُجد) إلى تخزين Supabase وإرجاع رابط عام */
+async function uploadEvidenceFile(rowId, file){
+  try{
+    if(!file) return null;
+    const path = `${rowId}/${Date.now()}_${file.name}`;
+    const up = await supa.storage.from('evidence').upload(path, file, { upsert: false });
+    if(up.error){ console.warn(up.error); alert('تعذر رفع الملف: '+up.error.message); return null; }
+    const pub = supa.storage.from('evidence').getPublicUrl(path);
+    return pub?.data?.publicUrl || null;
+  }catch(e){ console.warn(e); return null; }
+}
+
 async function supaInsert(rowId,item){
   if(!supa){ if(!eviStore[rowId]) eviStore[rowId]=[]; eviStore[rowId].push(item); return true; }
-  const { error } = await supa.from('evidence').insert({row_id:rowId, text:item.text, term:item.term, week:item.week, date:item.date, link:item.link, file_name:item.fileName});
+  const { error } = await supa.from('evidence').insert({
+    row_id:rowId, text:item.text, term:item.term, week:item.week,
+    date:item.date, link:item.link, file_name:item.fileName
+  });
   if(error){ alert('تعذّر حفظ الشاهد في القاعدة: '+error.message); return false; }
   return true;
 }
+
 async function supaDeleteLast(rowId){
   if(!supa){
     if((eviStore[rowId]||[]).length) eviStore[rowId].pop();
     return true;
   }
-  const { data, error } = await supa.from('evidence').select('id').eq('row_id',rowId).order('created_at',{ascending:false}).limit(1);
+  const { data, error } = await supa.from('evidence')
+    .select('id')
+    .eq('row_id',rowId)
+    .order('created_at',{ascending:false})
+    .limit(1);
   if(error){ alert('تعذّر الحذف: '+error.message); return false; }
   if(!data.length) return true;
   const { error:delErr } = await supa.from('evidence').delete().eq('id', data[0].id);
@@ -556,6 +607,7 @@ function eviIconsHTML(){
     </div>`;
 }
 
+/* فتح اللوحة الكاملة للمجال */
 async function openFieldFullScreen(key){
   currentFieldKey=key;
   const panel=document.getElementById('fullPanel');
@@ -618,22 +670,34 @@ async function openFieldFullScreen(key){
     requestAnimationFrame(()=>{el.querySelector('.fg').style.transition='.9s ease';el.querySelector('.fg').style.strokeDashoffset=c*(1 - (p/100));});
   });
 
-  // تحميل الشواهد
+  // تحميل الشواهد من القاعدة ثم تحديث العرض
   await Promise.all((detailed[key]||[]).map(async (_r,idx)=>{
     const rowId=`${key}-${idx}`;
     const items = await supaFetchRow(rowId);
-    if(!eviStore[rowId]) eviStore[rowId]=[];
-    eviStore[rowId]=items;
+    eviStore[rowId]=items||[];
     refreshRowEvidence(rowId);
   }));
 
-  // روابط الأيقونات
+  // روابط الأيقونات + حماية كلمة المرور
   body.querySelectorAll('tr[data-row]').forEach(tr=>{
     const rowId=tr.getAttribute('data-row');
-    tr.querySelector('.eviIcon.add').addEventListener('click',()=>openEvidenceModal(rowId));
-    tr.querySelector('.eviIcon.delete').addEventListener('click',async ()=>{
-      const ok=await supaDeleteLast(rowId);
-      if(ok) refreshRowEvidence(rowId);
+
+    // إضافة شاهد (مع كلمة مرور)
+    tr.querySelector('.eviIcon.add').addEventListener('click', async ()=>{
+      const ok=await pwdModal.open();
+      if(!ok) return;
+      openEvidenceModal(rowId);
+    });
+
+    // حذف آخر شاهد (مع كلمة مرور)
+    tr.querySelector('.eviIcon.delete').addEventListener('click', async ()=>{
+      const ok=await pwdModal.open();
+      if(!ok) return;
+      const done = await supaDeleteLast(rowId);
+      if(done){
+        if(eviStore[rowId]?.length) eviStore[rowId].pop();
+        refreshRowEvidence(rowId);
+      }
     });
   });
 
@@ -646,21 +710,18 @@ async function openFieldFullScreen(key){
   panel.style.display='flex';
 }
 
+/* جعل الأرقام روابط (وإظهار العنوان عند المرور) */
 function refreshRowEvidence(rowId){
   const bar = document.getElementById(`eviBar-${rowId}`);
   if(!bar) return;
-
   const items = eviStore[rowId] || [];
-
   bar.innerHTML = items.length
     ? items.map((ev, i) => {
         const title = (ev.text || '').replace(/"/g, '&quot;');
         const num = i + 1;
-        // إذا كان هناك رابط للشاهد نحوله لرابط قابل للضغط
         if(ev.link && /^https?:\/\//i.test(ev.link)){
           return `<a class="eviDot" href="${ev.link}" target="_blank" rel="noopener" title="${title}">${num}</a>`;
         }
-        // إذا ما فيه رابط يبقى رقم عادي
         return `<span class="eviDot" title="${title}">${num}</span>`;
       }).join('')
     : '—';
@@ -672,20 +733,42 @@ function openEvidenceModal(rowId){
   eviModalEl.modal.style.display='flex'; eviModalEl.modal.setAttribute('aria-hidden','false');
   eviModalEl.owner.value = 'مجال: ' + (currentFieldKey||'');
 }
-function closeEvidenceModal(){ eviModalEl.modal.style.display='none'; eviModalEl.modal.setAttribute('aria-hidden','true'); eviModalEl.rowId=null; }
+function closeEvidenceModal(){
+  eviModalEl.modal.style.display='none';
+  eviModalEl.modal.setAttribute('aria-hidden','true');
+  eviModalEl.rowId=null;
+}
 async function saveEvidence(){
   const id=eviModalEl.rowId; if(!id) return;
-  const item={ text:eviModalEl.text.value.trim(), term:eviModalEl.term.value, week:eviModalEl.week.value, date:eviModalEl.hijri.value.trim(), link:eviModalEl.link.value.trim(), fileName: eviModalEl.file.files[0]?.name || '' };
+  const file = eviModalEl.file.files[0] || null;
+  let filePublicUrl = null;
+  if(file){ filePublicUrl = await uploadEvidenceFile(id, file); }
+
+  const manualLink = eviModalEl.link.value.trim();
+  const finalLink = manualLink || filePublicUrl || '';
+
+  const item={
+    text:eviModalEl.text.value.trim(),
+    term:eviModalEl.term.value,
+    week:eviModalEl.week.value,
+    date:eviModalEl.hijri.value.trim(),
+    link:finalLink,
+    fileName:file?.name || ''
+  };
+
   const ok = await supaInsert(id,item);
   if(ok){
     if(!eviStore[id]) eviStore[id]=[];
     eviStore[id].push(item);
     refreshRowEvidence(id);
   }
+
   closeEvidenceModal();
   eviModalEl.text.value=''; eviModalEl.hijri.value=''; eviModalEl.link.value=''; eviModalEl.file.value='';
 }
+</script>
 
+<script>
 /* Header (WHITE) for print pages */
 function buildPrintHeaderHTML(titleText){
   return `
@@ -782,12 +865,30 @@ window.addEventListener('DOMContentLoaded',()=>{
   eviModalEl.cancel=document.getElementById('eviCancel');
 
   // Weeks 1..19
-  eviModalEl.week.innerHTML=''; for(let i=1;i<=19;i++){ const op=document.createElement('option'); op.value='W'+i; op.textContent='الأسبوع '+i; eviModalEl.week.appendChild(op); }
+  eviModalEl.week.innerHTML='';
+  for(let i=1;i<=19;i++){
+    const op=document.createElement('option');
+    op.value='W'+i; op.textContent='الأسبوع '+i; eviModalEl.week.appendChild(op);
+  }
   document.getElementById('eviClose').onclick=closeEvidenceModal;
   eviModalEl.cancel.onclick=closeEvidenceModal;
   eviModalEl.save.onclick=saveEvidence;
 
-  // Render on load
+  // Password modal refs
+  pwdModal.el = document.getElementById('pwdModal');
+  pwdModal.input = document.getElementById('pwdInput');
+  pwdModal.ok = document.getElementById('pwdOk');
+  pwdModal.cancel = document.getElementById('pwdCancel');
+  pwdModal.closeBtn = document.getElementById('pwdClose');
+  pwdModal.ok.addEventListener('click',()=>pwdModal.confirm());
+  pwdModal.cancel.addEventListener('click',()=>pwdModal.close());
+  pwdModal.closeBtn.addEventListener('click',()=>pwdModal.close());
+  pwdModal.el.addEventListener('click',(ev)=>{
+    const sheet=pwdModal.el.querySelector('.sheet');
+    if(!sheet.contains(ev.target)) pwdModal.close();
+  });
+
+  // رسم أولي
   renderDashboard();
   renderMetricsSection();
 });
