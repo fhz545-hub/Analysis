@@ -1,4 +1,3 @@
-<!-- PART 1/8: HEAD & STYLES -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,6 +7,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -45,9 +46,9 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 @media (max-width:520px){.grid{grid-template-columns:1fr}}
 
 /* Card */
-.card{background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);border-radius:16px;padding:14px;border:1px solid #e6efef}
-.card h2{margin:0 0 6px;color:var(--moe);font-size:20px}
-.kpi{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px;flex-wrap:wrap}
+.card{background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);border-radius:16px;padding:14px;border:1px solid #e6efef;cursor:pointer}
+.card h2{margin:0 0 6px;color:#0b7e88;font-size:20px}
+.kpi{display:flex;justify-content:space-between;align-items:center;color:#6f8e94;font-size:13px;gap:8px;flex-wrap:wrap}
 .progress{height:10px;background:#e6efef;border-radius:999px;overflow:hidden;margin:8px 0}
 .bar{height:100%}
 
@@ -62,7 +63,7 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 
 /* Full panel */
 .fullpanel{position:fixed;inset:0;z-index:9998;background:rgba(6,53,59,.06);display:none;align-items:flex-start;justify-content:center;padding:12px 8px 24px}
-.fullpanel .inner{width:min(1280px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;border:1px solid #e6efef;padding:14px}
+.fullpanel .inner{width:min(1400px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;border:1px solid #e6efef;padding:14px}
 .fullpanel .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;padding:10px 14px;border-radius:999px;font-weight:800}
@@ -74,6 +75,7 @@ a{color:#135;text-decoration:none} a:hover{text-decoration:underline}
 .subgrid{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:10px;margin-bottom:10px}
 @media (max-width:680px){.subgrid{grid-template-columns:1fr}}
 .subCard{background:radial-gradient(60% 60% at 50% 40%, #ffffff 0%, #f6fcfd 100%);border:1px solid #e6efef;border-radius:14px;padding:10px}
+
 .tableWrap{margin-top:8px;overflow:auto}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;table-layout:fixed}
 thead th{background:#0f6f79;color:#fff;padding:10px;font-weight:700}
@@ -81,47 +83,43 @@ tbody td{padding:10px;border-bottom:1px solid #eef3f3;vertical-align:top;word-br
 tbody tr:last-child td{border-bottom:0}
 .row-excellent{background:var(--ok)} .row-verygood{background:var(--vg)} .row-good{background:var(--gd)} .row-medium{background:var(--md)}
 
-/* Report/Plan columns */
+/* Report/Plan columns (adjusted widths) */
 th.col-lvl, td.col-lvl{width:160px}
 th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 
-/* Evidence */
-.eviBtns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
-.btn-evi{display:inline-flex;align-items:center;gap:6px;border:1px dashed #cfe4e6;background:#fff;color:#0b7e88;border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer;font-size:12px}
-.btn-evi.danger{color:#e11d48;border-color:#f4c2ca}
+/* Evidence actions (icons, not pills) */
 .eviBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
 .eviDot{width:26px;height:26px;border-radius:999px;border:1px dashed #cfe4e6;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0b7e88}
+.eviActions{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:6px}
+.eviAct{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:13px;cursor:pointer;color:#0b7e88}
+.eviAct.delete{color:#e11d48}
+.eviAct svg{width:16px;height:16px}
 
-/* Metrics row (middle wider) */
+/* Metrics row (no measuring lines, centered rings) */
 .metricsRow{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:16px;margin:14px 0 6px}
 @media (max-width:960px){.metricsRow{grid-template-columns:1fr}}
 .metricCard{position:relative;background:linear-gradient(180deg,#ffffff 0%,#f9feff 100%);border-radius:16px;padding:14px;border:1px solid #e6efef}
-.metricHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.metricHead{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:6px}
 .metricTitle{margin:0;color:#0b7e88;font-size:18px;font-weight:800}
-
-/* Rings + line */
-.ringWrap{display:flex;align-items:center;gap:12px}
+.metricBody{display:flex;align-items:center;justify-content:center}
+.ringWrap{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
 .ring{width:110px;height:110px;position:relative} .ring svg{width:110px;height:110px;display:block}
 .ring .bg{stroke:#e6efef;stroke-width:10;fill:none}
 .ring .fg{stroke:url(#royalGrad);stroke-width:10;fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
 .ringGlow{position:absolute;inset:-6px;border-radius:999px;box-shadow:0 0 0 0 rgba(37,99,235,.25);animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,99,235,.24)}70%{box-shadow:0 0 0 16px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
 .ringValue{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;font-size:18px;color:#06353b}
-.lineWrap{flex:1}
-.lineBar{height:14px;border-radius:999px;background:#e6efef;overflow:hidden;position:relative}
-.lineFill{height:100%;width:0%;background:linear-gradient(90deg,#16a34a 0%, #22c55e 25%, #2563eb 75%, #3b82f6 100%);border-radius:999px;transition:width 1.2s cubic-bezier(.22,.9,.29,1)}
-
-.metricCard.small .ring{width:96px;height:96px} .metricCard.small .ring svg{width:96px;height:96px}
+.metricCard.small .ring{width:100px;height:100px} .metricCard.small .ring svg{width:100px;height:100px}
 
 /* Leadership icons */
-.kbd-icons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.kbd-icons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;justify-content:center}
 .kbd-icon{display:flex;align-items:center;gap:8px;border:1px dashed #cfe4e6;background:#fff;padding:8px 10px;border-radius:12px;cursor:pointer;font-weight:800}
 .kbd-icon:hover{background:#f4fbfb}
 .kbd-icon svg{width:18px;height:18px}
 
 /* Metric image modal */
 .metricModal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:12px}
-.metricModal .sheet{max-width:96vw;max-height:92vh;background:#fff;border-radius:16px;overflow:auto;border:1px solid #e6efef}
+.metricModal .sheet{max-width:92vw;max-height:88vh;background:#fff;border-radius:16px;overflow:auto;border:1px solid #e6efef}
 .metricModal img{display:block;max-width:100%;height:auto}
 .metricModal .bar{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #eef1f2}
 .metricModal .close{border:0;background:#e8eff0;color:#034;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
@@ -145,7 +143,6 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 }
 </style>
 </head>
-<!-- PART 2/8: BODY STRUCTURE -->
 <body>
   <!-- Hero -->
   <div class="hero" aria-label="وزارة التعليم – شعار">
@@ -219,10 +216,9 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
         <button class="btn" id="eviSave" type="button">حفظ الشاهد</button>
         <button class="btn light" id="eviCancel" type="button">إلغاء</button>
       </div>
-      <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُعرض مباشرة بعد الحفظ ويمكن حذفها من الجدول.</div>
+      <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُعرض مباشرة بعد الحفظ ويمكن حذفها من الصف.</div>
     </div>
   </div>
-<!-- PART 3/8: LINKS & HELPERS -->
 <script>
 /* Links */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
@@ -244,8 +240,17 @@ function levelRowClass(arLevel){
   if(arLevel==='التهيئة') return 'row-good';
   return 'row-medium';
 }
+
+/* === Supabase config (استبدل القيم أدناه بقيم مشروعك) === */
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+const SUPABASE_ANON= 'YOUR-ANON-KEY';
+let supa = null;
+try{
+  if(typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('https')){
+    supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }
+}catch(e){ console.warn('Supabase init skipped:', e); }
 </script>
-<!-- PART 4/8: FIELDS & DETAILED DATA -->
 <script>
 const fields={
   management:{name:'الإدارة المدرسية',v2024:75.50,v2025:75.50,subs:[
@@ -317,7 +322,6 @@ const detailed={
   ]
 };
 </script>
-<!-- PART 5/8: DRIVING SUBJECTS -->
 <script>
 const drivingSubjects = [
   {key:'math',  name:'الرياضيات', icon:'➗', tips:[
@@ -347,7 +351,6 @@ const drivingSubjects = [
   ]}
 ];
 </script>
-<!-- PART 6/8: RENDER DASHBOARD & METRICS -->
 <script>
 function renderDashboard(){
   const dash=document.getElementById('dashboard'); dash.innerHTML='';
@@ -359,7 +362,7 @@ function renderDashboard(){
       <div class="kpi"><span>2024: ${fmt(f.v2024)}% → 2025: ${fmt(f.v2025)}%</span></div>
       <div class="progress"><div class="bar" style="width:${Math.max(2,f.v2025)}%;background:${lvl.color}"></div></div>
       <div class="donutWrap">
-        <canvas id="donut-${key}" class="donutCanvas"></canvas>
+        <canvas id="donut-${key}" class="donutCanvas" aria-label="تفاصيل ${f.name}"></canvas>
         <div class="donutCenter"><div class="lvl" style="color:${lvl.color}">${lvl.name}</div><div class="pct">${fmt(f.v2025)}%</div></div>
       </div>`;
     dash.appendChild(card);
@@ -370,12 +373,12 @@ function renderDashboard(){
       options:{plugins:{legend:{display:false}},cutout:'68%',responsive:true,maintainAspectRatio:false,animation:{animateRotate:true,animateScale:true}}
     });
 
-    // افتح التحليل التفصيلي
-    document.getElementById(`donut-${key}`).addEventListener('click',()=>openFieldFullScreen(key));
+    // النقر على كامل البطاقة أسهل
+    card.addEventListener('click',()=>openFieldFullScreen(key));
   });
 }
 
-/* Helpers for ring + line */
+/* Helpers for ring only */
 function makeRing(container, valuePercent){
   const v=Math.max(0,Math.min(100,Number(valuePercent)||0));
   const ring=document.createElement('div'); ring.className='ring';
@@ -394,13 +397,6 @@ function makeRing(container, valuePercent){
     fg.style.strokeDashoffset=C*(1 - v/100);
   });
 }
-function makeLine(container, valuePercent){
-  const v=Math.max(0,Math.min(100,Number(valuePercent)||0));
-  const wrap=document.createElement('div'); wrap.className='lineWrap';
-  wrap.innerHTML=`<div class="lineBar"><div class="lineFill"></div></div>`;
-  container.appendChild(wrap);
-  requestAnimationFrame(()=>{wrap.querySelector('.lineFill').style.width=v+'%';});
-}
 function classify(v){ if(v>=90) return 'ممتاز'; if(v>=75) return 'متقدّم'; if(v>=60) return 'مستهدف'; return 'يحتاج تعزيز'; }
 
 function buildMetricCard(title, value, openHandler){
@@ -409,16 +405,10 @@ function buildMetricCard(title, value, openHandler){
     <div class="metricHead"><h3 class="metricTitle">${title}</h3></div>
     <div class="metricBody">
       <div class="ringWrap" id="ringHere"></div>
-      <div style="flex:1">
-        <div style="font-size:12px;color:#6f8e94">النسبة الحالية</div>
-        <div style="font-weight:800;color:#06353b;margin-bottom:6px">${value.toFixed(2)}% • ${classify(value)}</div>
-        <div id="lineHere"></div>
-        <div style="margin-top:8px"><button class="btn light" type="button">عرض صورة الدليل</button></div>
-      </div>
-    </div>`;
+    </div>
+    <div style="text-align:center;font-weight:800;color:#06353b;margin-top:6px">${value.toFixed(2)}% • ${classify(value)}</div>`;
   makeRing(card.querySelector('#ringHere'), value);
-  makeLine(card.querySelector('#lineHere'), value);
-  card.querySelector('.btn.light').addEventListener('click', openHandler);
+  card.addEventListener('click', openHandler);
   return card;
 }
 
@@ -429,17 +419,15 @@ function buildMiddleLeadership(tahsili, qiyas){
     <div class="metricHead"><h3 class="metricTitle">لوحة قيادة رفع القدرات والتحصيلي</h3></div>
     <div class="metricBody">
       <div class="ringWrap" id="ringHere"></div>
-      <div style="flex:1">
-        <div style="font-size:12px;color:#6f8e94">أفكار فاعلة:</div>
-        <ul style="margin:6px 16px;line-height:1.6">
-          <li>خطة أسبوعية علاجية + إثرائية وفق نتائج التشخيص.</li>
-          <li>محاكاة يومية (15–20 دقيقة) + بنك أسئلة متدرج.</li>
-          <li>مجتمعات تعلم مهنية (PLC) مركّزة على حل الأخطاء الشائعة.</li>
-        </ul>
-        <div style="font-size:12px;color:#6f8e94">مواد الرافعة:</div>
-        <div class="kbd-icons" id="kbdIcons"></div>
-      </div>
-    </div>`;
+    </div>
+    <div style="font-size:12px;color:#6f8e94;text-align:center;margin-top:6px">أفكار فاعلة</div>
+    <ul style="margin:6px 20px;line-height:1.8">
+      <li>🗂️ خطة علاجية أسبوعية + إثرائية وفق التشخيص.</li>
+      <li>🕒 محاكاة يومية (15–20 دقيقة) + 🧠 بنك أسئلة متدرّج.</li>
+      <li>🤝 PLC مركّزة على الأخطاء الشائعة ورفع الإتقان.</li>
+    </ul>
+    <div style="font-size:12px;color:#6f8e94;text-align:center">مواد الرافعة</div>
+    <div class="kbd-icons" id="kbdIcons"></div>`;
   const avg=(tahsili+qiyas)/2; makeRing(card.querySelector('#ringHere'), avg);
 
   // Icons
@@ -467,7 +455,7 @@ function openSubjectPopup(sub){
         <ol style="margin:0 0 10px 18px; line-height:1.9">
           ${sub.tips.map(t=>`<li>${t}</li>`).join('')}
         </ol>
-        <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;justify-content:center">
           <span class="kbd-icon">🗂️ خطة علاجية</span>
           <span class="kbd-icon">🧠 بنك أسئلة</span>
           <span class="kbd-icon">🕒 محاكاة يومية</span>
@@ -475,7 +463,7 @@ function openSubjectPopup(sub){
         </div>
       </div>
     </div>`;
-  sheet.addEventListener('click',(ev)=>{const box=sheet.querySelector('div > div'); if(!box.contains(ev.target)) document.body.removeChild(sheet);});
+  sheet.addEventListener('click',(ev)=>{const box=sheet.children[0]; if(!box.contains(ev.target)) document.body.removeChild(sheet);});
   sheet.querySelector('.close').addEventListener('click',()=>document.body.removeChild(sheet));
   document.body.appendChild(sheet);
 }
@@ -483,19 +471,61 @@ function openSubjectPopup(sub){
 /* Metrics render */
 function renderMetricsSection(){
   const wrap=document.getElementById('metricsSection'); wrap.innerHTML='';
-  const TAH=66.546, QIY=71.254; // بدون تواريخ كما طلبت
+  const TAH=66.546, QIY=71.254; // بدون تواريخ
   wrap.appendChild( buildMetricCard('التحصيلي', TAH, ()=>metricModal.open('التحصيلي','tahsili_image.png')) );
   wrap.appendChild( buildMiddleLeadership(TAH, QIY) );
   wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png')) );
 }
 </script>
-<!-- PART 7/8: FULL ANALYSIS, EVIDENCE, REPORT/PLAN & INIT -->
 <script>
+/* Evidence store (fallback إذا لم تُضبط Supabase) */
+let eviStore = {}; // { rowId: [ {id?, text, term, week, date, link, fileName} ] }
+
+/* Supabase helpers */
+async function supaFetchRow(rowId){
+  if(!supa) return (eviStore[rowId]||[]);
+  const { data, error } = await supa.from('evidence').select('*').eq('row_id', rowId).order('created_at',{ascending:true});
+  if(error){ console.warn(error); return (eviStore[rowId]||[]); }
+  return data.map(d=>({ id:d.id, text:d.text, term:d.term, week:d.week, date:d.date, link:d.link, fileName:d.file_name }));
+}
+async function supaInsert(rowId,item){
+  if(!supa){ if(!eviStore[rowId]) eviStore[rowId]=[]; eviStore[rowId].push(item); return true; }
+  const { error } = await supa.from('evidence').insert({row_id:rowId, text:item.text, term:item.term, week:item.week, date:item.date, link:item.link, file_name:item.fileName});
+  if(error){ alert('تعذّر حفظ الشاهد في القاعدة: '+error.message); return false; }
+  return true;
+}
+async function supaDeleteLast(rowId){
+  if(!supa){
+    if((eviStore[rowId]||[]).length) eviStore[rowId].pop();
+    return true;
+  }
+  const { data, error } = await supa.from('evidence').select('id').eq('row_id',rowId).order('created_at',{ascending:false}).limit(1);
+  if(error){ alert('تعذّر الحذف: '+error.message); return false; }
+  if(!data.length) return true;
+  const { error:delErr } = await supa.from('evidence').delete().eq('id', data[0].id);
+  if(delErr){ alert('تعذّر الحذف: '+delErr.message); return false; }
+  return true;
+}
+
 /* Full panel & evidence */
 let currentFieldKey=null;
-const eviStore = {}; // { rowId: [ {text,term,week,date,link,fileName} ] }
+const eviModalEl = { modal:null, text:null, term:null, week:null, hijri:null, file:null, link:null, owner:null, save:null, cancel:null, rowId:null };
 
-function openFieldFullScreen(key){
+function eviIconsHTML(){
+  return `
+    <div class="eviActions">
+      <span class="eviAct add" title="إضافة شاهد">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>إضافة شاهد</span>
+      </span>
+      <span class="eviAct delete" title="حذف آخر شاهد">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6v12m8-12v12M10 6l1-2h2l1 2" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>حذف</span>
+      </span>
+    </div>`;
+}
+
+async function openFieldFullScreen(key){
   currentFieldKey=key;
   const panel=document.getElementById('fullPanel');
   const title=document.getElementById('fpTitle');
@@ -512,10 +542,10 @@ function openFieldFullScreen(key){
     </div>`;
   }).join('');
 
+  // صفوف الجدول
   const rows=(detailed[key]||[]).map((r,idx)=>{
     const rowId = `${key}-${idx}`;
     const lb=perfLevel(r.perf);
-    const chips = (eviStore[rowId]||[]).map((ev,i)=>`<span class="eviDot" title="${ev.text||''}">${i+1}</span>`).join('') || '—';
     return `<tr class="${levelRowClass(r.level)}" data-row="${rowId}">
       <td class="col-lvl">
         <div style="display:flex;align-items:center;gap:10px">
@@ -526,14 +556,11 @@ function openFieldFullScreen(key){
           </div>
         </div>
       </td>
-      <td class="col-crit"><strong>${r.indicator}</strong><br/><small style="color:#6f8e94">${r.evidence||''}</small></td>
+      <td class="col-crit"><strong>${r.indicator}</strong></td>
       <td class="col-imp">${r.improve}</td>
       <td class="col-evi">
-        <div class="eviBar">${chips}</div>
-        <div class="eviBtns">
-          <button class="btn-evi add">➕ إضافة شاهد</button>
-          <button class="btn-evi danger del">🗑️ حذف آخر</button>
-        </div>
+        <div class="eviBar" id="eviBar-${rowId}">—</div>
+        ${eviIconsHTML()}
       </td>
     </tr>`;
   }).join('');
@@ -561,88 +588,112 @@ function openFieldFullScreen(key){
     requestAnimationFrame(()=>{el.querySelector('.fg').style.transition='.9s ease';el.querySelector('.fg').style.strokeDashoffset=c*(1 - (p/100));});
   });
 
-  // buttons
+  // تحميل الشواهد من Supabase أو الذاكرة
+  await Promise.all((detailed[key]||[]).map(async (_r,idx)=>{
+    const rowId=`${key}-${idx}`;
+    const items = await supaFetchRow(rowId);
+    if(!eviStore[rowId]) eviStore[rowId]=[];
+    eviStore[rowId]=items;
+    refreshRowEvidence(rowId);
+  }));
+
+  // actions listeners
+  body.querySelectorAll('tr[data-row]').forEach(tr=>{
+    const rowId=tr.getAttribute('data-row');
+    tr.querySelector('.eviAct.add').addEventListener('click',()=>openEvidenceModal(rowId));
+    tr.querySelector('.eviAct.delete').addEventListener('click',async ()=>{
+      const ok=await supaDeleteLast(rowId);
+      if(ok) refreshRowEvidence(rowId);
+    });
+  });
+
+  // top buttons
   document.getElementById('btnFieldReport').onclick=()=>openDocWindow('تقرير المجال',buildFieldReportHTML(key));
   document.getElementById('btnFieldPlan').onclick=()=>openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key));
   document.getElementById('fpClose').onclick=(e)=>{e.preventDefault(); panel.style.display='none';};
   document.getElementById('fpHome').onclick=(e)=>{e.preventDefault(); panel.style.display='none';window.scrollTo({top:0,behavior:'smooth'})};
 
-  // evidence row buttons
-  body.querySelectorAll('tr[data-row]').forEach(tr=>{
-    const rowId=tr.getAttribute('data-row');
-    tr.querySelector('.btn-evi.add').addEventListener('click',()=>openEvidenceModal(rowId));
-    tr.querySelector('.btn-evi.del').addEventListener('click',()=>{
-      if((eviStore[rowId]||[]).length){ eviStore[rowId].pop(); refreshRowEvidence(rowId); }
-    });
-  });
-
   panel.style.display='flex';
 }
+
 function refreshRowEvidence(rowId){
-  const tr=document.querySelector(`tr[data-row="${rowId}"]`);
-  if(!tr) return;
-  const bar=tr.querySelector('.eviBar');
+  const bar=document.getElementById(`eviBar-${rowId}`);
+  if(!bar) return;
   const items=eviStore[rowId]||[];
-  bar.innerHTML = items.length? items.map((ev,i)=>`<span class="eviDot" title="${ev.text||''}">${i+1}</span>`).join('') : '—';
+  bar.innerHTML = items.length
+    ? items.map((ev,i)=>`<span class="eviDot" title="${(ev.text||'').replace(/"/g,'&quot;')}">${i+1}</span>`).join('')
+    : '—';
 }
 
 /* Evidence modal control */
-const eviModalEl = { modal:null, text:null, term:null, week:null, hijri:null, file:null, link:null, owner:null, save:null, cancel:null, rowId:null };
 function openEvidenceModal(rowId){
   eviModalEl.rowId=rowId;
   eviModalEl.modal.style.display='flex'; eviModalEl.modal.setAttribute('aria-hidden','false');
   eviModalEl.owner.value = 'مجال: ' + (currentFieldKey||'');
 }
 function closeEvidenceModal(){ eviModalEl.modal.style.display='none'; eviModalEl.modal.setAttribute('aria-hidden','true'); eviModalEl.rowId=null; }
-function saveEvidence(){
+async function saveEvidence(){
   const id=eviModalEl.rowId; if(!id) return;
   const item={ text:eviModalEl.text.value.trim(), term:eviModalEl.term.value, week:eviModalEl.week.value, date:eviModalEl.hijri.value.trim(), link:eviModalEl.link.value.trim(), fileName: eviModalEl.file.files[0]?.name || '' };
-  if(!eviStore[id]) eviStore[id]=[]; eviStore[id].push(item);
-  refreshRowEvidence(id); closeEvidenceModal();
+  const ok = await supaInsert(id,item);
+  if(ok){
+    if(!eviStore[id]) eviStore[id]=[];
+    eviStore[id].push(item);
+    refreshRowEvidence(id);
+  }
+  closeEvidenceModal();
   eviModalEl.text.value=''; eviModalEl.hijri.value=''; eviModalEl.link.value=''; eviModalEl.file.value='';
 }
 
-/* Report builder (narrow level/pct/code) */
+/* Report builder — هيدر كبير */
+function buildPrintHeaderHTML(titleText){
+  return `
+  <div style="width:100%;text-align:center;margin:0 0 12px">
+    <div style="font-size:24px;font-weight:900;color:#0b7e88;margin-bottom:6px">${titleText}</div>
+    <div style="height:70px;background:url('logo.png') center/contain no-repeat"></div>
+  </div>`;
+}
+
+/* تقرير المجال (صغّر عمود المستوى/النسبة/الرمز وزّد اتساع الباقي) */
 function buildFieldReportHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map(r=>`
     <tr class="${levelRowClass(r.level)}">
-      <td style="width:140px">${r.level}<br/>${fmt(r.perf)}%<br/><small>${r.code}</small></td>
-      <td style="width:40%">${r.indicator}</td>
+      <td style="width:160px">${r.level}<br/>${fmt(r.perf)}%<br/><small>${r.code}</small></td>
+      <td style="width:42%">${r.indicator}</td>
       <td style="width:auto">${r.improve}</td>
     </tr>`).join('');
-  return `<h2 style="text-align:center;color:#0b7e88;margin-bottom:8px">تقرير المجال: ${f.name}</h2>
-  <table><thead><tr><th style="width:140px">المستوى/النسبة/الرمز</th><th style="width:40%">المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `${buildPrintHeaderHTML('تقرير المجال: '+f.name)}
+  <table><thead><tr><th style="width:160px">المستوى/النسبة/الرمز</th><th style="width:42%">المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* Plan builder (narrow code + duration) */
+/* خطة المجال (صغّر رمز المؤشر والمدة) */
 function buildFieldPlanHTML(key){
   const f=fields[key];
   const rows=(detailed[key]||[]).map((r,i)=>{
     const duration = i%2? '٦ أسابيع':'فصل دراسي';
     return `<tr>
-      <td style="width:110px"><strong>${r.code}</strong></td>
+      <td style="width:120px"><strong>${r.code}</strong></td>
       <td style="width:auto">${r.indicator}</td>
       <td style="width:auto">${r.improve}</td>
-      <td style="width:110px">${duration}</td>
+      <td style="width:120px">${duration}</td>
     </tr>`;
   }).join('');
-  return `<h2 style="text-align:center;color:#0b7e88;margin-bottom:8px">خطة تحسين المجال: ${f.name}</h2>
-  <table><thead><tr><th style="width:110px">رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th style="width:110px">المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `${buildPrintHeaderHTML('خطة تحسين المجال: '+f.name)}
+  <table><thead><tr><th style="width:120px">رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th style="width:120px">المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* Print window (wide + centered) */
+/* Print window (أعرض + وسط) */
 function openDocWindow(title,contentHTML){
   const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
   const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
   <style>
     *{box-sizing:border-box} html,body{margin:0;font-family:'Tajawal',sans-serif;color:#06353b;background:#fff}
     @page{size:A4;margin:8mm} html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .wrap{width:200mm;max-width:100%;margin:0 auto;padding:10px}
-    h2{text-align:center;margin:6px 0 10px}
+    .wrap{width:205mm;max-width:100%;margin:0 auto;padding:10px}
     table{width:100%;border-collapse:collapse;table-layout:fixed}
     thead th{background:#0f6f79;color:#fff;padding:10px}
-    td,th{padding:8px;border:1px solid #e7eff0;text-align:center;vertical-align:middle}
+    td,th{padding:10px;border:1px solid #e7eff0;text-align:center;vertical-align:middle}
     .row-excellent{background:#e9fff4}.row-verygood{background:#eef5ff}.row-good{background:#fff6ec}.row-medium{background:#ffefef}
     .toolbar{position:sticky;bottom:0;display:flex;justify-content:center;margin:10px 0}
     .print{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
@@ -694,11 +745,10 @@ window.addEventListener('DOMContentLoaded',()=>{
   eviModalEl.cancel.onclick=closeEvidenceModal;
   eviModalEl.save.onclick=saveEvidence;
 
-  // Render on load (حتى لو لم يضغط "تحليل شامل")
+  // Render on load
   renderDashboard();
   renderMetricsSection();
 });
 </script>
-<!-- PART 8/8: CLOSE -->
 </body>
 </html>
