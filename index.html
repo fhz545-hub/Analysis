@@ -647,11 +647,22 @@ async function openFieldFullScreen(key){
 }
 
 function refreshRowEvidence(rowId){
-  const bar=document.getElementById(`eviBar-${rowId}`);
+  const bar = document.getElementById(`eviBar-${rowId}`);
   if(!bar) return;
-  const items=eviStore[rowId]||[];
+
+  const items = eviStore[rowId] || [];
+
   bar.innerHTML = items.length
-    ? items.map((ev,i)=>`<span class="eviDot" title="${(ev.text||'').replace(/"/g,'&quot;')}">${i+1}</span>`).join('')
+    ? items.map((ev, i) => {
+        const title = (ev.text || '').replace(/"/g, '&quot;');
+        const num = i + 1;
+        // إذا كان هناك رابط للشاهد نحوله لرابط قابل للضغط
+        if(ev.link && /^https?:\/\//i.test(ev.link)){
+          return `<a class="eviDot" href="${ev.link}" target="_blank" rel="noopener" title="${title}">${num}</a>`;
+        }
+        // إذا ما فيه رابط يبقى رقم عادي
+        return `<span class="eviDot" title="${title}">${num}</span>`;
+      }).join('')
     : '—';
 }
 
