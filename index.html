@@ -277,9 +277,12 @@ function levelRowClass(arLevel){
 }
 
 /* Supabase (استبدل بقيم مشروعك) */
+/* ✅ إعداد اتصال Supabase */
 const SUPABASE_URL  = 'https://vullbssjyyrnoyyxyebq.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc';
-let supa = null;
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc';
+
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
 try{
   if(typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('https')){
     supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
