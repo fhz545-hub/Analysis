@@ -152,14 +152,16 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 /* Evidence modal */
 .modal{position:fixed;inset:0;display:none;z-index:10000;align-items:center;justify-content:center;background:rgba(6,53,59,.18);padding:12px}
 .modal .sheet{width:min(920px,96vw);background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.25);padding:14px;border:1px solid #e6efef;max-height:90vh;overflow:auto}
-.modal .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
 .modal label{display:block;font-size:12px;color:#355;margin-bottom:4px}
 .modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
 .modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
 
+/* Password modal row grid (تبقى عامة) */
+.modal .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
+@media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
+
 @media (max-width:1200px){.metricsRow{justify-content:center}.metricCard.lead{width:min(560px,95vw)}}
 @media (max-width:960px){ .metricsRow{flex-direction:column;align-items:center} }
-@media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
 
 /* Footer & print */
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
@@ -219,32 +221,26 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
     </div>
   </div>
 
-  <!-- Evidence modal -->
+  <!-- Evidence modal: فقط رابط الشاهد -->
   <div class="modal" id="eviModal" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="eviTitle">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
-        <h4 id="eviTitle" style="margin:0;text-align:center;color:#0b7e88">إضافة شاهد</h4>
+        <h4 id="eviTitle" style="margin:0;text-align:center;color:#0b7e88">إضافة رابط الشاهد</h4>
         <button class="close" id="eviClose" type="button">✕ إغلاق</button>
       </div>
 
-      <div class="row" style="margin-bottom:8px">
-        <div><label>اسم/وصف الشاهد</label><input id="eviText" type="text" placeholder="مثال: تحليل نتائج صف1.."/></div>
-        <div><label>الفصل الدراسي</label><select id="eviTerm"><option value="T1">الأول</option><option value="T2">الثاني</option></select></div>
-        <div><label>الأسبوع</label><select id="eviWeek"></select></div>
-        <div><label>التاريخ (هجري)</label><input id="eviHijri" type="text" placeholder="1447/03/01"/></div>
-      </div>
-
-      <div class="row">
-        <div><label>رفع ملف (PDF/صورة)</label><input id="eviFile" type="file" accept="application/pdf,image/*"/></div>
-        <div><label>رابط الشاهد (اختياري)</label><input id="eviLink" type="url" placeholder="https://..."/></div>
-        <div style="grid-column:span 2"><label>يتبع</label><input id="eviOwner" type="text" disabled/></div>
+      <div style="margin-bottom:8px">
+        <label>رابط الشاهد (صورة / PDF / ملف على Google Drive)</label>
+        <input id="eviLink" type="url" placeholder="https://drive.google.com/..." />
       </div>
 
       <div style="display:flex;gap:8px;margin-top:8px;justify-content:center">
         <button class="btn" id="eviSave" type="button">حفظ الشاهد</button>
         <button class="btn light" id="eviCancel" type="button">إلغاء</button>
       </div>
-      <div class="small" style="margin-top:6px;text-align:center">* الشواهد تُعرض مباشرة بعد الحفظ ويمكن حذفها من الصف.</div>
+      <div class="small" style="margin-top:6px;text-align:center;font-size:12px;color:#6f8e94">
+        * يتم حفظ الرابط مباشرةً في صف المؤشر ويمكن حذفه لاحقًا.
+      </div>
     </div>
   </div>
 
@@ -266,6 +262,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
       <div style="text-align:center;color:#6f8e94;font-size:12px;margin-top:6px">لن يتم عرض كلمة المرور هنا.</div>
     </div>
   </div>
+
 <script>
 /* روابط المستندات (تم اعتماد رابط 2024 الصحيح) */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
@@ -293,7 +290,7 @@ const SUPABASE_URL  = 'https://vullbssjyyrnoyyxyebq.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc';
 let supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-/* تخزين الملفات في بكت school داخل مجلد evidence/ */
+/* تخزين الملفات في بكت school داخل مجلد evidence/ (لم نعد نستخدم رفع ملف، فقط روابط) */
 const EVI_BUCKET = 'school';
 const EVI_FOLDER = 'evidence';
 
@@ -525,7 +522,7 @@ function renderMetricsSection(){
 </script>
 <script>
 /* Evidence store (fallback) */
-let eviStore = {}; // { rowId: [ {id?, text, term, week, date, link, fileName} ] }
+let eviStore = {}; // { rowId: [ {link, ...} ] }
 
 /* ===== Password mini-modal controller ===== */
 const PASSWORD_REQUIRED = '1447';
@@ -571,7 +568,7 @@ async function supaFetchRow(rowId){
   return data.map(d=>({ id:d.id, text:d.text, term:d.term, week:d.week, date:d.date, link:d.link, fileName:d.file_name }));
 }
 
-/* رفع ملف (إن وُجد) إلى تخزين Supabase وإرجاع رابط عام داخل school/evidence/... */
+/* رفع ملف لم نعد نستخدمه هنا (الحفظ الآن بالروابط فقط) */
 async function uploadEvidenceFile(rowId, file){
   try{
     if(!file) return null;
@@ -587,8 +584,13 @@ async function uploadEvidenceFile(rowId, file){
 async function supaInsert(rowId,item){
   if(!supa){ if(!eviStore[rowId]) eviStore[rowId]=[]; eviStore[rowId].push(item); return true; }
   const { error } = await supa.from('evidence').insert({
-    row_id:rowId, text:item.text, term:item.term, week:item.week,
-    date:item.date, link:item.link, file_name:item.fileName
+    row_id:rowId,
+    text:item.text,
+    term:item.term,
+    week:item.week,
+    date:item.date,
+    link:item.link,
+    file_name:item.fileName
   });
   if(error){ alert('تعذّر حفظ الشاهد في القاعدة: '+error.message); return false; }
   return true;
@@ -613,7 +615,8 @@ async function supaDeleteLast(rowId){
 </script>
 <script>
 let currentFieldKey=null;
-const eviModalEl = { modal:null, text:null, term:null, week:null, hijri:null, file:null, link:null, owner:null, save:null, cancel:null, rowId:null };
+/* الآن الكائن يحمل فقط الرابط */
+const eviModalEl = { modal:null, link:null, save:null, cancel:null, rowId:null };
 
 function eviIconsHTML(){
   return `
@@ -734,9 +737,9 @@ function refreshRowEvidence(rowId){
   const items = eviStore[rowId] || [];
   bar.innerHTML = items.length
     ? items.map((ev, i) => {
-        const title = (ev.text || '').replace(/"/g, '&quot;');
         const num = i + 1;
         const link = normalizeLink(ev.link||'');
+        const title = link || '';
         if(link){
           return `<a class="eviDot" href="${link}" target="_blank" rel="noopener" title="${title}">${num}</a>`;
         }
@@ -748,30 +751,33 @@ function refreshRowEvidence(rowId){
 /* Evidence modal */
 function openEvidenceModal(rowId){
   eviModalEl.rowId=rowId;
-  eviModalEl.modal.style.display='flex'; eviModalEl.modal.setAttribute('aria-hidden','false');
-  eviModalEl.owner.value = 'مجال: ' + (currentFieldKey||'');
+  eviModalEl.link.value='';
+  eviModalEl.modal.style.display='flex';
+  eviModalEl.modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>eviModalEl.link.focus(),0);
 }
 function closeEvidenceModal(){
   eviModalEl.modal.style.display='none';
   eviModalEl.modal.setAttribute('aria-hidden','true');
   eviModalEl.rowId=null;
+  if(eviModalEl.link) eviModalEl.link.value='';
 }
 async function saveEvidence(){
   const id=eviModalEl.rowId; if(!id) return;
-  const file = eviModalEl.file.files[0] || null;
-  let filePublicUrl = null;
-  if(file){ filePublicUrl = await uploadEvidenceFile(id, file); }
-
   const manualLink = eviModalEl.link.value.trim();
-  const finalLink = normalizeLink(manualLink || filePublicUrl || '');
+  if(!manualLink){
+    alert('فضلاً أدخل رابط الشاهد.');
+    return;
+  }
+  const finalLink = normalizeLink(manualLink);
 
   const item={
-    text:eviModalEl.text.value.trim(),
-    term:eviModalEl.term.value,
-    week:eviModalEl.week.value,
-    date:eviModalEl.hijri.value.trim(),
+    text:'',
+    term:null,
+    week:null,
+    date:'',
     link:finalLink,
-    fileName:file?.name || ''
+    fileName:''
   };
 
   const ok = await supaInsert(id,item);
@@ -782,7 +788,6 @@ async function saveEvidence(){
   }
 
   closeEvidenceModal();
-  eviModalEl.text.value=''; eviModalEl.hijri.value=''; eviModalEl.link.value=''; eviModalEl.file.value='';
 }
 </script>
 <script>
@@ -869,25 +874,13 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('metricModalClose').onclick=()=>metricModal.close();
   metricModal.el.addEventListener('click',(ev)=>{const sheet=metricModal.el.querySelector('.sheet'); if(!sheet.contains(ev.target)) metricModal.close();});
 
-  // Evidence modal refs
+  // Evidence modal refs (فقط الرابط)
   const m=document.getElementById('eviModal');
   eviModalEl.modal=m;
-  eviModalEl.text=document.getElementById('eviText');
-  eviModalEl.term=document.getElementById('eviTerm');
-  eviModalEl.week=document.getElementById('eviWeek');
-  eviModalEl.hijri=document.getElementById('eviHijri');
-  eviModalEl.file=document.getElementById('eviFile');
   eviModalEl.link=document.getElementById('eviLink');
-  eviModalEl.owner=document.getElementById('eviOwner');
   eviModalEl.save=document.getElementById('eviSave');
   eviModalEl.cancel=document.getElementById('eviCancel');
 
-  // Weeks 1..19
-  eviModalEl.week.innerHTML='';
-  for(let i=1;i<=19;i++){
-    const op=document.createElement('option');
-    op.value='W'+i; op.textContent='الأسبوع '+i; eviModalEl.week.appendChild(op);
-  }
   document.getElementById('eviClose').onclick=closeEvidenceModal;
   eviModalEl.cancel.onclick=closeEvidenceModal;
   eviModalEl.save.onclick=saveEvidence;
