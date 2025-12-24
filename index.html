@@ -1,3 +1,4 @@
+<!-- ===================== PART 1 / 4 ===================== -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -136,11 +137,10 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,99,235,.24)}70%{box-shadow:0 0 0 16px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
 .ringValue{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;font-size:16px;color:#06353b}
 
-/* Leadership icons */
+/* Leadership icons (مفقودة سابقاً – تم تثبيتها بدون تغيير الهوية) */
 .kbd-icons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;justify-content:center}
 .kbd-icon{display:flex;align-items:center;gap:8px;border:1px dashed #cfe4e6;background:#fff;padding:8px 10px;border-radius:12px;cursor:pointer;font-weight:800}
 .kbd-icon:hover{background:#f4fbfb}
-.kbd-icon svg{width:18px;height:18px}
 
 /* Metric image modal */
 .metricModal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:12px}
@@ -156,13 +156,6 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 .modal input,.modal select{width:100%;padding:10px;border-radius:10px;border:1px solid #dfecec;background:#fff}
 .modal .close{background:#e8eff0;color:#034;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}
 
-/* Password modal row grid (تبقى عامة) */
-.modal .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
-@media (max-width:780px){ .modal .row{grid-template-columns:1fr} }
-
-@media (max-width:1200px){.metricsRow{justify-content:center}.metricCard.lead{width:min(560px,95vw)}}
-@media (max-width:960px){ .metricsRow{flex-direction:column;align-items:center} }
-
 /* Footer & print */
 .footer{padding:18px 10px;text-align:center;color:#7a9aa0}
 @page{size:A4;margin:10mm}
@@ -173,6 +166,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 }
 </style>
 </head>
+
 <body>
   <!-- Hero -->
   <div class="hero" aria-label="وزارة التعليم – شعار">
@@ -221,7 +215,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
     </div>
   </div>
 
-  <!-- Evidence modal: فقط رابط الشاهد -->
+  <!-- Evidence modal (رابط فقط) -->
   <div class="modal" id="eviModal" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="eviTitle">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
@@ -239,7 +233,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
         <button class="btn light" id="eviCancel" type="button">إلغاء</button>
       </div>
       <div class="small" style="margin-top:6px;text-align:center;font-size:12px;color:#6f8e94">
-        * يتم حفظ الرابط مباشرةً في صف المؤشر ويمكن حذفه لاحقًا.
+        * يتم حفظ الرابط بشكل دائم (Supabase) + نسخة أمان محلية، ولا يُحذف إلا بعد فك التأمين.
       </div>
     </div>
   </div>
@@ -264,7 +258,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
   </div>
 
 <script>
-/* روابط المستندات (تم اعتماد رابط 2024 الصحيح) */
+/* روابط المستندات */
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
 const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=sharing';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
@@ -288,20 +282,241 @@ function levelRowClass(arLevel){
 /* Supabase */
 const SUPABASE_URL  = 'https://vullbssjyyrnoyyxyebq.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bGxic3NqeXlybm95eXh5ZWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTQxODEsImV4cCI6MjA3NjI3MDE4MX0.D7o-dAyQbb2cjmp1ooZ0Mw9xoiih1JUarsEMZJVGfGc';
-let supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-/* تخزين الملفات في بكت school داخل مجلد evidence/ (لم نعد نستخدم رفع ملف، فقط روابط) */
-const EVI_BUCKET = 'school';
-const EVI_FOLDER = 'evidence';
+let supa = null;
 
 try{
   if(typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('https')){
     supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }else{
+    supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   }
-}catch(e){ console.warn('Supabase init skipped:', e); }
+}catch(e){
+  console.warn('Supabase init failed:', e);
+  supa = null;
+}
 </script>
-<!-- ===== بيانات الحقول والمؤشرات ===== -->
+<!-- ===================== PART 2 / 4 ===================== -->
 <script>
+/* ================== تثبيت الشواهد (دائم) + ترحيل القديم ================== */
+/*
+  لماذا كانت تختفي الشواهد؟
+  - لأن RowId سابقاً كان مبنيًا على (index) ويتغير عند تعديل ترتيب/عدد المؤشرات.
+  - ولأن الاعتماد على ذاكرة المتصفح فقط يضيع مع تغيير جهاز/متصفح.
+  الحل هنا:
+  1) RowId ثابت = fieldKey + code (مثل: management-1-1-1-1) فلا يتغير.
+  2) حفظ دائم في Supabase + نسخة أمان محلية (localStorage).
+  3) ترحيل تلقائي من النظام القديم (fieldKey-idx) إلى النظام الثابت (fieldKey-code).
+  4) تأمين الإضافة/الحذف بكلمة مرور كما طلبت.
+*/
+
+/* ===== مفاتيح التخزين المحلي (شبكة أمان) ===== */
+const LS_KEY = 'YAQ_EVIDENCE_V3';
+const LEGACY_LS_KEYS = ['YAQ_EVIDENCE_V1','YAQ_EVIDENCE_V2'];
+
+/* ===== مخزن الشواهد ===== */
+let eviStore = {};             // { rowId: [ {id?, link, ...} ] }
+let migratedFields = new Set();// لمنع تكرار الترحيل
+
+/* Normalize link */
+function normalizeLink(url){
+  const u=(url||'').trim();
+  if(!u) return '';
+  if(!/^https?:\/\//i.test(u)) return 'https://' + u;
+  return u;
+}
+
+/* Merge evidence arrays (بدون تكرار) */
+function mergeEvidence(a,b){
+  const out=[]; const seen=new Set();
+  (a||[]).forEach(it=>{
+    const link = normalizeLink(it?.link||'');
+    const id   = it?.id ?? null;
+    const key  = (id ? `id:${id}` : '') + (link ? `|l:${link}` : '') + (it?.fileName?`|f:${it.fileName}`:'');
+    const k = key || JSON.stringify(it||{});
+    if(!seen.has(k)){
+      seen.add(k);
+      out.push({...it, link});
+    }
+  });
+  (b||[]).forEach(it=>{
+    const link = normalizeLink(it?.link||'');
+    const id   = it?.id ?? null;
+    const key  = (id ? `id:${id}` : '') + (link ? `|l:${link}` : '') + (it?.fileName?`|f:${it.fileName}`:'');
+    const k = key || JSON.stringify(it||{});
+    if(!seen.has(k)){
+      seen.add(k);
+      out.push({...it, link});
+    }
+  });
+  return out;
+}
+
+function mergeEvidenceStore(base,incoming){
+  const out={...(base||{})};
+  const inc=incoming||{};
+  Object.keys(inc).forEach(k=>{
+    out[k]=mergeEvidence(out[k]||[], inc[k]||[]);
+  });
+  return out;
+}
+
+/* LocalStorage load/save */
+function safeParseLS(key){
+  try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; }
+}
+function loadAnyLocalEvidence(){
+  const merged = {};
+  const all = [LS_KEY, ...LEGACY_LS_KEYS].map(k=>safeParseLS(k));
+  all.forEach(obj=>{
+    Object.keys(obj||{}).forEach(rowId=>{
+      if(!merged[rowId]) merged[rowId]=[];
+      merged[rowId] = mergeEvidence(merged[rowId], obj[rowId]);
+    });
+  });
+  return merged;
+}
+function saveLocalEvidence(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(eviStore)); }catch(e){}
+}
+
+/* RowId ثابت/قديم */
+function stableRowId(fieldKey, code){
+  return `${fieldKey}-${String(code||'').trim()}`;
+}
+function legacyRowId(fieldKey, idx){
+  return `${fieldKey}-${idx}`;
+}
+
+/* ===== Supabase helpers ===== */
+async function supaFetchRow(rowId){
+  if(!supa) return [];
+  const { data, error } = await supa
+    .from('evidence')
+    .select('id, row_id, link, text, term, week, date, file_name, created_at')
+    .eq('row_id', rowId)
+    .order('created_at',{ascending:true});
+  if(error){ console.warn('supaFetchRow:', error); return []; }
+  return (data||[]).map(d=>({
+    id:d.id,
+    link: d.link || '',
+    text: d.text || '',
+    term: d.term ?? null,
+    week: d.week ?? null,
+    date: d.date || '',
+    fileName: d.file_name || '',
+    created_at: d.created_at || ''
+  }));
+}
+
+/* insert returns inserted row (id) if possible */
+async function supaInsert(rowId, item){
+  if(!supa) return { ok:false, id:null };
+  try{
+    const payload = {
+      row_id: rowId,
+      text: item.text || '',
+      term: item.term ?? null,
+      week: item.week ?? null,
+      date: item.date || '',
+      link: item.link || '',
+      file_name: item.fileName || ''
+    };
+    const { data, error } = await supa
+      .from('evidence')
+      .insert(payload)
+      .select('id, created_at, link')
+      .limit(1);
+    if(error){ console.warn('supaInsert:', error); return { ok:false, id:null }; }
+    const inserted = (data && data[0]) ? data[0] : null;
+    return { ok:true, id: inserted?.id ?? null, created_at: inserted?.created_at ?? null };
+  }catch(e){
+    console.warn('supaInsert exception:', e);
+    return { ok:false, id:null };
+  }
+}
+
+async function supaInsertMissingLinks(rowId, links){
+  if(!supa) return;
+  for(const l of (links||[])){
+    const item={text:'',term:null,week:null,date:'',link:l,fileName:''};
+    await supaInsert(rowId,item);
+  }
+}
+
+async function supaDeleteById(id){
+  if(!supa || !id) return false;
+  const { error } = await supa.from('evidence').delete().eq('id', id);
+  if(error){ console.warn('supaDeleteById:', error); return false; }
+  return true;
+}
+
+/* fallback delete last remote */
+async function supaDeleteLast(rowId){
+  if(!supa) return false;
+  const { data, error } = await supa
+    .from('evidence')
+    .select('id, created_at')
+    .eq('row_id',rowId)
+    .order('created_at',{ascending:false})
+    .limit(1);
+  if(error){ console.warn('supaDeleteLast select:', error); return false; }
+  if(!data?.length) return true;
+  return await supaDeleteById(data[0].id);
+}
+
+/* ===== ترحيل الشواهد القديمة إلى المعرّف الثابت (دائم) =====
+   - يجلب القديم (legacy rowId: key-idx)
+   - يدمجه داخل الجديد (key-code)
+   - ثم يرفع أي روابط ناقصة إلى Supabase تحت key-code
+*/
+async function migrateLegacyEvidenceForField(fieldKey, rows){
+  if(migratedFields.has(fieldKey)) return;
+  migratedFields.add(fieldKey);
+
+  // (A) دمج أي شيء محلي قديم/جديد
+  const localAll = loadAnyLocalEvidence();
+  eviStore = mergeEvidenceStore(eviStore, localAll);
+
+  if(!supa){ saveLocalEvidence(); return; }
+
+  for(let idx=0; idx<rows.length; idx++){
+    const code = rows[idx]?.code;
+    if(!code) continue;
+
+    const oldId = legacyRowId(fieldKey, idx);
+    const newId = stableRowId(fieldKey, code);
+
+    const [oldRemote, newRemote] = await Promise.all([
+      supaFetchRow(oldId),
+      supaFetchRow(newId)
+    ]);
+
+    const oldLocal = eviStore[oldId] || [];
+    const newLocal = eviStore[newId] || [];
+
+    const mergedNew = mergeEvidence(
+      mergeEvidence(newLocal, newRemote),
+      mergeEvidence(oldLocal, oldRemote)
+    );
+
+    eviStore[newId] = mergedNew;
+
+    // رفع الناقص إلى Supabase (تثبيت دائم)
+    const newRemoteLinks = new Set((newRemote||[]).map(x=>normalizeLink(x.link||'')).filter(Boolean));
+    const mergedLinks = (mergedNew||[]).map(x=>normalizeLink(x.link||'')).filter(Boolean);
+    const missing = mergedLinks.filter(l=>!newRemoteLinks.has(l));
+
+    if(missing.length){
+      await supaInsertMissingLinks(newId, missing);
+    }
+  }
+
+  saveLocalEvidence();
+}
+</script>
+<!-- ===================== PART 3 / 4 ===================== -->
+<script>
+/* ===================== بيانات الحقول والمؤشرات ===================== */
 const fields={
   management:{name:'الإدارة المدرسية',v2024:75.50,v2025:75.50,subs:[
     {id:'planning',name:'التخطيط',v:54.00},{id:'lead',name:'قيادة العملية التعليمية',v:72.75},
@@ -399,8 +614,8 @@ const drivingSubjects = [
     'نماذج قدرات لفظي مرتين أسبوعيًا.'
   ]}
 ];
-</script>
-<script>
+
+/* ===================== Dashboard ===================== */
 function renderDashboard(){
   const dash=document.getElementById('dashboard'); dash.innerHTML='';
   Object.entries(fields).forEach(([key,f])=>{
@@ -426,7 +641,7 @@ function renderDashboard(){
   });
 }
 
-/* Ring helper */
+/* ===================== Metrics ===================== */
 function makeRing(container, valuePercent){
   const v=Math.max(0,Math.min(100,Number(valuePercent)||0));
   const ring=document.createElement('div'); ring.className='ring';
@@ -458,7 +673,32 @@ function buildMetricCard(title, value, openHandler){
   return card;
 }
 
-/* Leadership (middle, wider) */
+function openSubjectPopup(sub){
+  const sheet=document.createElement('div');
+  sheet.style.cssText='position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center';
+  sheet.innerHTML=`
+    <div style="width:min(720px,94vw);background:#fff;border:1px solid #e6efef;border-radius:16px;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #eef1f2">
+        <strong style="color:#0b7e88">${sub.icon||''} خطط رفع — ${sub.name||''}</strong>
+        <button class="close" style="border:0;background:#e8eff0;color:#034;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer">إغلاق ✕</button>
+      </div>
+      <div style="padding:12px">
+        <ol style="margin:0 0 10px 18px; line-height:1.9">
+          ${(sub.tips||[]).map(t=>`<li>${t}</li>`).join('')}
+        </ol>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;justify-content:center">
+          <span class="kbd-icon">🗂️ خطة علاجية</span>
+          <span class="kbd-icon">🧠 بنك أسئلة</span>
+          <span class="kbd-icon">🕒 محاكاة يومية</span>
+          <span class="kbd-icon">📝 ملخصات</span>
+        </div>
+      </div>
+    </div>`;
+  sheet.addEventListener('click',(ev)=>{const box=sheet.children[0]; if(!box.contains(ev.target)) document.body.removeChild(sheet);});
+  sheet.querySelector('.close').addEventListener('click',()=>document.body.removeChild(sheet));
+  document.body.appendChild(sheet);
+}
+
 function buildMiddleLeadership(tahsili, qiyas){
   const card=document.createElement('div'); card.className='metricCard lead';
   card.innerHTML=`
@@ -477,41 +717,14 @@ function buildMiddleLeadership(tahsili, qiyas){
   const iconsWrap=card.querySelector('#kbdIcons');
   drivingSubjects.forEach(sub=>{
     const btn=document.createElement('button');
-    btn.className='kbd-icon'; btn.innerHTML=`<span>${sub.icon}</span><span>${sub.name}</span>`;
+    btn.className='kbd-icon';
+    btn.innerHTML=`<span>${sub.icon}</span><span>${sub.name}</span>`;
     btn.addEventListener('click',()=>openSubjectPopup(sub));
     iconsWrap.appendChild(btn);
   });
   return card;
 }
 
-/* Subject popup */
-function openSubjectPopup(sub){
-  const sheet=document.createElement('div');
-  sheet.style.cssText='position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center';
-  sheet.innerHTML=`
-    <div style="width:min(720px,94vw);background:#fff;border:1px solid #e6efef;border-radius:16px;overflow:hidden">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #eef1f2">
-        <strong style="color:#0b7e88">${sub.icon} خطط رفع — ${sub.name}</strong>
-        <button class="close" style="border:0;background:#e8eff0;color:#034;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer">إغلاق ✕</button>
-      </div>
-      <div style="padding:12px">
-        <ol style="margin:0 0 10px 18px; line-height:1.9">
-          ${sub.tips.map(t=>`<li>${t}</li>`).join('')}
-        </ol>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;justify-content:center">
-          <span class="kbd-icon">🗂️ خطة علاجية</span>
-          <span class="kbd-icon">🧠 بنك أسئلة</span>
-          <span class="kbd-icon">🕒 محاكاة يومية</span>
-          <span class="kbd-icon">📝 ملخصات</span>
-        </div>
-      </div>
-    </div>`;
-  sheet.addEventListener('click',(ev)=>{const box=sheet.children[0]; if(!box.contains(ev.target)) document.body.removeChild(sheet);});
-  sheet.querySelector('.close').addEventListener('click',()=>document.body.removeChild(sheet));
-  document.body.appendChild(sheet);
-}
-
-/* Metrics render */
 function renderMetricsSection(){
   const wrap=document.getElementById('metricsSection'); wrap.innerHTML='';
   const TAH=66.546, QIY=71.254;
@@ -520,15 +733,12 @@ function renderMetricsSection(){
   wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png')) );
 }
 </script>
+<!-- ===================== PART 4 / 4 ===================== -->
 <script>
-/* Evidence store (fallback) */
-let eviStore = {}; // { rowId: [ {link, ...} ] }
-
-/* ===== Password mini-modal controller ===== */
+/* ===================== Password (تأمين) ===================== */
 const PASSWORD_REQUIRED = '1447';
 const pwdModal = {
-  el: null, input: null, ok: null, cancel: null, closeBtn: null,
-  _resolver: null,
+  el: null, input: null, _resolver: null,
   open(){
     this.input.value='';
     this.el.style.display='flex';
@@ -552,70 +762,6 @@ const pwdModal = {
   },
 };
 
-/* Normalize link (لو بدون http/https) */
-function normalizeLink(url){
-  const u=(url||'').trim();
-  if(!u) return '';
-  if(!/^https?:\/\//i.test(u)) return 'https://' + u;
-  return u;
-}
-
-/* Supabase helpers */
-async function supaFetchRow(rowId){
-  if(!supa) return (eviStore[rowId]||[]);
-  const { data, error } = await supa.from('evidence').select('*').eq('row_id', rowId).order('created_at',{ascending:true});
-  if(error){ console.warn(error); return (eviStore[rowId]||[]); }
-  return data.map(d=>({ id:d.id, text:d.text, term:d.term, week:d.week, date:d.date, link:d.link, fileName:d.file_name }));
-}
-
-/* رفع ملف لم نعد نستخدمه هنا (الحفظ الآن بالروابط فقط) */
-async function uploadEvidenceFile(rowId, file){
-  try{
-    if(!file) return null;
-    const safeName = file.name.replace(/[^\w.\-]/g,'_');
-    const path = `${EVI_FOLDER}/${rowId}/${Date.now()}_${safeName}`;
-    const up = await supa.storage.from(EVI_BUCKET).upload(path, file, { upsert: false });
-    if(up.error){ console.warn(up.error); alert('تعذر رفع الملف: '+up.error.message); return null; }
-    const pub = supa.storage.from(EVI_BUCKET).getPublicUrl(path);
-    return pub?.data?.publicUrl || null;
-  }catch(e){ console.warn(e); return null; }
-}
-
-async function supaInsert(rowId,item){
-  if(!supa){ if(!eviStore[rowId]) eviStore[rowId]=[]; eviStore[rowId].push(item); return true; }
-  const { error } = await supa.from('evidence').insert({
-    row_id:rowId,
-    text:item.text,
-    term:item.term,
-    week:item.week,
-    date:item.date,
-    link:item.link,
-    file_name:item.fileName
-  });
-  if(error){ alert('تعذّر حفظ الشاهد في القاعدة: '+error.message); return false; }
-  return true;
-}
-
-async function supaDeleteLast(rowId){
-  if(!supa){
-    if((eviStore[rowId]||[]).length) eviStore[rowId].pop();
-    return true;
-  }
-  const { data, error } = await supa.from('evidence')
-    .select('id')
-    .eq('row_id',rowId)
-    .order('created_at',{ascending:false})
-    .limit(1);
-  if(error){ alert('تعذّر الحذف: '+error.message); return false; }
-  if(!data.length) return true;
-  const { error:delErr } = await supa.from('evidence').delete().eq('id', data[0].id);
-  if(delErr){ alert('تعذّر الحذف: '+delErr.message); return false; }
-  return true;
-}
-</script>
-<script>
-let currentFieldKey=null;
-/* الآن الكائن يحمل فقط الرابط */
 const eviModalEl = { modal:null, link:null, save:null, cancel:null, rowId:null };
 
 function eviIconsHTML(){
@@ -626,13 +772,140 @@ function eviIconsHTML(){
     </div>`;
 }
 
-/* فتح اللوحة الكاملة للمجال */
+/* ===================== عرض الشواهد ===================== */
+function refreshRowEvidence(rowId){
+  const bar = document.getElementById(`eviBar-${rowId}`);
+  if(!bar) return;
+  const items = eviStore[rowId] || [];
+  bar.innerHTML = items.length
+    ? items.map((ev, i) => {
+        const num = i + 1;
+        const link = normalizeLink(ev.link||'');
+        const title = link || '';
+        if(link){
+          return `<a class="eviDot" href="${link}" target="_blank" rel="noopener" title="${title}">${num}</a>`;
+        }
+        return `<span class="eviDot" title="${title}">${num}</span>`;
+      }).join('')
+    : '—';
+}
+
+/* ===================== Evidence modal ===================== */
+function openEvidenceModal(rowId){
+  eviModalEl.rowId=rowId;
+  eviModalEl.link.value='';
+  eviModalEl.modal.style.display='flex';
+  eviModalEl.modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>eviModalEl.link.focus(),0);
+}
+function closeEvidenceModal(){
+  eviModalEl.modal.style.display='none';
+  eviModalEl.modal.setAttribute('aria-hidden','true');
+  eviModalEl.rowId=null;
+  if(eviModalEl.link) eviModalEl.link.value='';
+}
+
+/* ===================== حفظ شاهد: دائم + محلي ===================== */
+async function saveEvidence(){
+  const rowId=eviModalEl.rowId; if(!rowId) return;
+  const manualLink = (eviModalEl.link.value||'').trim();
+  if(!manualLink){ alert('فضلاً أدخل رابط الشاهد.'); return; }
+
+  const finalLink = normalizeLink(manualLink);
+  const item={ id:null, text:'', term:null, week:null, date:'', link:finalLink, fileName:'' };
+
+  // (1) حفظ محلي فوري (لا يضيع)
+  if(!eviStore[rowId]) eviStore[rowId]=[];
+  eviStore[rowId] = mergeEvidence(eviStore[rowId],[item]);
+  saveLocalEvidence();
+  refreshRowEvidence(rowId);
+
+  // (2) حفظ دائم في Supabase (إن توفر)
+  const res = await supaInsert(rowId,item);
+  if(res.ok && res.id){
+    // حدّث آخر عنصر مطابق للرابط بإضافة id (لتحكم حذف دقيق)
+    const arr = eviStore[rowId] || [];
+    for(let i=arr.length-1; i>=0; i--){
+      if(normalizeLink(arr[i].link||'') === finalLink && !arr[i].id){
+        arr[i].id = res.id;
+        break;
+      }
+    }
+    eviStore[rowId]=arr;
+    saveLocalEvidence();
+  }else{
+    console.warn('Supabase insert failed; kept locally.');
+  }
+
+  closeEvidenceModal();
+}
+
+/* ===================== الطباعة (تقرير/خطة مجال) ===================== */
+function buildPrintHeaderHTML(titleText){
+  return `
+    <div style="width:100%;padding:10px 0 6px;display:flex;justify-content:center;align-items:center;background:#fff;border-bottom:1px solid #e7eff0">
+      <div style="height:90px;width:95%;background:url('lolo.png') center/contain no-repeat"></div>
+    </div>
+    <h2 style="text-align:center;color:#0b7e88;margin:10px 0 10px;font-size:24px">${titleText}</h2>
+  `;
+}
+function buildFieldReportHTML(key){
+  const f=fields[key];
+  const rows=(detailed[key]||[]).map(r=>`
+    <tr class="${levelRowClass(r.level)}">
+      <td style="width:160px">${r.level}<br/>${fmt(r.perf)}%<br/><small>${r.code}</small></td>
+      <td style="width:42%">${r.indicator}</td>
+      <td style="width:auto">${r.improve}</td>
+    </tr>`).join('');
+  return `${buildPrintHeaderHTML('تقرير المجال: '+f.name)}
+  <table><thead><tr><th style="width:160px">المستوى/النسبة/الرمز</th><th style="width:42%">المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function buildFieldPlanHTML(key){
+  const f=fields[key];
+  const rows=(detailed[key]||[]).map((r,i)=>{
+    const duration = i%2? '٦ أسابيع':'فصل دراسي';
+    return `<tr>
+      <td style="width:120px"><strong>${r.code}</strong></td>
+      <td style="width:auto">${r.indicator}</td>
+      <td style="width:auto">${r.improve}</td>
+      <td style="width:120px">${duration}</td>
+    </tr>`;
+  }).join('');
+  return `${buildPrintHeaderHTML('خطة تحسين المجال: '+f.name)}
+  <table><thead><tr><th style="width:120px">رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th style="width:120px">المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function openDocWindow(title,contentHTML){
+  const w=window.open('','_blank');
+  if(!w){ alert('فضلاً اسمح بالنوافذ المنبثقة.'); return; }
+  const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
+  <style>
+    *{box-sizing:border-box} html,body{margin:0;font-family:'Tajawal',sans-serif;color:#06353b;background:#fff}
+    @page{size:A4;margin:8mm} html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .wrap{width:205mm;max-width:100%;margin:0 auto;padding:10px}
+    table{width:100%;border-collapse:collapse;table-layout:fixed}
+    thead th{background:#0f6f79;color:#fff;padding:10px}
+    td,th{padding:10px;border:1px solid #e7eff0;text-align:center;vertical-align:middle}
+    .row-excellent{background:#e9fff4}.row-verygood{background:#eef5ff}.row-good{background:#fff6ec}.row-medium{background:#ffefef}
+    .toolbar{position:sticky;bottom:0;display:flex;justify-content:center;margin:10px 0}
+    .print{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
+    @media print{ .toolbar{display:none} }
+  </style></head><body>
+    <div class="wrap">${contentHTML}
+      <div class="toolbar"><button class="print" onclick="window.print()">طباعة</button></div>
+    </div></body></html>`;
+  w.document.open(); w.document.write(doc); w.document.close();
+}
+
+/* ===================== اللوحة الكاملة للمجال (تثبيت + استرجاع + تأمين) ===================== */
+let currentFieldKey=null;
+
 async function openFieldFullScreen(key){
   currentFieldKey=key;
   const panel=document.getElementById('fullPanel');
   const title=document.getElementById('fpTitle');
   const body=document.getElementById('fpBody');
-  const f=fields[key]; title.textContent='التحليل التفصيلي – '+f.name;
+  const f=fields[key];
+  title.textContent='التحليل التفصيلي – '+f.name;
 
   const subsHtml=f.subs.map(s=>{
     const lb=perfLevel(s.v);
@@ -644,8 +917,8 @@ async function openFieldFullScreen(key){
     </div>`;
   }).join('');
 
-  const rows=(detailed[key]||[]).map((r,idx)=>{
-    const rowId = `${key}-${idx}`;
+  const rows=(detailed[key]||[]).map((r)=>{
+    const rowId = stableRowId(key, r.code); // ثابت
     const lb=perfLevel(r.perf);
     return `<tr class="${levelRowClass(r.level)}" data-row="${rowId}">
       <td class="col-lvl">
@@ -683,44 +956,74 @@ async function openFieldFullScreen(key){
     el.innerHTML=`
       <svg viewBox="0 0 40 40">
         <circle cx="20" cy="20" r="${r}" stroke="#e6efef" stroke-width="6" fill="none"></circle>
-        <circle class="fg" cx="20" cy="20" r="${r}" stroke="${color}" stroke-width="6" fill="none" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:${c};stroke-dashoffset:${c}"></circle>
+        <circle class="fg" cx="20" cy="20" r="${r}" stroke="${color}" stroke-width="6" fill="none" stroke-linecap="round"
+          style="transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:${c};stroke-dashoffset:${c}"></circle>
         <text x="20" y="20" style="font-size:9px;fill:#345;font-weight:700;dominant-baseline:middle;text-anchor:middle">${Math.round(p)}</text>
       </svg>`;
-    requestAnimationFrame(()=>{el.querySelector('.fg').style.transition='.9s ease';el.querySelector('.fg').style.strokeDashoffset=c*(1 - (p/100));});
+    requestAnimationFrame(()=>{
+      const fg=el.querySelector('.fg');
+      fg.style.transition='.9s ease';
+      fg.style.strokeDashoffset=c*(1 - (p/100));
+    });
   });
 
-  // تحميل الشواهد من القاعدة ثم تحديث العرض
-  await Promise.all((detailed[key]||[]).map(async (_r,idx)=>{
-    const rowId=`${key}-${idx}`;
-    const items = await supaFetchRow(rowId);
-    eviStore[rowId]=items||[];
+  // (1) ترحيل قديم -> ثابت + تثبيت دائم في Supabase
+  await migrateLegacyEvidenceForField(key, (detailed[key]||[]));
+
+  // (2) تحميل ثابت من Supabase + دمج مع المحلي + عرض
+  await Promise.all((detailed[key]||[]).map(async (r)=>{
+    const rowId = stableRowId(key, r.code);
+    const remote = await supaFetchRow(rowId);
+    eviStore[rowId] = mergeEvidence(eviStore[rowId]||[], remote||[]);
+    saveLocalEvidence();
     refreshRowEvidence(rowId);
   }));
 
-  // روابط الأيقونات + حماية كلمة المرور
+  // (3) تأمين الإضافة/الحذف
   body.querySelectorAll('tr[data-row]').forEach(tr=>{
     const rowId=tr.getAttribute('data-row');
 
-    // إضافة شاهد (مع كلمة مرور)
     tr.querySelector('.eviIcon.add').addEventListener('click', async ()=>{
       const ok=await pwdModal.open();
       if(!ok) return;
       openEvidenceModal(rowId);
     });
 
-    // حذف آخر شاهد (مع كلمة مرور)
     tr.querySelector('.eviIcon.delete').addEventListener('click', async ()=>{
       const ok=await pwdModal.open();
       if(!ok) return;
-      const done = await supaDeleteLast(rowId);
-      if(done){
-        if(eviStore[rowId]?.length) eviStore[rowId].pop();
-        refreshRowEvidence(rowId);
+
+      const arr = (eviStore[rowId]||[]);
+      if(!arr.length){ return; }
+
+      // حذف "آخر عنصر معروض" بدقة:
+      const last = arr[arr.length-1];
+
+      // 1) حذف دائم من Supabase (إن كان لديه id) وإلا fallback آخر سجل
+      let remoteDone = true;
+      if(supa){
+        if(last?.id){
+          remoteDone = await supaDeleteById(last.id);
+        }else{
+          // fallback: حذف آخر سجل لنفس row_id
+          remoteDone = await supaDeleteLast(rowId);
+        }
       }
+
+      if(!remoteDone){
+        alert('تعذر الحذف من القاعدة. تأكد من اتصالك أو سياسات Supabase.');
+        return;
+      }
+
+      // 2) تحديث محلي/عرض
+      arr.pop();
+      eviStore[rowId]=arr;
+      saveLocalEvidence();
+      refreshRowEvidence(rowId);
     });
   });
 
-  // أزرار أعلى اللوحة
+  // أزرار تقرير/خطة + التنقل
   document.getElementById('btnFieldReport').onclick=()=>openDocWindow('تقرير المجال',buildFieldReportHTML(key));
   document.getElementById('btnFieldPlan').onclick=()=>openDocWindow('خطة تحسين المجال',buildFieldPlanHTML(key));
   document.getElementById('fpClose').onclick=(e)=>{e.preventDefault(); panel.style.display='none';};
@@ -728,138 +1031,30 @@ async function openFieldFullScreen(key){
 
   panel.style.display='flex';
 }
-</script>
-<script>
-/* جعل الأرقام روابط (وإظهار العنوان عند المرور) */
-function refreshRowEvidence(rowId){
-  const bar = document.getElementById(`eviBar-${rowId}`);
-  if(!bar) return;
-  const items = eviStore[rowId] || [];
-  bar.innerHTML = items.length
-    ? items.map((ev, i) => {
-        const num = i + 1;
-        const link = normalizeLink(ev.link||'');
-        const title = link || '';
-        if(link){
-          return `<a class="eviDot" href="${link}" target="_blank" rel="noopener" title="${title}">${num}</a>`;
-        }
-        return `<span class="eviDot" title="${title}">${num}</span>`;
-      }).join('')
-    : '—';
-}
 
-/* Evidence modal */
-function openEvidenceModal(rowId){
-  eviModalEl.rowId=rowId;
-  eviModalEl.link.value='';
-  eviModalEl.modal.style.display='flex';
-  eviModalEl.modal.setAttribute('aria-hidden','false');
-  setTimeout(()=>eviModalEl.link.focus(),0);
-}
-function closeEvidenceModal(){
-  eviModalEl.modal.style.display='none';
-  eviModalEl.modal.setAttribute('aria-hidden','true');
-  eviModalEl.rowId=null;
-  if(eviModalEl.link) eviModalEl.link.value='';
-}
-async function saveEvidence(){
-  const id=eviModalEl.rowId; if(!id) return;
-  const manualLink = eviModalEl.link.value.trim();
-  if(!manualLink){
-    alert('فضلاً أدخل رابط الشاهد.');
-    return;
+/* ===================== Metric modal controller ===================== */
+const metricModal = {
+  el:null, img:null, title:null,
+  open:(title,src)=>{
+    metricModal.el.style.display='flex';
+    metricModal.img.src = src;
+    metricModal.title.textContent = title;
+    metricModal.el.setAttribute('aria-hidden','false');
+  },
+  close:()=>{
+    metricModal.el.style.display='none';
+    metricModal.el.setAttribute('aria-hidden','true');
   }
-  const finalLink = normalizeLink(manualLink);
-
-  const item={
-    text:'',
-    term:null,
-    week:null,
-    date:'',
-    link:finalLink,
-    fileName:''
-  };
-
-  const ok = await supaInsert(id,item);
-  if(ok){
-    if(!eviStore[id]) eviStore[id]=[];
-    eviStore[id].push(item);
-    refreshRowEvidence(id);
-  }
-
-  closeEvidenceModal();
-}
+};
 </script>
+
 <script>
-/* Header (WHITE) for print pages */
-function buildPrintHeaderHTML(titleText){
-  return `
-    <div style="width:100%;padding:10px 0 6px;display:flex;justify-content:center;align-items:center;background:#fff;border-bottom:1px solid #e7eff0">
-      <div style="height:90px;width:95%;background:url('lolo.png') center/contain no-repeat"></div>
-    </div>
-    <h2 style="text-align:center;color:#0b7e88;margin:10px 0 10px;font-size:24px">${titleText}</h2>
-  `;
-}
-
-/* تقرير المجال */
-function buildFieldReportHTML(key){
-  const f=fields[key];
-  const rows=(detailed[key]||[]).map(r=>`
-    <tr class="${levelRowClass(r.level)}">
-      <td style="width:160px">${r.level}<br/>${fmt(r.perf)}%<br/><small>${r.code}</small></td>
-      <td style="width:42%">${r.indicator}</td>
-      <td style="width:auto">${r.improve}</td>
-    </tr>`).join('');
-  return `${buildPrintHeaderHTML('تقرير المجال: '+f.name)}
-  <table><thead><tr><th style="width:160px">المستوى/النسبة/الرمز</th><th style="width:42%">المعيار/المؤشر</th><th>مقترحات التحسين</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-/* خطة المجال */
-function buildFieldPlanHTML(key){
-  const f=fields[key];
-  const rows=(detailed[key]||[]).map((r,i)=>{
-    const duration = i%2? '٦ أسابيع':'فصل دراسي';
-    return `<tr>
-      <td style="width:120px"><strong>${r.code}</strong></td>
-      <td style="width:auto">${r.indicator}</td>
-      <td style="width:auto">${r.improve}</td>
-      <td style="width:120px">${duration}</td>
-    </tr>`;
-  }).join('');
-  return `${buildPrintHeaderHTML('خطة تحسين المجال: '+f.name)}
-  <table><thead><tr><th style="width:120px">رمز المؤشر</th><th>الهدف/المؤشر</th><th>الإجراء التحسيني</th><th style="width:120px">المدة</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-/* Print window */
-function openDocWindow(title,contentHTML){
-  const w=window.open('','_blank'); if(!w){alert('فضلاً اسمح بالنوافذ المنبثقة.');return;}
-  const doc=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"/><title>${title}</title>
-  <style>
-    *{box-sizing:border-box} html,body{margin:0;font-family:'Tajawal',sans-serif;color:#06353b;background:#fff}
-    @page{size:A4;margin:8mm} html,body{-webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .wrap{width:205mm;max-width:100%;margin:0 auto;padding:10px}
-    table{width:100%;border-collapse:collapse;table-layout:fixed}
-    thead th{background:#0f6f79;color:#fff;padding:10px}
-    td,th{padding:10px;border:1px solid #e7eff0;text-align:center;vertical-align:middle}
-    .row-excellent{background:#e9fff4}.row-verygood{background:#eef5ff}.row-good{background:#fff6ec}.row-medium{background:#ffefef}
-    .toolbar{position:sticky;bottom:0;display:flex;justify-content:center;margin:10px 0}
-    .print{padding:8px 12px;border:1px solid #0b7e88;border-radius:10px;background:#0b7e88;color:#fff;cursor:pointer}
-    @media print{ .toolbar{display:none} }
-  </style></head><body>
-    <div class="wrap">${contentHTML}
-      <div class="toolbar"><button class="print" onclick="window.print()">طباعة</button></div>
-    </div></body></html>`;
-  w.document.open(); w.document.write(doc); w.document.close();
-}
-
-/* Metric image modal controller */
-const metricModal = { el:null, img:null, title:null, open:(title,src)=>{
-  metricModal.el.style.display='flex'; metricModal.img.src = src; metricModal.title.textContent = title; metricModal.el.setAttribute('aria-hidden','false');
-}, close:()=>{ metricModal.el.style.display='none'; metricModal.el.setAttribute('aria-hidden','true'); }};
-</script>
-<script>
-/* INIT */
+/* ===================== INIT ===================== */
 window.addEventListener('DOMContentLoaded',()=>{
+  // تحميل الشواهد المحلية (شبكة أمان)
+  eviStore = loadAnyLocalEvidence() || {};
+  saveLocalEvidence();
+
   // Top links
   document.getElementById('btnExt2025').onclick=(e)=>{e.preventDefault();window.open(SRC_2025,'_blank','noopener');};
   document.getElementById('btnExt2024').onclick=(e)=>{e.preventDefault();window.open(SRC_2024,'_blank','noopener');};
@@ -872,15 +1067,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   metricModal.img = document.getElementById('metricModalImg');
   metricModal.title = document.getElementById('metricModalTitle');
   document.getElementById('metricModalClose').onclick=()=>metricModal.close();
-  metricModal.el.addEventListener('click',(ev)=>{const sheet=metricModal.el.querySelector('.sheet'); if(!sheet.contains(ev.target)) metricModal.close();});
+  metricModal.el.addEventListener('click',(ev)=>{
+    const sheet=metricModal.el.querySelector('.sheet');
+    if(!sheet.contains(ev.target)) metricModal.close();
+  });
 
-  // Evidence modal refs (فقط الرابط)
-  const m=document.getElementById('eviModal');
-  eviModalEl.modal=m;
+  // Evidence modal refs
+  eviModalEl.modal=document.getElementById('eviModal');
   eviModalEl.link=document.getElementById('eviLink');
   eviModalEl.save=document.getElementById('eviSave');
   eviModalEl.cancel=document.getElementById('eviCancel');
-
   document.getElementById('eviClose').onclick=closeEvidenceModal;
   eviModalEl.cancel.onclick=closeEvidenceModal;
   eviModalEl.save.onclick=saveEvidence;
@@ -888,12 +1084,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   // Password modal refs
   pwdModal.el = document.getElementById('pwdModal');
   pwdModal.input = document.getElementById('pwdInput');
-  pwdModal.ok = document.getElementById('pwdOk');
-  pwdModal.cancel = document.getElementById('pwdCancel');
-  pwdModal.closeBtn = document.getElementById('pwdClose');
-  pwdModal.ok.addEventListener('click',()=>pwdModal.confirm());
-  pwdModal.cancel.addEventListener('click',()=>pwdModal.close());
-  pwdModal.closeBtn.addEventListener('click',()=>pwdModal.close());
+  document.getElementById('pwdOk').addEventListener('click',()=>pwdModal.confirm());
+  document.getElementById('pwdCancel').addEventListener('click',()=>pwdModal.close());
+  document.getElementById('pwdClose').addEventListener('click',()=>pwdModal.close());
   pwdModal.el.addEventListener('click',(ev)=>{
     const sheet=pwdModal.el.querySelector('.sheet');
     if(!sheet.contains(ev.target)) pwdModal.close();
@@ -904,5 +1097,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderMetricsSection();
 });
 </script>
+
 </body>
 </html>
