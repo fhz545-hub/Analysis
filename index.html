@@ -145,7 +145,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 /* Metric image modal */
 .metricModal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:12px}
 .metricModal .sheet{max-width:92vw;max-height:88vh;background:#fff;border-radius:16px;overflow:auto;border:1px solid #e6efef}
-.metricModal img{display:block;max-width:100%;height:auto}
+.metricModal img{display:block;max-width:100%;height:auto;cursor:pointer}
 .metricModal .bar{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #eef1f2}
 .metricModal .close{border:0;background:#e8eff0;color:#034;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
 
@@ -211,7 +211,12 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
         <strong id="metricModalTitle" style="color:#0b7e88">عرض</strong>
         <button class="close" id="metricModalClose" type="button">إغلاق ✕</button>
       </div>
-      <img id="metricModalImg" alt="عرض"/>
+<a id="metricModalLink" href="#" target="_blank" rel="noopener" style="display:block">
+  <img id="metricModalImg" alt="عرض"/>
+</a>
+<div style="padding:8px 12px;text-align:center;font-size:12px;color:#6f8e94">
+  اضغط على الصورة لفتح بطاقة المدرسة في ترتيب
+</div>
     </div>
   </div>
 
@@ -259,6 +264,7 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 
 <script>
 /* روابط المستندات */
+  const TARTEEB_LINK='https://tarteeb.edu.sa/ar/school/M3953591';
 const SRC_2025='https://drive.google.com/file/d/1s0Rrv8gYkAbbZU3YudxWVC943iU18Df0/view?usp=drive_link';
 const SRC_2024='https://drive.google.com/file/d/1YsfKzyjQl1SHuz24LLepZk8lb_ylf1Ar/view?usp=sharing';
 const PLAN_LINK='https://drive.google.com/file/d/1O9o7rYNrtVW8gnOQLGd-lSQCiKq4eHne/view?usp=sharing';
@@ -728,9 +734,9 @@ function buildMiddleLeadership(tahsili, qiyas){
 function renderMetricsSection(){
   const wrap=document.getElementById('metricsSection'); wrap.innerHTML='';
   const TAH=66.546, QIY=71.254;
-  wrap.appendChild( buildMetricCard('التحصيلي', TAH, ()=>metricModal.open('التحصيلي','tahsili_image.png')) );
-  wrap.appendChild( buildMiddleLeadership(TAH, QIY) );
-  wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png')) );
+ wrap.appendChild( buildMetricCard('التحصيلي', TAH, ()=>metricModal.open('التحصيلي','tahsili_image.png', TARTEEB_LINK)) );
+wrap.appendChild( buildMiddleLeadership(TAH, QIY) );
+wrap.appendChild( buildMetricCard('القدرات', QIY, ()=>metricModal.open('القدرات','qiyas_image.png', TARTEEB_LINK)) );
 }
 </script>
 <!-- ===================== PART 4 / 4 ===================== -->
@@ -1034,11 +1040,12 @@ async function openFieldFullScreen(key){
 
 /* ===================== Metric modal controller ===================== */
 const metricModal = {
-  el:null, img:null, title:null,
-  open:(title,src)=>{
+  el:null, img:null, title:null, link:null,
+  open:(title,src,href=TARTEEB_LINK)=>{
     metricModal.el.style.display='flex';
     metricModal.img.src = src;
     metricModal.title.textContent = title;
+    if(metricModal.link) metricModal.link.href = href || TARTEEB_LINK;
     metricModal.el.setAttribute('aria-hidden','false');
   },
   close:()=>{
@@ -1046,6 +1053,7 @@ const metricModal = {
     metricModal.el.setAttribute('aria-hidden','true');
   }
 };
+
 </script>
 
 <script>
@@ -1066,6 +1074,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   metricModal.el = document.getElementById('metricModal');
   metricModal.img = document.getElementById('metricModalImg');
   metricModal.title = document.getElementById('metricModalTitle');
+  metricModal.link = document.getElementById('metricModalLink');
   document.getElementById('metricModalClose').onclick=()=>metricModal.close();
   metricModal.el.addEventListener('click',(ev)=>{
     const sheet=metricModal.el.querySelector('.sheet');
