@@ -142,12 +142,73 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
 .kbd-icon{display:flex;align-items:center;gap:8px;border:1px dashed #cfe4e6;background:#fff;padding:8px 10px;border-radius:12px;cursor:pointer;font-weight:800}
 .kbd-icon:hover{background:#f4fbfb}
 
-/* Metric image modal */
-.metricModal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:12px}
-.metricModal .sheet{max-width:92vw;max-height:88vh;background:#fff;border-radius:16px;overflow:auto;border:1px solid #e6efef}
-.metricModal img{display:block;max-width:100%;height:auto;cursor:pointer}
-.metricModal .bar{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #eef1f2}
-.metricModal .close{border:0;background:#e8eff0;color:#034;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+/* Metric image modal — مقاس أنيق ومتجانس + بدون قص */
+.metricModal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center; justify-content:center;
+  z-index:9999;
+  padding:12px;
+  backdrop-filter: blur(2.5px);
+}
+
+/* ✅ هنا تقليل عرض النافذة لتناسب صور "بطاقة المدرسة" */
+.metricModal .sheet{
+  width:clamp(310px, 25vw, 410px);   /* صارت أنحف ومناسبة للصورة */
+  max-width:94vw;
+  max-height:90vh;
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;                  /* يمنع شكل التمرير الغريب */
+  border:1px solid #e6efef;
+  box-shadow:0 24px 55px rgba(0,0,0,.28);
+  display:flex;
+  flex-direction:column;
+}
+
+.metricModal .bar{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+  padding:10px 12px;
+  border-bottom:1px solid #eef1f2;
+}
+
+/* ✅ اجعل الرابط/الصورة تتمركز وتتمدد بذكاء بدون اجتزاء */
+#metricModalLink{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+  text-decoration:none;
+}
+
+.metricModal img{
+  display:block;
+  width:100%;                       /* الصورة تملأ عرض النافذة */
+  height:auto;
+  max-height:calc(90vh - 56px - 44px); /* 56 شريط العنوان + 44 سطر التلميح تقريبًا */
+  object-fit:contain;               /* ✅ بدون قص */
+  border-radius:14px;
+  background:#f7fbfb;               /* يعطي إطار لطيف بدل الفراغ */
+}
+
+/* (اختياري) تلميح أسفل الصورة */
+.metricHint{
+  padding:8px 12px;
+  text-align:center;
+  font-size:12px;
+  color:#6f8e94;
+  border-top:1px solid #eef1f2;
+}
+
+.metricModal .close{
+  border:0;background:#e8eff0;color:#034;
+  padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;
+}
+
 
 /* Evidence modal */
 .modal{position:fixed;inset:0;display:none;z-index:10000;align-items:center;justify-content:center;background:rgba(6,53,59,.18);padding:12px}
@@ -211,12 +272,11 @@ th.col-crit{width:35%} th.col-imp{width:45%} th.col-evi{width:auto}
         <strong id="metricModalTitle" style="color:#0b7e88">عرض</strong>
         <button class="close" id="metricModalClose" type="button">إغلاق ✕</button>
       </div>
-<a id="metricModalLink" href="#" target="_blank" rel="noopener" style="display:block">
+<a id="metricModalLink" href="#" target="_blank" rel="noopener">
   <img id="metricModalImg" alt="عرض"/>
 </a>
-<div style="padding:8px 12px;text-align:center;font-size:12px;color:#6f8e94">
-  اضغط على الصورة لفتح بطاقة المدرسة في ترتيب
-</div>
+<div class="metricHint">اضغط على الصورة لفتح بطاقة المدرسة في ترتيب</div>
+
     </div>
   </div>
 
